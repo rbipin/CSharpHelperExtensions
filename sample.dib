@@ -1,0 +1,4 @@
+#!csharp
+
+#r "/DryExtensions/obj/Debug/netstandard2.1/DryExtensions.dll"
+"Magic".In("Magic", "Bean", "Stalk");

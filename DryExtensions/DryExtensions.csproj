@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <PackageVersion>1.0.1</PackageVersion>
+        <Description>A set of helper extension methods that are used very often when coding</Description>
+        <RepositoryUrl>https://git.rockfin.com/bradhakrishnan/HandyPack</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes></PackageReleaseNotes>
+        <Authors>bradhakrishnan</Authors>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+</Project>

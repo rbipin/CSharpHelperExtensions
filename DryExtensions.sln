@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DryExtensions", "DryExtensions\DryExtensions.csproj", "{839755FC-50B8-4252-8895-70CAFC77DD25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DryExtensions.Test", "DryExtensions.Test\DryExtensions.Test.csproj", "{32B44525-DDA0-4420-8700-E24B399CD7FE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{839755FC-50B8-4252-8895-70CAFC77DD25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{839755FC-50B8-4252-8895-70CAFC77DD25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{839755FC-50B8-4252-8895-70CAFC77DD25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{839755FC-50B8-4252-8895-70CAFC77DD25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32B44525-DDA0-4420-8700-E24B399CD7FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B44525-DDA0-4420-8700-E24B399CD7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B44525-DDA0-4420-8700-E24B399CD7FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B44525-DDA0-4420-8700-E24B399CD7FE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
