@@ -85,6 +85,4 @@ value = 3;
 lower = 1;
 upper = 3;
 result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper); // return false
-
-
 ```
