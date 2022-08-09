@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackageId>DryExtensions</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>Bipin Radhakrishnan</Authors>
         <TargetFramework>netstandard2.1</TargetFramework>
         <PackageVersion>1.0.1</PackageVersion>
         <Description>A set of helper extension methods that are used very often when coding</Description>
-        <RepositoryUrl>https://git.rockfin.com/bradhakrishnan/HandyPack</RepositoryUrl>
+        <RepositoryUrl>https://github.com/rbipin/dry-extensions-csharp</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes></PackageReleaseNotes>
-        <Authors>bradhakrishnan</Authors>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,3 +17,5 @@
     </ItemGroup>
 
 </Project>
+
+
