@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using CSharpHelperExtensions.Strings;
 using FluentAssertions;
 using Xunit;
 
-namespace DryExtensions.Test
+namespace CSharpHelperExtensions.Test
 {
     public class Person
     {

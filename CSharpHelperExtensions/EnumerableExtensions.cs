@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DryExtensions
+namespace CSharpHelperExtensions.Enumerable
 {
     public enum Comparison
     {
@@ -12,7 +12,7 @@ namespace DryExtensions
     public static class EnumerableExtensions
     {
         /// <summary>
-        /// 
+        /// Check if the enumerable contains only a particular item
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="enumerable"></param>
@@ -42,17 +42,23 @@ namespace DryExtensions
         public static bool AreEqual<T>(this IEnumerable<T> enumerable, IEnumerable<T> values, 
         Comparison comparison = Comparison.NoOrder)
         {
+            if (ReferenceEquals(enumerable, null) && ReferenceEquals(values, null))
+            {
+                return true;
+            }
+            values ??= new List<T>();
+            enumerable ??= new List<T>();
             if (ReferenceEquals(enumerable, values))
             {
                 return true;
             }
-            if (enumerable.Count() != values.Count())
+            if (values.Count() != enumerable.Count())
             {
                 return false;
             }
             return comparison switch
             {
-                Comparison.InOrder => CompareItemsInOrder<T>(enumerable, values),
+                Comparison.InOrder => CompareItemsInOrder(enumerable, values),
                 Comparison.NoOrder => enumerable.All(item => values.Contains(item)),
                 _ => false
             };
@@ -80,7 +86,7 @@ namespace DryExtensions
         /// <param name="value">Enumerable to clean</param>
         /// <typeparam name="T">type</typeparam>
         /// <returns>Enumerable cleaned up</returns>
-        public static IEnumerable<T> CleanNullOrEmpty<T>(this IEnumerable<T> value)
+        public static IEnumerable<T> CleanNullOrEmptyItems<T>(this IEnumerable<T> value)
         {
             var list = value?.ToList();
             if (list is null || !list.Any())
@@ -105,10 +111,51 @@ namespace DryExtensions
         /// <param name="value">Enumerable to check</param>
         /// <typeparam name="T">Type</typeparam>
         /// <returns>true or false</returns>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> value)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> values)
         {
-            var enumerable = value?.ToArray();
+            var enumerable = values?.ToArray();
             return enumerable == null || !enumerable.Any() || enumerable.All(item => item is null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="execute"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> values, Action<T> execute)
+        {
+            var collection = values?.ToList() ?? new List<T>();
+            foreach (var item in collection)
+            {
+                execute(item);
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="execute"></param>
+        /// <param name="initialValue"></param>
+        /// <typeparam name="TIn"></typeparam>
+        /// <typeparam name="TOut"></typeparam>
+        /// <returns></returns>
+        public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, TOut> execute, TOut initialValue = default)
+        {
+            var collection = values?.ToList() ?? new List<TIn>();
+            var result = default(TOut);
+            var temp = initialValue;
+            foreach (var item in collection)
+            {
+               result = execute(item, temp);
+               temp = result;
+            }
+
+            return result;
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace DryExtensions
+namespace CSharpHelperExtensions
 {
     public enum BetweenComparison
     {

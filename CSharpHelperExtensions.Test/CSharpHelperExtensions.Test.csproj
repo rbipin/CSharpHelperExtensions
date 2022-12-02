@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DryExtensions\DryExtensions.csproj" />
+      <ProjectReference Include="..\CSharpHelperExtensions\CSharpHelperExtensions.csproj" />
     </ItemGroup>
 
     <ItemGroup>

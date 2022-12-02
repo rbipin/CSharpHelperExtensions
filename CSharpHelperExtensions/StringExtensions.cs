@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace DryExtensions
+namespace CSharpHelperExtensions.Strings
 {
     public static class StringExtensions
     {

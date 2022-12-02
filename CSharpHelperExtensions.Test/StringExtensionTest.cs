@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Xunit;
-namespace DryExtensions.Test
+namespace CSharpHelperExtensions.Test
 {
     public class StringExtensionTest
     {
