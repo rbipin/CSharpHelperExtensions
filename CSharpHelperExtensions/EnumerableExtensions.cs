@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CSharpHelperExtensions.Enumerable
 {
-    public enum Comparison
+    public enum Compare
     {
         InOrder,
         NoOrder
@@ -40,7 +40,7 @@ namespace CSharpHelperExtensions.Enumerable
         /// <param name="comparison"></param>
         /// <returns></returns>
         public static bool AreEqual<T>(this IEnumerable<T> enumerable, IEnumerable<T> values, 
-        Comparison comparison = Comparison.NoOrder)
+        Compare comparison = Compare.NoOrder)
         {
             if (ReferenceEquals(enumerable, null) && ReferenceEquals(values, null))
             {
@@ -58,8 +58,8 @@ namespace CSharpHelperExtensions.Enumerable
             }
             return comparison switch
             {
-                Comparison.InOrder => CompareItemsInOrder(enumerable, values),
-                Comparison.NoOrder => enumerable.All(item => values.Contains(item)),
+                Compare.InOrder => CompareItemsInOrder(enumerable, values),
+                Compare.NoOrder => enumerable.All(item => values.Contains(item)),
                 _ => false
             };
         }
@@ -98,11 +98,11 @@ namespace CSharpHelperExtensions.Enumerable
             {
                 if (item is string itemStr)
                 {
-                    return !itemStr.IsNullOrEmpty();
+                    return !string.IsNullOrWhiteSpace(itemStr);
                 }
 
-                return item != null;
-            });
+                return item is not null;
+            }).ToList();
         }
 
         /// <summary>
@@ -136,6 +136,29 @@ namespace CSharpHelperExtensions.Enumerable
         }
 
         /// <summary>
+        /// Reduce the result to a single value, runs each items through a reducer function
+        /// </summary>
+        /// <param name="values">Collection on which to perform reduce</param>
+        /// <param name="execute">Callback function or the reducer function</param>
+        /// <param name="initialValue">Initial value to start </param>
+        /// <typeparam name="TIn">Type of the collection on which the reduce is called</typeparam>
+        /// <typeparam name="TOut">Return value type</typeparam>
+        /// <returns></returns>
+        public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, TOut> execute, TOut initialValue = default)
+        {
+            var collection = values?.ToList() ?? new List<TIn>();
+            var result = default(TOut);
+            var temp = initialValue;
+            foreach (var item in collection)
+            { 
+               result = execute(item, temp);
+               temp = result;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="values"></param>
@@ -144,15 +167,16 @@ namespace CSharpHelperExtensions.Enumerable
         /// <typeparam name="TIn"></typeparam>
         /// <typeparam name="TOut"></typeparam>
         /// <returns></returns>
-        public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, TOut> execute, TOut initialValue = default)
+        public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, int, TOut> execute, TOut initialValue = default)
         {
             var collection = values?.ToList() ?? new List<TIn>();
             var result = default(TOut);
             var temp = initialValue;
-            foreach (var item in collection)
+            for (int counter = 0; counter <= collection.Count -1; counter++)
             {
-               result = execute(item, temp);
-               temp = result;
+                var item = collection[counter];
+                result = execute(item, temp, counter);
+                temp = result;
             }
 
             return result;

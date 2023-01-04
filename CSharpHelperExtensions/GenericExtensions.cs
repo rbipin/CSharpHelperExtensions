@@ -55,16 +55,10 @@ namespace CSharpHelperExtensions
         /// By default the 
         /// </summary>
         /// <param name="value">string to check</param>
-        /// <param name="checkForWhitespace">Should consider whitespace as empty or not, default is true</param>
         /// <returns>true or false</returns>
-        public static bool IsNullOrEmpty(this string value, bool checkForWhitespace = true)
+        public static bool IsNullOrEmpty(this string value)
         {
-            if (checkForWhitespace)
-            {
-                value = value?.Trim();
-            }
-
-            return string.IsNullOrEmpty(value);
+            return string.IsNullOrWhiteSpace(value);
         }
 
         /// <summary>
