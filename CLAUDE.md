@@ -39,8 +39,8 @@ dotnet test CSharpHelperExtensions.slnx
 
 This is a two-project solution:
 
-- **`CSharpHelperExtensions/`** — `netstandard2.1` class library. The publishable NuGet package (`CSharpHelperExtensions` v1.0.1). Depends only on `Newtonsoft.Json`.
-- **`CSharpHelperExtensions.Test/`** — xUnit test project (`net6.0`) using FluentAssertions.
+- **`CSharpHelperExtensions/`** — `net10.0` class library. The publishable NuGet package (`CSharpHelperExtensions` v2.0.0). Depends only on `Newtonsoft.Json`.
+- **`CSharpHelperExtensions.Test/`** — xUnit test project (`net10.0`) using FluentAssertions.
 
 ### Extension method namespaces
 
