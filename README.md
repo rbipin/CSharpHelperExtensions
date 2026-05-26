@@ -1,4 +1,5 @@
-# ReusableExtensions
+# DryExtensions
+Don't Repeat Yourself Extensions
 
 A set of helper extension methods that are used very often when coding
 
