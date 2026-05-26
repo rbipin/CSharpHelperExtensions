@@ -141,7 +141,7 @@ csharp_style_namespace_declarations = file_scoped:suggestion
 # Primary constructors (C# 12+)
 csharp_style_prefer_primary_constructors = true:suggestion
 
-# Tuple swap (C# 12+)
+# Tuple swap (C# 7.1+)
 csharp_style_prefer_tuple_swap = true:suggestion
 
 # Prefer static local functions
