@@ -23,10 +23,13 @@ dotnet test --filter "FullyQualifiedName~Verify_In_Exists"
 dotnet test --filter "ClassName~EnumerableExtensionTest"
 
 # Build only the library project
-dotnet build CSharpHelperExtensions/CSharpHelperExtensions.csproj
+dotnet build src/CSharpHelperExtensions/CSharpHelperExtensions.csproj
 
 # Pack as NuGet package
-dotnet pack CSharpHelperExtensions/CSharpHelperExtensions.csproj
+dotnet pack src/CSharpHelperExtensions/CSharpHelperExtensions.csproj
+
+# Restore local .NET tools (CSharpier formatter)
+dotnet tool restore
 
 # Build using the solution file explicitly
 dotnet build CSharpHelperExtensions.slnx
@@ -39,8 +42,10 @@ dotnet test CSharpHelperExtensions.slnx
 
 This is a two-project solution:
 
-- **`CSharpHelperExtensions/`** — `net10.0` class library. The publishable NuGet package (`CSharpHelperExtensions` v2.0.0). Depends only on `Newtonsoft.Json`.
-- **`CSharpHelperExtensions.Test/`** — xUnit test project (`net10.0`) using FluentAssertions.
+- **`src/CSharpHelperExtensions/`** — `net10.0` class library. The publishable NuGet package (`CSharpHelperExtensions` v2.0.0). Depends only on `Newtonsoft.Json`.
+- **`src/CSharpHelperExtensions.Test/`** — xUnit test project (`net10.0`) using FluentAssertions.
+
+Root-level config files: `CSharpHelperExtensions.slnx` (solution entry point), `global.json` (pins SDK to 10.0.x), `.editorconfig` (C# code style + formatting rules), `.config/dotnet-tools.json` (CSharpier formatter).
 
 ### Extension method namespaces
 
