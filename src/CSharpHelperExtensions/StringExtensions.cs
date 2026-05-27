@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 
 namespace CSharpHelperExtensions.Strings;
@@ -245,5 +247,40 @@ public static class StringExtensions
             _ => padded
         };
         return Encoding.UTF8.GetString(Convert.FromBase64String(padded));
+    }
+
+    /// <summary>Converts <paramref name="input"/> to its UTF-8 byte representation.</summary>
+    /// <param name="input">The string to encode. Returns an empty array when <see langword="null"/>.</param>
+    /// <returns>UTF-8 encoded bytes.</returns>
+    public static byte[] ToUtf8Bytes(this string input)
+        => Encoding.UTF8.GetBytes(input ?? string.Empty);
+
+    /// <summary>Converts <paramref name="input"/> to a seekable <see cref="MemoryStream"/> using UTF-8 encoding.</summary>
+    /// <param name="input">The string to stream. Returns an empty stream when <see langword="null"/>.</param>
+    /// <returns>A <see cref="MemoryStream"/> containing the UTF-8 bytes.</returns>
+    public static MemoryStream ToUtf8Stream(this string input)
+        => new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
+
+    /// <summary>
+    /// Joins <paramref name="values"/> using <paramref name="separator"/> as the delimiter.
+    /// Fluent wrapper around <see cref="string.Join(string, IEnumerable{string})"/>.
+    /// </summary>
+    /// <param name="separator">The separator string (this). A <see langword="null"/> separator is treated as empty.</param>
+    /// <param name="values">The strings to join.</param>
+    /// <returns>The joined string.</returns>
+    public static string JoinWith(this string separator, IEnumerable<string> values)
+        => string.Join(separator ?? string.Empty, values ?? []);
+
+    /// <summary>
+    /// Splits <paramref name="input"/> on <paramref name="separators"/> and removes empty entries.
+    /// Returns an empty array when <paramref name="input"/> is <see langword="null"/> or whitespace.
+    /// </summary>
+    /// <param name="input">The string to split.</param>
+    /// <param name="separators">One or more separator characters.</param>
+    /// <returns>Non-empty segments after splitting.</returns>
+    public static string[] SplitNonEmpty(this string input, params char[] separators)
+    {
+        if (input.IsNullOrEmpty()) return [];
+        return input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
     }
 }

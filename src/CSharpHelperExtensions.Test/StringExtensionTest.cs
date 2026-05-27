@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using CSharpHelperExtensions.Strings;
 using FluentAssertions;
@@ -220,6 +222,37 @@ namespace CSharpHelperExtensions.Test
             var original = "Hello, World! 123";
             original.ToBase64Url().FromBase64Url().Should().Be(original);
             ((string)null).FromBase64Url().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_ToUtf8Bytes_ReturnsBytes()
+        {
+            "hello".ToUtf8Bytes().Should().Equal(Encoding.UTF8.GetBytes("hello"));
+            ((string)null).ToUtf8Bytes().Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Verify_ToUtf8Stream_ReturnsReadableStream()
+        {
+            using var stream = "hello".ToUtf8Stream();
+            stream.Length.Should().Be(5);
+            ((string)null).ToUtf8Stream().Length.Should().Be(0);
+        }
+
+        [Fact]
+        public void Verify_JoinWith_JoinsWithSeparator()
+        {
+            ", ".JoinWith(new[] { "a", "b", "c" }).Should().Be("a, b, c");
+            "-".JoinWith(new[] { "x" }).Should().Be("x");
+            ", ".JoinWith(Array.Empty<string>()).Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_SplitNonEmpty_SplitsAndRemovesEmpty()
+        {
+            "a,b,,c".SplitNonEmpty(',').Should().Equal(new[] { "a", "b", "c" });
+            ((string)null).SplitNonEmpty(',').Should().BeEmpty();
+            "   ".SplitNonEmpty(' ').Should().BeEmpty();
         }
     }
 }
