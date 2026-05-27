@@ -259,7 +259,7 @@ public static class StringExtensions
     /// <param name="input">The string to stream. Returns an empty stream when <see langword="null"/>.</param>
     /// <returns>A <see cref="MemoryStream"/> containing the UTF-8 bytes.</returns>
     public static MemoryStream ToUtf8Stream(this string input)
-        => new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
+        => new(Encoding.UTF8.GetBytes(input ?? string.Empty));
 
     /// <summary>
     /// Joins <paramref name="values"/> using <paramref name="separator"/> as the delimiter.
