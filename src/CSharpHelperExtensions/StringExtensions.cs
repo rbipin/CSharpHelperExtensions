@@ -38,8 +38,8 @@ public static class StringExtensions
     {
         if (input.IsNullOrEmpty())
             return null;
-        var conv = TypeDescriptor.GetConverter(typeof(T));
-        return (T?)conv.ConvertFrom(input);
+        var converter = TypeDescriptor.GetConverter(typeof(T));
+        return (T?)converter.ConvertFrom(input);
     }
 
     public static bool HasValue(this string input) => !string.IsNullOrWhiteSpace(input);
