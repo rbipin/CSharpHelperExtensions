@@ -4,20 +4,41 @@ using System.Linq;
 
 namespace CSharpHelperExtensions.Enumerable;
 
+/// <summary>
+/// Controls how two sequences are compared by <see cref="EnumerableExtensions.AreEqual{T}"/>.
+/// </summary>
 public enum Compare
 {
+    /// <summary>Elements must appear in the same positional order in both sequences.</summary>
     InOrder,
+    /// <summary>
+    /// Sequences are equal if they contain the same elements regardless of order.
+    /// This is the default.
+    /// </summary>
     NoOrder
 }
 public static class EnumerableExtensions
 {
     /// <summary>
-    /// Check if the enumerable contains only a particular item
+    /// Returns <see langword="true"/> if the sequence contains exactly the specified items —
+    /// no more, no fewer — regardless of order.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="enumerable"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="enumerable">The sequence to inspect.</param>
+    /// <param name="value">The exact set of expected items.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="enumerable"/> has the same count as <paramref name="value"/>
+    /// and every item in <paramref name="value"/> appears in <paramref name="enumerable"/>.
+    /// Returns <see langword="false"/> if either argument is <see langword="null"/> or empty,
+    /// or if the element sets differ.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// new[] { 1, 2, 3 }.ContainsOnly(3, 1, 2)   // true  (order doesn't matter)
+    /// new[] { 1, 2, 3 }.ContainsOnly(1, 2)       // false (extra element in source)
+    /// new[] { 1, 2 }.ContainsOnly(1, 2, 3)       // false (missing element in source)
+    /// </code>
+    /// </example>
     public static bool ContainsOnly<T>(this IEnumerable<T> enumerable, params T[] value)
     {
         if (value.IsNullOrEmpty() || enumerable.IsNullOrEmpty())
@@ -32,13 +53,29 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// 
+    /// Determines whether two sequences contain the same elements.
+    /// Use <paramref name="comparison"/> to choose between order-sensitive and order-insensitive equality.
+    /// Both sequences being <see langword="null"/> is treated as equal.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="enumerable"></param>
-    /// <param name="values"></param>
-    /// <param name="comparison"></param>
-    /// <returns></returns>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="enumerable">The first sequence.</param>
+    /// <param name="values">The second sequence to compare against.</param>
+    /// <param name="comparison">
+    /// Controls whether element order matters.
+    /// Defaults to <see cref="Compare.NoOrder"/> (order-insensitive).
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if both sequences are equal under the chosen <paramref name="comparison"/> mode;
+    /// <see langword="false"/> if their counts differ or any element does not match.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// new[] { 1, 2, 3 }.AreEqual(new[] { 3, 1, 2 })                       // true  (NoOrder)
+    /// new[] { 1, 2, 3 }.AreEqual(new[] { 3, 1, 2 }, Compare.InOrder)      // false (order differs)
+    /// new[] { 1, 2, 3 }.AreEqual(new[] { 1, 2, 3 }, Compare.InOrder)      // true
+    /// ((IEnumerable&lt;int&gt;)null).AreEqual(null)                             // true  (both null)
+    /// </code>
+    /// </example>
     public static bool AreEqual<T>(this IEnumerable<T> enumerable, IEnumerable<T> values,
     Compare comparison = Compare.NoOrder)
     {
@@ -80,12 +117,30 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Clean nulls and empty items from an IEnumerable,
-    /// if this is IEnumerable of string this will clean the empty string and whitespace
+    /// Returns a new sequence with all <see langword="null"/> elements removed.
+    /// When <typeparamref name="T"/> is <see cref="string"/>, empty strings and whitespace-only strings
+    /// are also removed.
     /// </summary>
-    /// <param name="value">Enumerable to clean</param>
-    /// <typeparam name="T">type</typeparam>
-    /// <returns>Enumerable cleaned up</returns>
+    /// <param name="value">
+    /// The sequence to clean.
+    /// Returns <see langword="null"/> if the input is <see langword="null"/> or empty.
+    /// </param>
+    /// <typeparam name="T">
+    /// The element type. String sequences get additional empty/whitespace filtering.
+    /// </typeparam>
+    /// <returns>
+    /// A cleaned <see cref="IEnumerable{T}"/> with invalid elements removed,
+    /// or <see langword="null"/> if the input is <see langword="null"/> or contains no items.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// new[] { "hello", null, "", "  ", "world" }.CleanNullOrEmptyItems()
+    ///     // ["hello", "world"]
+    ///
+    /// new int?[] { 1, null, 2, null, 3 }.CleanNullOrEmptyItems()
+    ///     // [1, 2, 3]
+    /// </code>
+    /// </example>
     public static IEnumerable<T> CleanNullOrEmptyItems<T>(this IEnumerable<T> value)
     {
         var list = value?.ToList();
@@ -106,11 +161,23 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Check IEnumerable is null, empty or has items that are all null
+    /// Returns <see langword="true"/> if the sequence is <see langword="null"/>, contains no elements,
+    /// or contains only <see langword="null"/> items.
     /// </summary>
-    /// <param name="value">Enumerable to check</param>
-    /// <typeparam name="T">Type</typeparam>
-    /// <returns>true or false</returns>
+    /// <param name="values">The sequence to check.</param>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="values"/> is <see langword="null"/>, empty,
+    /// or every element is <see langword="null"/>; otherwise <see langword="false"/>.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// ((IEnumerable&lt;int&gt;)null).IsNullOrEmpty()         // true
+    /// new List&lt;string&gt;().IsNullOrEmpty()               // true
+    /// new[] { (string)null, null }.IsNullOrEmpty()          // true  (all-null items)
+    /// new[] { 1, 2, 3 }.IsNullOrEmpty()                    // false
+    /// </code>
+    /// </example>
     public static bool IsNullOrEmpty<T>(this IEnumerable<T> values)
     {
         var enumerable = values?.ToArray();
@@ -118,12 +185,26 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Execute an action for each item in the IEnumerable and return the same IEnumerable back
+    /// Executes an action on each element of the sequence and returns the original sequence unchanged.
+    /// Useful for chaining side-effectful operations in a fluent pipeline.
     /// </summary>
-    /// <param name="values"></param>
-    /// <param name="execute"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
+    /// <param name="values">
+    /// The sequence to iterate.
+    /// If <see langword="null"/>, the action is not invoked and <see langword="null"/> is returned.
+    /// </param>
+    /// <param name="execute">The action to run for each element.</param>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <returns>The original <paramref name="values"/> reference (not a copy).</returns>
+    /// <example>
+    /// <code>
+    /// var log = new List&lt;string&gt;();
+    /// new[] { "a", "b", "c" }
+    ///     .ForEach(item => log.Add(item.ToUpper()))
+    ///     .ForEach(item => Console.WriteLine(item));
+    /// // log == ["A", "B", "C"]
+    /// // original sequence ["a", "b", "c"] is printed to console
+    /// </code>
+    /// </example>
     public static IEnumerable<T> ForEach<T>(this IEnumerable<T> values, Action<T> execute)
     {
         var collection = values?.ToList() ?? new List<T>();
@@ -136,14 +217,34 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Reduce the result to a single value, runs each items through a reducer function
+    /// Reduces a sequence to a single accumulated value by repeatedly applying a reducer function.
+    /// Equivalent to JavaScript's <c>Array.prototype.reduce()</c>.
     /// </summary>
-    /// <param name="values">Collection on which to perform reduce</param>
-    /// <param name="execute">Callback function or the reducer function</param>
-    /// <param name="initialValue">Initial value to start </param>
-    /// <typeparam name="TIn">Type of the collection on which the reduce is called</typeparam>
-    /// <typeparam name="TOut">Return value type</typeparam>
-    /// <returns></returns>
+    /// <param name="values">
+    /// The sequence to reduce.
+    /// If <see langword="null"/> or empty, returns the default value of <typeparamref name="TOut"/>.
+    /// </param>
+    /// <param name="execute">
+    /// The reducer function. Receives the current element and the current accumulated value,
+    /// and returns the new accumulated value.
+    /// </param>
+    /// <param name="initialValue">
+    /// The starting value for the accumulator before the first element is processed.
+    /// Defaults to <see langword="default"/>(<typeparamref name="TOut"/>).
+    /// </param>
+    /// <typeparam name="TIn">The element type of the input sequence.</typeparam>
+    /// <typeparam name="TOut">The type of the accumulated result.</typeparam>
+    /// <returns>The final accumulated value after all elements have been processed.</returns>
+    /// <example>
+    /// <code>
+    /// // Sum integers
+    /// new[] { 1, 2, 3, 4 }.Reduce((item, acc) => acc + item, initialValue: 0)   // 10
+    ///
+    /// // Build a comma-separated string
+    /// new[] { "a", "b", "c" }
+    ///     .Reduce((item, acc) => acc == "" ? item : acc + ", " + item, "")        // "a, b, c"
+    /// </code>
+    /// </example>
     public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, TOut> execute, TOut initialValue = default)
     {
         var collection = values?.ToList() ?? new List<TIn>();
@@ -159,14 +260,32 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// 
+    /// Reduces a sequence to a single accumulated value by repeatedly applying a reducer function
+    /// that also receives the current element's zero-based index.
     /// </summary>
-    /// <param name="values"></param>
-    /// <param name="execute"></param>
-    /// <param name="initialValue"></param>
-    /// <typeparam name="TIn"></typeparam>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns></returns>
+    /// <param name="values">
+    /// The sequence to reduce.
+    /// If <see langword="null"/> or empty, returns the default value of <typeparamref name="TOut"/>.
+    /// </param>
+    /// <param name="execute">
+    /// The reducer function. Receives the current element, the current accumulated value,
+    /// and the zero-based index of the current element; returns the new accumulated value.
+    /// </param>
+    /// <param name="initialValue">
+    /// The starting value for the accumulator before the first element is processed.
+    /// Defaults to <see langword="default"/>(<typeparamref name="TOut"/>).
+    /// </param>
+    /// <typeparam name="TIn">The element type of the input sequence.</typeparam>
+    /// <typeparam name="TOut">The type of the accumulated result.</typeparam>
+    /// <returns>The final accumulated value after all elements have been processed.</returns>
+    /// <example>
+    /// <code>
+    /// // Build indexed labels
+    /// new[] { "apple", "banana", "cherry" }
+    ///     .Reduce((item, acc, index) => acc + $"{index}: {item}\n", "")
+    ///     // "0: apple\n1: banana\n2: cherry\n"
+    /// </code>
+    /// </example>
     public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, int, TOut> execute, TOut initialValue = default)
     {
         var collection = values?.ToList() ?? new List<TIn>();
