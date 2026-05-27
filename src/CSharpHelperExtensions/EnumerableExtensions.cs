@@ -32,6 +32,12 @@ public static class EnumerableExtensions
     /// Returns <see langword="false"/> if either argument is <see langword="null"/> or empty,
     /// or if the element sets differ.
     /// </returns>
+    /// <remarks>
+    /// Duplicate handling: the check uses <see cref="IEnumerable{T}.Contains"/> internally,
+    /// so sequences with repeated elements may produce unexpected results.
+    /// For example, <c>new[] { 1, 2, 2 }.ContainsOnly(1, 1, 2)</c> returns <see langword="true"/>
+    /// because counts match and every item in the expected set appears somewhere in the source.
+    /// </remarks>
     /// <example>
     /// <code>
     /// new[] { 1, 2, 3 }.ContainsOnly(3, 1, 2)   // true  (order doesn't matter)
@@ -55,7 +61,8 @@ public static class EnumerableExtensions
     /// <summary>
     /// Determines whether two sequences contain the same elements.
     /// Use <paramref name="comparison"/> to choose between order-sensitive and order-insensitive equality.
-    /// Both sequences being <see langword="null"/> is treated as equal.
+    /// Both sequences being <see langword="null"/> is treated as equal,
+    /// and a <see langword="null"/> sequence is considered equal to an empty sequence.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="enumerable">The first sequence.</param>
@@ -68,12 +75,20 @@ public static class EnumerableExtensions
     /// <see langword="true"/> if both sequences are equal under the chosen <paramref name="comparison"/> mode;
     /// <see langword="false"/> if their counts differ or any element does not match.
     /// </returns>
+    /// <remarks>
+    /// When using <see cref="Compare.NoOrder"/>, equality is checked via <c>Contains</c> on each element,
+    /// so sequences with duplicate elements may compare as equal even if multiplicities differ.
+    /// For example, <c>new[] { 1, 1, 2 }.AreEqual(new[] { 1, 2, 2 })</c> returns <see langword="true"/>
+    /// because both have count 3 and every element of the first appears in the second.
+    /// Use <see cref="Compare.InOrder"/> for strict positional equality.
+    /// </remarks>
     /// <example>
     /// <code>
     /// new[] { 1, 2, 3 }.AreEqual(new[] { 3, 1, 2 })                       // true  (NoOrder)
     /// new[] { 1, 2, 3 }.AreEqual(new[] { 3, 1, 2 }, Compare.InOrder)      // false (order differs)
     /// new[] { 1, 2, 3 }.AreEqual(new[] { 1, 2, 3 }, Compare.InOrder)      // true
     /// ((IEnumerable&lt;int&gt;)null).AreEqual(null)                             // true  (both null)
+    /// ((IEnumerable&lt;int&gt;)null).AreEqual(new List&lt;int&gt;())                  // true  (null == empty)
     /// </code>
     /// </example>
     public static bool AreEqual<T>(this IEnumerable<T> enumerable, IEnumerable<T> values,
@@ -222,7 +237,8 @@ public static class EnumerableExtensions
     /// </summary>
     /// <param name="values">
     /// The sequence to reduce.
-    /// If <see langword="null"/> or empty, returns the default value of <typeparamref name="TOut"/>.
+    /// If <see langword="null"/> or empty, <paramref name="initialValue"/> is ignored and
+    /// <see langword="default"/>(<typeparamref name="TOut"/>) is returned.
     /// </param>
     /// <param name="execute">
     /// The reducer function. Receives the current element and the current accumulated value,
@@ -265,7 +281,8 @@ public static class EnumerableExtensions
     /// </summary>
     /// <param name="values">
     /// The sequence to reduce.
-    /// If <see langword="null"/> or empty, returns the default value of <typeparamref name="TOut"/>.
+    /// If <see langword="null"/> or empty, <paramref name="initialValue"/> is ignored and
+    /// <see langword="default"/>(<typeparamref name="TOut"/>) is returned.
     /// </param>
     /// <param name="execute">
     /// The reducer function. Receives the current element, the current accumulated value,
