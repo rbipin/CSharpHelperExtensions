@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CSharpHelperExtensions.Strings;
 
 public static class StringExtensions
 {
+    private static readonly Regex CollapseRegex = new(@"\s+", RegexOptions.Compiled);
     /// <summary>
     /// Converts a string to the specified nullable value type using its registered <see cref="TypeConverter"/>.
     /// Returns <see langword="null"/> when the input is <see langword="null"/>, empty, or whitespace.
@@ -282,5 +285,25 @@ public static class StringExtensions
     {
         if (input.IsNullOrEmpty()) return [];
         return input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    /// <summary>Removes all whitespace characters from <paramref name="input"/>.</summary>
+    /// <param name="input">The string to process. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
+    /// <returns>The string with all whitespace removed.</returns>
+    public static string RemoveWhitespace(this string input)
+    {
+        if (input == null) return string.Empty;
+        return string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
+    }
+
+    /// <summary>
+    /// Trims leading/trailing whitespace and collapses all internal whitespace runs to a single space.
+    /// </summary>
+    /// <param name="input">The string to process. Returns <see cref="string.Empty"/> when <see langword="null"/> or whitespace.</param>
+    /// <returns>The collapsed string.</returns>
+    public static string CollapseWhitespace(this string input)
+    {
+        if (input.IsNullOrEmpty()) return string.Empty;
+        return CollapseRegex.Replace(input.Trim(), " ");
     }
 }

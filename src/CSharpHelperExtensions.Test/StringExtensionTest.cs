@@ -254,6 +254,24 @@ namespace CSharpHelperExtensions.Test
             ((string)null).SplitNonEmpty(',').Should().BeEmpty();
             "   ".SplitNonEmpty(' ').Should().BeEmpty();
         }
+
+        [Fact]
+        public void Verify_RemoveWhitespace_RemovesAllWhitespace()
+        {
+            "h e l l o".RemoveWhitespace().Should().Be("hello");
+            "  hello  ".RemoveWhitespace().Should().Be("hello");
+            "\thello\n".RemoveWhitespace().Should().Be("hello");
+            ((string)null).RemoveWhitespace().Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_CollapseWhitespace_CollapsesRunsToSingleSpace()
+        {
+            "hello   world".CollapseWhitespace().Should().Be("hello world");
+            "  hello  world  ".CollapseWhitespace().Should().Be("hello world");
+            "hello\t\nworld".CollapseWhitespace().Should().Be("hello world");
+            ((string)null).CollapseWhitespace().Should().Be("");
+        }
     }
 }
 
