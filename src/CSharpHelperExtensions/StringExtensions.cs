@@ -81,7 +81,7 @@ public static class StringExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxLength"/> is negative.</exception>
     public static string Truncate(this string input, int maxLength)
     {
-        if (maxLength < 0) throw new ArgumentOutOfRangeException(nameof(maxLength));
+        ArgumentOutOfRangeException.ThrowIfNegative(maxLength);
         if (input == null) return string.Empty;
         return input.Length <= maxLength ? input : input[..maxLength];
     }
