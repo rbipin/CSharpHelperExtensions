@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Text;
 
 namespace CSharpHelperExtensions.Strings;
 
@@ -194,4 +195,55 @@ public static class StringExtensions
     /// <param name="input">The string to parse.</param>
     public static bool? ToBoolOrNull(this string input)
         => bool.TryParse(input, out var v) ? v : null;
+
+    /// <summary>Encodes <paramref name="input"/> as a standard Base64 string using UTF-8 encoding.</summary>
+    /// <param name="input">The string to encode.</param>
+    /// <returns>The Base64-encoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    public static string Base64Encode(this string input)
+    {
+        if (input == null) return null;
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
+    }
+
+    /// <summary>Decodes a standard Base64 string back to a UTF-8 string.</summary>
+    /// <param name="input">The Base64-encoded string to decode.</param>
+    /// <returns>The decoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    public static string Base64Decode(this string input)
+    {
+        if (input == null) return null;
+        return Encoding.UTF8.GetString(Convert.FromBase64String(input));
+    }
+
+    /// <summary>
+    /// Encodes <paramref name="input"/> as a URL-safe Base64 string (no <c>+</c>, <c>/</c>, or <c>=</c> padding).
+    /// Use <see cref="FromBase64Url"/> to decode.
+    /// </summary>
+    /// <param name="input">The string to encode.</param>
+    /// <returns>The URL-safe Base64 string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    public static string ToBase64Url(this string input)
+    {
+        if (input == null) return null;
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(input))
+            .Replace('+', '-')
+            .Replace('/', '_')
+            .TrimEnd('=');
+    }
+
+    /// <summary>
+    /// Decodes a URL-safe Base64 string (produced by <see cref="ToBase64Url"/>) back to a UTF-8 string.
+    /// </summary>
+    /// <param name="input">The URL-safe Base64 string to decode.</param>
+    /// <returns>The decoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    public static string FromBase64Url(this string input)
+    {
+        if (input == null) return null;
+        var padded = input.Replace('-', '+').Replace('_', '/');
+        padded = (padded.Length % 4) switch
+        {
+            2 => padded + "==",
+            3 => padded + "=",
+            _ => padded
+        };
+        return Encoding.UTF8.GetString(Convert.FromBase64String(padded));
+    }
 }

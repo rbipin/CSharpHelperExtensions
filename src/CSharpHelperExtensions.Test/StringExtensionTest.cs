@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using CSharpHelperExtensions.Strings;
 using FluentAssertions;
 using Xunit;
@@ -180,6 +181,45 @@ namespace CSharpHelperExtensions.Test
             "True".ToBoolOrNull().Should().BeTrue();
             "yes".ToBoolOrNull().Should().BeNull();
             ((string)null).ToBoolOrNull().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_Base64Encode_EncodesString()
+        {
+            "hello".Base64Encode().Should().Be("aGVsbG8=");
+            ((string)null).Base64Encode().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_Base64Decode_DecodesString()
+        {
+            "aGVsbG8=".Base64Decode().Should().Be("hello");
+            ((string)null).Base64Decode().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_Base64_RoundTrip()
+        {
+            var original = "Hello, World! Émoji: 🌍";
+            original.Base64Encode().Base64Decode().Should().Be(original);
+        }
+
+        [Fact]
+        public void Verify_ToBase64Url_ProducesUrlSafeString()
+        {
+            var encoded = "hello world".ToBase64Url();
+            encoded.Should().NotContain("+");
+            encoded.Should().NotContain("/");
+            encoded.Should().NotContain("=");
+            ((string)null).ToBase64Url().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_Base64Url_RoundTrip()
+        {
+            var original = "Hello, World! 123";
+            original.ToBase64Url().FromBase64Url().Should().Be(original);
+            ((string)null).FromBase64Url().Should().BeNull();
         }
     }
 }
