@@ -294,6 +294,26 @@ namespace CSharpHelperExtensions.Test
         {
             ((string)null).ReplaceMany(new[] { ("a", "b") }).Should().Be("");
         }
+
+        [Fact]
+        public void Verify_RemoveDiacritics_StripAccents()
+        {
+            "café".RemoveDiacritics().Should().Be("cafe");
+            "résumé".RemoveDiacritics().Should().Be("resume");
+            "naïve".RemoveDiacritics().Should().Be("naive");
+            "hello".RemoveDiacritics().Should().Be("hello");
+            ((string)null).RemoveDiacritics().Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_ToSlug_CreatesSlug()
+        {
+            "Hello World".ToSlug().Should().Be("hello-world");
+            "  Café au Lait  ".ToSlug().Should().Be("cafe-au-lait");
+            "C# is great!".ToSlug().Should().Be("c-is-great");
+            "---".ToSlug().Should().Be("");
+            ((string)null).ToSlug().Should().Be("");
+        }
     }
 }
 

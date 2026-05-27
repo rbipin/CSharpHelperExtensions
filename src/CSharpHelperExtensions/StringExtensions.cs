@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -320,5 +321,54 @@ public static class StringExtensions
         foreach (var (oldValue, newValue) in pairs)
             result = result.Replace(oldValue, newValue);
         return result;
+    }
+
+    /// <summary>
+    /// Removes diacritical marks (accent characters) from <paramref name="input"/>.
+    /// For example, <c>"café"</c> becomes <c>"cafe"</c>.
+    /// </summary>
+    /// <param name="input">The string to process. Returns <see cref="string.Empty"/> when <see langword="null"/> or whitespace.</param>
+    /// <returns>The string with diacritics removed.</returns>
+    public static string RemoveDiacritics(this string input)
+    {
+        if (input.IsNullOrEmpty()) return string.Empty;
+        var normalized = input.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder(normalized.Length);
+        foreach (var c in normalized)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        }
+        return sb.ToString().Normalize(NormalizationForm.FormC);
+    }
+
+    /// <summary>
+    /// Converts <paramref name="input"/> to a URL-friendly slug: lowercase, diacritics removed,
+    /// non-alphanumeric characters replaced with a single dash.
+    /// </summary>
+    /// <param name="input">The string to slugify. Returns <see cref="string.Empty"/> when <see langword="null"/> or whitespace.</param>
+    /// <returns>The slug string, e.g. <c>"Hello World!"</c> → <c>"hello-world"</c>.</returns>
+    public static string ToSlug(this string input)
+    {
+        if (input.IsNullOrEmpty()) return string.Empty;
+        var clean = input.RemoveDiacritics().ToLowerInvariant();
+        var sb = new StringBuilder(clean.Length);
+        var lastWasDash = false;
+        foreach (var c in clean)
+        {
+            if (char.IsLetterOrDigit(c))
+            {
+                sb.Append(c);
+                lastWasDash = false;
+            }
+            else if (!lastWasDash && sb.Length > 0)
+            {
+                sb.Append('-');
+                lastWasDash = true;
+            }
+        }
+        if (sb.Length > 0 && sb[sb.Length - 1] == '-')
+            sb.Length--;
+        return sb.ToString();
     }
 }
