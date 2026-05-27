@@ -99,4 +99,49 @@ public static class StringExtensions
         Array.Reverse(chars);
         return new string(chars);
     }
+
+    /// <summary>Trims whitespace then converts to lowercase.</summary>
+    /// <param name="input">The string to transform. Accepts <see langword="null"/>.</param>
+    /// <returns>The trimmed, lowercased string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    public static string TrimToLower(this string input)
+        => input?.Trim().ToLowerInvariant() ?? string.Empty;
+
+    /// <summary>Trims whitespace then converts to uppercase.</summary>
+    /// <param name="input">The string to transform. Accepts <see langword="null"/>.</param>
+    /// <returns>The trimmed, uppercased string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    public static string TrimToUpper(this string input)
+        => input?.Trim().ToUpperInvariant() ?? string.Empty;
+
+    /// <summary>Returns <see langword="true"/> if both strings are equal using ordinal case-insensitive comparison.</summary>
+    /// <param name="input">The source string.</param>
+    /// <param name="other">The string to compare to.</param>
+    public static bool EqualsIgnoreCase(this string input, string other)
+        => string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Returns <see langword="true"/> if <paramref name="input"/> contains <paramref name="value"/> using ordinal case-insensitive comparison.</summary>
+    /// <param name="input">The string to search in.</param>
+    /// <param name="value">The substring to search for.</param>
+    public static bool ContainsIgnoreCase(this string input, string value)
+    {
+        if (input == null || value == null) return false;
+        return input.Contains(value, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>Returns <see langword="true"/> if <paramref name="input"/> starts with <paramref name="value"/> using ordinal case-insensitive comparison.</summary>
+    /// <param name="input">The string to search in.</param>
+    /// <param name="value">The prefix to look for.</param>
+    public static bool StartsWithIgnoreCase(this string input, string value)
+    {
+        if (input == null || value == null) return false;
+        return input.StartsWith(value, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>Returns <see langword="true"/> if <paramref name="input"/> ends with <paramref name="value"/> using ordinal case-insensitive comparison.</summary>
+    /// <param name="input">The string to search in.</param>
+    /// <param name="value">The suffix to look for.</param>
+    public static bool EndsWithIgnoreCase(this string input, string value)
+    {
+        if (input == null || value == null) return false;
+        return input.EndsWith(value, StringComparison.OrdinalIgnoreCase);
+    }
 }

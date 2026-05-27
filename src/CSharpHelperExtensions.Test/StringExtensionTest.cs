@@ -72,6 +72,56 @@ namespace CSharpHelperExtensions.Test
             "".Reverse().Should().Be("");
             ((string)null).Reverse().Should().Be("");
         }
+
+        [Fact]
+        public void Verify_TrimToLower_TrimsAndLowers()
+        {
+            "  HELLO  ".TrimToLower().Should().Be("hello");
+            "WORLD".TrimToLower().Should().Be("world");
+            ((string)null).TrimToLower().Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_TrimToUpper_TrimsAndUppers()
+        {
+            "  hello  ".TrimToUpper().Should().Be("HELLO");
+            ((string)null).TrimToUpper().Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_EqualsIgnoreCase_ComparesIgnoringCase()
+        {
+            "Hello".EqualsIgnoreCase("hello").Should().BeTrue();
+            "Hello".EqualsIgnoreCase("HELLO").Should().BeTrue();
+            "Hello".EqualsIgnoreCase("world").Should().BeFalse();
+            ((string)null).EqualsIgnoreCase(null).Should().BeTrue();
+            ((string)null).EqualsIgnoreCase("x").Should().BeFalse();
+        }
+
+        [Fact]
+        public void Verify_ContainsIgnoreCase_FindsSubstring()
+        {
+            "Hello World".ContainsIgnoreCase("world").Should().BeTrue();
+            "Hello World".ContainsIgnoreCase("HELLO").Should().BeTrue();
+            "Hello World".ContainsIgnoreCase("xyz").Should().BeFalse();
+            ((string)null).ContainsIgnoreCase("x").Should().BeFalse();
+        }
+
+        [Fact]
+        public void Verify_StartsWithIgnoreCase_ChecksPrefix()
+        {
+            "Hello World".StartsWithIgnoreCase("hello").Should().BeTrue();
+            "Hello World".StartsWithIgnoreCase("world").Should().BeFalse();
+            ((string)null).StartsWithIgnoreCase("x").Should().BeFalse();
+        }
+
+        [Fact]
+        public void Verify_EndsWithIgnoreCase_ChecksSuffix()
+        {
+            "Hello World".EndsWithIgnoreCase("WORLD").Should().BeTrue();
+            "Hello World".EndsWithIgnoreCase("hello").Should().BeFalse();
+            ((string)null).EndsWithIgnoreCase("x").Should().BeFalse();
+        }
     }
 }
 
