@@ -69,4 +69,34 @@ public static class StringExtensions
     /// <returns><paramref name="input"/> if it has content; otherwise <paramref name="fallback"/>.</returns>
     public static string OrDefault(this string input, string fallback)
         => string.IsNullOrWhiteSpace(input) ? fallback : input;
+
+    /// <summary>
+    /// Returns the first <paramref name="maxLength"/> characters of <paramref name="input"/>.
+    /// Returns <see cref="string.Empty"/> when <paramref name="input"/> is <see langword="null"/>.
+    /// Returns <paramref name="input"/> unchanged if it is shorter than <paramref name="maxLength"/>.
+    /// </summary>
+    /// <param name="input">The string to truncate.</param>
+    /// <param name="maxLength">Maximum number of characters to keep. Must be ≥ 0.</param>
+    /// <returns>The truncated string.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="maxLength"/> is negative.</exception>
+    public static string Truncate(this string input, int maxLength)
+    {
+        if (maxLength < 0) throw new ArgumentOutOfRangeException(nameof(maxLength));
+        if (input == null) return string.Empty;
+        return input.Length <= maxLength ? input : input[..maxLength];
+    }
+
+    /// <summary>
+    /// Returns the characters of <paramref name="input"/> in reverse order.
+    /// Returns <see cref="string.Empty"/> when <paramref name="input"/> is <see langword="null"/> or empty.
+    /// </summary>
+    /// <param name="input">The string to reverse.</param>
+    /// <returns>The reversed string.</returns>
+    public static string Reverse(this string input)
+    {
+        if (input.IsNullOrEmpty()) return string.Empty;
+        var chars = input.ToCharArray();
+        Array.Reverse(chars);
+        return new string(chars);
+    }
 }
