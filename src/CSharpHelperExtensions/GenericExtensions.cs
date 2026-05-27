@@ -66,6 +66,10 @@ public static class GenericExtensions
     /// <param name="value">The value to look for.</param>
     /// <param name="input">One or more candidate values to match against.</param>
     /// <typeparam name="T">The type of the value and candidates.</typeparam>
+    /// <remarks>
+    /// Returns <see langword="false"/> when no candidates are supplied.
+    /// Equality is determined by the default equality comparer for <typeparamref name="T"/>.
+    /// </remarks>
     /// <returns>
     /// <see langword="true"/> if <paramref name="value"/> matches any item in <paramref name="input"/>;
     /// otherwise <see langword="false"/>.
@@ -88,6 +92,8 @@ public static class GenericExtensions
     /// Delegates to <see cref="string.IsNullOrWhiteSpace"/>.
     /// </summary>
     /// <remarks>
+    /// Despite the name, whitespace-only strings are treated as empty (uses <see cref="string.IsNullOrWhiteSpace"/> internally,
+    /// not <see cref="string.IsNullOrEmpty"/>).
     /// This overload operates on <see cref="string"/>.
     /// For collections, use
     /// <see cref="CSharpHelperExtensions.Enumerable.EnumerableExtensions.IsNullOrEmpty{T}(IEnumerable{T})"/>
@@ -121,7 +127,10 @@ public static class GenericExtensions
     /// When <see langword="true"/>, the JSON output is pretty-printed with indentation.
     /// Defaults to <see langword="false"/> (compact, single-line output).
     /// </param>
-    /// <typeparam name="T">The type of the object to serialize. Must be a reference type.</typeparam>
+    /// <typeparam name="T">
+    /// The type of the object to serialize. Must be a reference type (<c>class</c>).
+    /// Value types (structs) must be boxed to <see cref="object"/> before calling this method.
+    /// </typeparam>
     /// <returns>
     /// A JSON string representing <paramref name="value"/>,
     /// or <see langword="null"/> if <paramref name="value"/> is <see langword="null"/>.
