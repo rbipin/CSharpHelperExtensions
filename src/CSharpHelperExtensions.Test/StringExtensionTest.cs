@@ -36,6 +36,7 @@ namespace CSharpHelperExtensions.Test
         {
             ((string)null).OrEmpty().Should().Be(string.Empty);
             "hello".OrEmpty().Should().Be("hello");
+            "   ".OrEmpty().Should().Be("   ");
         }
 
         [Fact]

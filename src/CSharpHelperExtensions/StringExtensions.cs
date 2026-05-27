@@ -42,10 +42,31 @@ public static class StringExtensions
         return (T?)converter.ConvertFrom(input);
     }
 
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="input"/> is not
+    /// <see langword="null"/> or whitespace-only.
+    /// Equivalent to <c>!string.IsNullOrWhiteSpace(input)</c>.
+    /// </summary>
+    /// <param name="input">The string to test.</param>
+    /// <returns><see langword="true"/> if the string has content; otherwise <see langword="false"/>.</returns>
     public static bool HasValue(this string input) => !string.IsNullOrWhiteSpace(input);
 
+    /// <summary>
+    /// Returns <see cref="string.Empty"/> when <paramref name="input"/> is <see langword="null"/>;
+    /// otherwise returns <paramref name="input"/> unchanged (including whitespace-only strings).
+    /// Use <see cref="OrDefault"/> if you also want whitespace-only strings replaced.
+    /// </summary>
+    /// <param name="input">The string to coalesce.</param>
+    /// <returns><paramref name="input"/> or <see cref="string.Empty"/> if it was <see langword="null"/>.</returns>
     public static string OrEmpty(this string input) => input ?? string.Empty;
 
+    /// <summary>
+    /// Returns <paramref name="fallback"/> when <paramref name="input"/> is <see langword="null"/>
+    /// or whitespace-only; otherwise returns <paramref name="input"/>.
+    /// </summary>
+    /// <param name="input">The string to test.</param>
+    /// <param name="fallback">The value to return when <paramref name="input"/> is absent.</param>
+    /// <returns><paramref name="input"/> if it has content; otherwise <paramref name="fallback"/>.</returns>
     public static string OrDefault(this string input, string fallback)
         => string.IsNullOrWhiteSpace(input) ? fallback : input;
 }
