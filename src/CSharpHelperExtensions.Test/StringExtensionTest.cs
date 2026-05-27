@@ -272,6 +272,28 @@ namespace CSharpHelperExtensions.Test
             "hello\t\nworld".CollapseWhitespace().Should().Be("hello world");
             ((string)null).CollapseWhitespace().Should().Be("");
         }
+
+        [Fact]
+        public void Verify_ReplaceMany_ReplacesMultiplePairs()
+        {
+            "hello world"
+                .ReplaceMany(new[] { ("hello", "hi"), ("world", "there") })
+                .Should().Be("hi there");
+        }
+
+        [Fact]
+        public void Verify_ReplaceMany_AppliesInOrder()
+        {
+            "aaa"
+                .ReplaceMany(new[] { ("aaa", "bbb"), ("bbb", "ccc") })
+                .Should().Be("ccc");
+        }
+
+        [Fact]
+        public void Verify_ReplaceMany_ReturnsEmptyForNull()
+        {
+            ((string)null).ReplaceMany(new[] { ("a", "b") }).Should().Be("");
+        }
     }
 }
 

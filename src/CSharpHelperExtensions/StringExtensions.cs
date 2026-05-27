@@ -306,4 +306,19 @@ public static class StringExtensions
         if (input.IsNullOrEmpty()) return string.Empty;
         return CollapseRegex.Replace(input.Trim(), " ");
     }
+
+    /// <summary>
+    /// Applies a sequence of find-and-replace operations to <paramref name="input"/> in order.
+    /// </summary>
+    /// <param name="input">The string to modify. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
+    /// <param name="pairs">Replacement pairs: each <c>OldValue</c> is replaced by <c>NewValue</c>, applied sequentially.</param>
+    /// <returns>The resulting string after all replacements.</returns>
+    public static string ReplaceMany(this string input, IEnumerable<(string OldValue, string NewValue)> pairs)
+    {
+        if (input == null) return string.Empty;
+        var result = input;
+        foreach (var (oldValue, newValue) in pairs)
+            result = result.Replace(oldValue, newValue);
+        return result;
+    }
 }
