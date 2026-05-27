@@ -367,7 +367,7 @@ public static class StringExtensions
                 lastWasDash = true;
             }
         }
-        if (sb.Length > 0 && sb[sb.Length - 1] == '-')
+        if (sb.Length > 0 && sb[^1] == '-')
             sb.Length--;
         return sb.ToString();
     }
