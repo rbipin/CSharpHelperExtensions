@@ -122,6 +122,21 @@ namespace CSharpHelperExtensions.Test
             "Hello World".EndsWithIgnoreCase("hello").Should().BeFalse();
             ((string)null).EndsWithIgnoreCase("x").Should().BeFalse();
         }
+
+        [Fact]
+        public void Verify_MaskStart_MasksAllButLastN()
+        {
+            "123456".MaskStart(2).Should().Be("****56");
+            "AB".MaskStart(2).Should().Be("AB");
+            "hello".MaskStart(0).Should().Be("*****");
+            ((string)null).MaskStart(2).Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_MaskStart_UsesCustomChar()
+        {
+            "123456".MaskStart(2, '#').Should().Be("####56");
+        }
     }
 }
 

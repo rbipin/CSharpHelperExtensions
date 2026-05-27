@@ -144,4 +144,26 @@ public static class StringExtensions
         if (input == null || value == null) return false;
         return input.EndsWith(value, StringComparison.OrdinalIgnoreCase);
     }
+
+    /// <summary>
+    /// Masks all but the last <paramref name="visibleCount"/> characters of <paramref name="input"/>.
+    /// </summary>
+    /// <param name="input">The string to mask. Accepts <see langword="null"/>.</param>
+    /// <param name="visibleCount">Number of characters to leave visible at the end.</param>
+    /// <param name="maskChar">Character used for masking. Defaults to <c>'*'</c>.</param>
+    /// <returns>The masked string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/> or empty.</returns>
+    /// <example>
+    /// <code>
+    /// "123456".MaskStart(2)       // "****56"
+    /// "123456".MaskStart(2, '#')  // "####56"
+    /// "AB".MaskStart(2)           // "AB"  (nothing to mask)
+    /// </code>
+    /// </example>
+    public static string MaskStart(this string input, int visibleCount, char maskChar = '*')
+    {
+        if (input.IsNullOrEmpty()) return string.Empty;
+        if (visibleCount >= input.Length) return input;
+        var maskLength = input.Length - visibleCount;
+        return new string(maskChar, maskLength) + input[maskLength..];
+    }
 }
