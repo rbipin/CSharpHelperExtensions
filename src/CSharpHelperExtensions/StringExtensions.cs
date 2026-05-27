@@ -108,7 +108,7 @@ public static class StringExtensions
 
     /// <summary>Trims whitespace then converts to uppercase.</summary>
     /// <param name="input">The string to transform. Accepts <see langword="null"/>.</param>
-    /// <returns>The trimmed, uppercased string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
+    /// <returns>The trimmed, upper-cased string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string TrimToUpper(this string input)
         => input?.Trim().ToUpperInvariant() ?? string.Empty;
 
