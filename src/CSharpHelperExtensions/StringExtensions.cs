@@ -166,4 +166,32 @@ public static class StringExtensions
         var maskLength = input.Length - visibleCount;
         return new string(maskChar, maskLength) + input[maskLength..];
     }
+
+    /// <summary>Parses <paramref name="input"/> as <see cref="int"/>. Returns <see langword="null"/> if the string is not a valid integer.</summary>
+    /// <param name="input">The string to parse.</param>
+    public static int? ToIntOrNull(this string input)
+        => int.TryParse(input, out var v) ? v : null;
+
+    /// <summary>Parses <paramref name="input"/> as <see cref="decimal"/>. Returns <see langword="null"/> if the string is not a valid decimal number.</summary>
+    /// <param name="input">The string to parse.</param>
+    public static decimal? ToDecimalOrNull(this string input)
+        => decimal.TryParse(input, out var v) ? v : null;
+
+    /// <summary>Parses <paramref name="input"/> as <see cref="DateTime"/>. Returns <see langword="null"/> if the string is not a valid date/time.</summary>
+    /// <param name="input">The string to parse.</param>
+    public static DateTime? ToDateTimeOrNull(this string input)
+        => DateTime.TryParse(input, out var v) ? v : null;
+
+    /// <summary>Parses <paramref name="input"/> as <see cref="Guid"/>. Returns <see langword="null"/> if the string is not a valid GUID.</summary>
+    /// <param name="input">The string to parse.</param>
+    public static Guid? ToGuidOrNull(this string input)
+        => Guid.TryParse(input, out var v) ? v : null;
+
+    /// <summary>
+    /// Parses <paramref name="input"/> as <see cref="bool"/>. Returns <see langword="null"/> if the string is not a valid boolean
+    /// (<c>"true"</c> and <c>"false"</c> are accepted, case-insensitive; other values return <see langword="null"/>).
+    /// </summary>
+    /// <param name="input">The string to parse.</param>
+    public static bool? ToBoolOrNull(this string input)
+        => bool.TryParse(input, out var v) ? v : null;
 }

@@ -137,6 +137,50 @@ namespace CSharpHelperExtensions.Test
         {
             "123456".MaskStart(2, '#').Should().Be("####56");
         }
+
+        [Fact]
+        public void Verify_ToIntOrNull_ParsesValidInt()
+        {
+            "42".ToIntOrNull().Should().Be(42);
+            "-10".ToIntOrNull().Should().Be(-10);
+            "not-a-number".ToIntOrNull().Should().BeNull();
+            ((string)null).ToIntOrNull().Should().BeNull();
+            "".ToIntOrNull().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_ToDecimalOrNull_ParsesValidDecimal()
+        {
+            "3.14".ToDecimalOrNull().Should().Be(3.14m);
+            "abc".ToDecimalOrNull().Should().BeNull();
+            ((string)null).ToDecimalOrNull().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_ToDateTimeOrNull_ParsesValidDate()
+        {
+            "2024-01-15".ToDateTimeOrNull().Should().NotBeNull();
+            "not-a-date".ToDateTimeOrNull().Should().BeNull();
+            ((string)null).ToDateTimeOrNull().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_ToGuidOrNull_ParsesValidGuid()
+        {
+            "d3b07384-d9a0-4b6f-9e4d-5e3b7a9c2d1e".ToGuidOrNull().Should().NotBeNull();
+            "not-a-guid".ToGuidOrNull().Should().BeNull();
+            ((string)null).ToGuidOrNull().Should().BeNull();
+        }
+
+        [Fact]
+        public void Verify_ToBoolOrNull_ParsesValidBool()
+        {
+            "true".ToBoolOrNull().Should().BeTrue();
+            "false".ToBoolOrNull().Should().BeFalse();
+            "True".ToBoolOrNull().Should().BeTrue();
+            "yes".ToBoolOrNull().Should().BeNull();
+            ((string)null).ToBoolOrNull().Should().BeNull();
+        }
     }
 }
 
