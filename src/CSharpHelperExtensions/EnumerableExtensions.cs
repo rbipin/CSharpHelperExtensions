@@ -512,4 +512,49 @@ public static class EnumerableExtensions
             dict[keySelector(item)] = valueSelector(item);
         return dict;
     }
+
+    /// <summary>
+    /// Conditionally adds an item to a list and returns the same list instance for chaining.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="list">The list to modify.</param>
+    /// <param name="condition">If <see langword="true"/>, the item is added; otherwise the list is unchanged.</param>
+    /// <param name="item">The item to add if the condition is <see langword="true"/>.</param>
+    /// <returns>The same <paramref name="list"/> instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// var list = new List&lt;int&gt; { 1, 2 };
+    /// list.AddIf(true, 3);   // list is now [1, 2, 3]
+    /// list.AddIf(false, 4);  // list is still [1, 2, 3]
+    /// </code>
+    /// </example>
+    public static IList<T> AddIf<T>(this IList<T> list, bool condition, T item)
+    {
+        if (condition) list.Add(item);
+        return list;
+    }
+
+    /// <summary>
+    /// Conditionally adds a range of items to a list and returns the same list instance for chaining.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="list">The list to modify.</param>
+    /// <param name="condition">If <see langword="true"/>, the items are added; otherwise the list is unchanged.</param>
+    /// <param name="items">The items to add if the condition is <see langword="true"/>.
+    /// If <see langword="null"/>, treated as empty and no items are added.</param>
+    /// <returns>The same <paramref name="list"/> instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// var list = new List&lt;int&gt; { 1 };
+    /// list.AddRangeIf(true, new[] { 2, 3 });   // list is now [1, 2, 3]
+    /// list.AddRangeIf(false, new[] { 4, 5 }); // list is still [1, 2, 3]
+    /// </code>
+    /// </example>
+    public static IList<T> AddRangeIf<T>(this IList<T> list, bool condition, IEnumerable<T> items)
+    {
+        if (condition)
+            foreach (var item in items ?? System.Linq.Enumerable.Empty<T>())
+                list.Add(item);
+        return list;
+    }
 }

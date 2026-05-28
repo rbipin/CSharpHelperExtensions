@@ -325,5 +325,53 @@ namespace CSharpHelperExtensions.Test
                 .ToDictionarySafe(x => x.Item1, x => x.Item2);
             result.ShouldBeEmpty();
         }
+
+        [Fact]
+        public void AddIf_AddsItem_WhenConditionIsTrue()
+        {
+            var list = new List<int> { 1, 2 };
+            list.AddIf(true, 3);
+            list.ShouldBe(new[] { 1, 2, 3 });
+        }
+
+        [Fact]
+        public void AddIf_DoesNotAdd_WhenConditionIsFalse()
+        {
+            var list = new List<int> { 1, 2 };
+            list.AddIf(false, 3);
+            list.ShouldBe(new[] { 1, 2 });
+        }
+
+        [Fact]
+        public void AddIf_ReturnsSameListInstance()
+        {
+            var list = new List<int>();
+            var returned = list.AddIf(true, 1);
+            ReferenceEquals(list, returned).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void AddRangeIf_AddsItems_WhenConditionIsTrue()
+        {
+            var list = new List<int> { 1 };
+            list.AddRangeIf(true, new[] { 2, 3 });
+            list.ShouldBe(new[] { 1, 2, 3 });
+        }
+
+        [Fact]
+        public void AddRangeIf_DoesNotAdd_WhenConditionIsFalse()
+        {
+            var list = new List<int> { 1 };
+            list.AddRangeIf(false, new[] { 2, 3 });
+            list.ShouldBe(new[] { 1 });
+        }
+
+        [Fact]
+        public void AddRangeIf_ReturnsSameListInstance()
+        {
+            var list = new List<int>();
+            var returned = list.AddRangeIf(true, new[] { 1, 2 });
+            ReferenceEquals(list, returned).ShouldBeTrue();
+        }
     }
 }
