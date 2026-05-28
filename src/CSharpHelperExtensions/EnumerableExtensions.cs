@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -731,4 +732,53 @@ public static class EnumerableExtensions
     /// </example>
     public static T? MaxByOrDefault<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector)
         => source is null ? default : source.MaxBy(keySelector);
+
+    /// <summary>
+    /// Projects each element of a sequence to a <typeparamref name="TResult"/> using an async selector,
+    /// running projections concurrently and collecting all results into a read-only list.
+    /// Returns an empty list if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type of the input sequence.</typeparam>
+    /// <typeparam name="TResult">The type of the projected result.</typeparam>
+    /// <param name="source">The sequence to project. If <see langword="null"/>, returns an empty list.</param>
+    /// <param name="selector">An async function to apply to each element.</param>
+    /// <param name="maxParallel">
+    /// Optional cap on the number of concurrent async operations.
+    /// When <see langword="null"/> (the default), all projections are started concurrently.
+    /// </param>
+    /// <returns>
+    /// A <see cref="Task{T}"/> that completes with an <see cref="IReadOnlyList{TResult}"/> containing
+    /// all projected results in source order.
+    /// </returns>
+    public static async Task<IReadOnlyList<TResult>> SelectAsync<T, TResult>(
+        this IEnumerable<T> source,
+        Func<T, Task<TResult>> selector,
+        int? maxParallel = null)
+    {
+        if (source is null) return Array.Empty<TResult>();
+
+        if (maxParallel is null)
+            return await Task.WhenAll(source.Select(selector));
+
+        using var semaphore = new SemaphoreSlim(maxParallel.Value);
+        var tasks = source.Select(async item =>
+        {
+            await semaphore.WaitAsync();
+            try { return await selector(item); }
+            finally { semaphore.Release(); }
+        });
+        return await Task.WhenAll(tasks);
+    }
+
+    /// <summary>
+    /// Awaits all tasks in the sequence and returns the results as an <see cref="IReadOnlyList{T}"/>.
+    /// Returns an empty list if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The result type of each task.</typeparam>
+    /// <param name="tasks">The sequence of tasks to await. If <see langword="null"/>, returns an empty list.</param>
+    /// <returns>
+    /// A <see cref="Task{T}"/> that completes with an <see cref="IReadOnlyList{T}"/> containing all task results.
+    /// </returns>
+    public static async Task<IReadOnlyList<T>> WhenAllList<T>(this IEnumerable<Task<T>> tasks)
+        => await Task.WhenAll(tasks ?? System.Linq.Enumerable.Empty<Task<T>>());
 }

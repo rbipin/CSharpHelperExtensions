@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CSharpHelperExtensions.Enumerable;
 using Shouldly;
 using Xunit;
@@ -572,6 +574,60 @@ namespace CSharpHelperExtensions.Test
         public void MaxByOrDefault_ReturnsNull_WhenSourceIsEmpty_ReferenceType()
         {
             System.Linq.Enumerable.Empty<string>().MaxByOrDefault(x => x).ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task SelectAsync_ProjectsEachElementConcurrently()
+        {
+            var result = await new[] { 1, 2, 3 }
+                .SelectAsync(async x => { await Task.Yield(); return x * 2; });
+            result.ShouldBe(new[] { 2, 4, 6 });
+        }
+
+        [Fact]
+        public async Task SelectAsync_OnNullSource_ReturnsEmpty()
+        {
+            var result = await ((IEnumerable<int>)null)
+                .SelectAsync(async x => x * 2);
+            result.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public async Task SelectAsync_WithMaxParallel_CapsConcurrency()
+        {
+            int concurrent = 0;
+            int maxSeen = 0;
+
+            await System.Linq.Enumerable.Range(1, 10).ToList().SelectAsync(async x =>
+            {
+                var c = Interlocked.Increment(ref concurrent);
+                Interlocked.Exchange(ref maxSeen, Math.Max(maxSeen, c));
+                await Task.Delay(20);
+                Interlocked.Decrement(ref concurrent);
+                return x;
+            }, maxParallel: 3);
+
+            maxSeen.ShouldBeLessThanOrEqualTo(3);
+        }
+
+        [Fact]
+        public async Task WhenAllList_ReturnsAllTaskResults_AsReadOnlyList()
+        {
+            IEnumerable<Task<int>> tasks = new[]
+            {
+                Task.FromResult(1),
+                Task.FromResult(2),
+                Task.FromResult(3)
+            };
+            IReadOnlyList<int> result = await tasks.WhenAllList();
+            result.ShouldBe(new[] { 1, 2, 3 });
+        }
+
+        [Fact]
+        public async Task WhenAllList_OnNullSource_ReturnsEmpty()
+        {
+            var result = await ((IEnumerable<Task<int>>)null).WhenAllList();
+            result.ShouldBeEmpty();
         }
     }
 }
