@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+#nullable enable
 namespace CSharpHelperExtensions.Enumerable;
 
 /// <summary>
@@ -690,4 +691,44 @@ public static class EnumerableExtensions
     /// <returns>A sequence of read-only lists, each containing at most <paramref name="size"/> elements.</returns>
     public static IEnumerable<IReadOnlyList<T>> Batch<T>(this IEnumerable<T> source, int size)
         => (source ?? System.Linq.Enumerable.Empty<T>()).Chunk(size).Select(c => (IReadOnlyList<T>)c);
+
+    /// <summary>
+    /// Returns the element with the smallest key value, or <see langword="default"/>(<typeparamref name="T"/>)
+    /// if the source is <see langword="null"/>.
+    /// For empty sequences, returns <see langword="default"/>(<typeparamref name="T"/>).
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <typeparam name="TKey">The key type used for comparison.</typeparam>
+    /// <param name="source">The sequence to search. If <see langword="null"/>, <see langword="default"/>(<typeparamref name="T"/>) is returned.</param>
+    /// <param name="keySelector">A function to extract the comparison key from each element.</param>
+    /// <returns>The element with the smallest key, or <see langword="default"/>(<typeparamref name="T"/>) if source is <see langword="null"/> or empty.</returns>
+    /// <example>
+    /// <code>
+    /// new[] { 3, 1, 2 }.MinByOrDefault(x => x)  // 1
+    /// ((IEnumerable&lt;int&gt;)null).MinByOrDefault(x => x)  // 0 (default for int)
+    /// System.Linq.Enumerable.Empty&lt;string&gt;().MinByOrDefault(x => x)  // null
+    /// </code>
+    /// </example>
+    public static T? MinByOrDefault<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector)
+        => source is null ? default : source.MinBy(keySelector);
+
+    /// <summary>
+    /// Returns the element with the largest key value, or <see langword="default"/>(<typeparamref name="T"/>)
+    /// if the source is <see langword="null"/>.
+    /// For empty sequences, returns <see langword="default"/>(<typeparamref name="T"/>).
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <typeparam name="TKey">The key type used for comparison.</typeparam>
+    /// <param name="source">The sequence to search. If <see langword="null"/>, <see langword="default"/>(<typeparamref name="T"/>) is returned.</param>
+    /// <param name="keySelector">A function to extract the comparison key from each element.</param>
+    /// <returns>The element with the largest key, or <see langword="default"/>(<typeparamref name="T"/>) if source is <see langword="null"/> or empty.</returns>
+    /// <example>
+    /// <code>
+    /// new[] { 3, 1, 2 }.MaxByOrDefault(x => x)  // 3
+    /// ((IEnumerable&lt;int&gt;)null).MaxByOrDefault(x => x)  // 0 (default for int)
+    /// System.Linq.Enumerable.Empty&lt;string&gt;().MaxByOrDefault(x => x)  // null
+    /// </code>
+    /// </example>
+    public static T? MaxByOrDefault<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector)
+        => source is null ? default : source.MaxBy(keySelector);
 }

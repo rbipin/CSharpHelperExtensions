@@ -537,5 +537,41 @@ namespace CSharpHelperExtensions.Test
             result.Count.ShouldBe(1);
             result[0].ShouldBe(new[] { 1, 2 });
         }
+
+        [Fact]
+        public void MinByOrDefault_ReturnsElementWithSmallestKey()
+        {
+            new[] { 3, 1, 2 }.MinByOrDefault(x => x).ShouldBe(1);
+        }
+
+        [Fact]
+        public void MinByOrDefault_ReturnsDefault_WhenSourceIsNull()
+        {
+            ((IEnumerable<int>)null).MinByOrDefault(x => x).ShouldBe(0);
+        }
+
+        [Fact]
+        public void MinByOrDefault_ReturnsNull_WhenSourceIsEmpty_ReferenceType()
+        {
+            System.Linq.Enumerable.Empty<string>().MinByOrDefault(x => x).ShouldBeNull();
+        }
+
+        [Fact]
+        public void MaxByOrDefault_ReturnsElementWithLargestKey()
+        {
+            new[] { 3, 1, 2 }.MaxByOrDefault(x => x).ShouldBe(3);
+        }
+
+        [Fact]
+        public void MaxByOrDefault_ReturnsDefault_WhenSourceIsNull()
+        {
+            ((IEnumerable<int>)null).MaxByOrDefault(x => x).ShouldBe(0);
+        }
+
+        [Fact]
+        public void MaxByOrDefault_ReturnsNull_WhenSourceIsEmpty_ReferenceType()
+        {
+            System.Linq.Enumerable.Empty<string>().MaxByOrDefault(x => x).ShouldBeNull();
+        }
     }
 }
