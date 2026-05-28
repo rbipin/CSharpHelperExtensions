@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -53,10 +53,16 @@ public static class EnumerableExtensions
     public static bool ContainsOnly<T>(this IEnumerable<T> enumerable, params T[] value)
     {
         if (value.IsNullOrEmpty() || enumerable.IsNullOrEmpty())
+        {
             return false;
+        }
+
         var list = enumerable.ToList();
         if (list.Count != value.Length)
+        {
             return false;
+        }
+
         var set = new HashSet<T>(list);
         return value.All(set.Contains);
     }
@@ -155,7 +161,9 @@ public static class EnumerableExtensions
     public static IEnumerable<T> CleanNullOrEmptyItems<T>(this IEnumerable<T> value)
     {
         if (value is null)
+        {
             return [];
+        }
         return value
             .Where(item => item is string s ? !string.IsNullOrWhiteSpace(s) : item is not null)
             .ToList();
@@ -179,12 +187,12 @@ public static class EnumerableExtensions
     /// new[] { 1, 2, 3 }.IsNullOrEmpty()                    // false
     /// </code>
     /// </example>
-    public static bool IsNullOrEmpty<T>(this IEnumerable<T> values)
-        => values is null || !values.Any(item => item is not null);
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T> values) =>
+        values is null || !values.Any(item => item is not null);
 
     /// <summary>
     /// Executes an action on each element of the sequence and returns the original sequence unchanged.
-    /// Useful for chaining side-effectful operations in a fluent pipeline.
+    /// Useful for chaining side-effect operations in a fluent pipeline.
     /// </summary>
     /// <param name="values">
     /// The sequence to iterate.
@@ -223,8 +231,8 @@ public static class EnumerableExtensions
     /// <returns>
     /// A <see cref="Task"/> that completes when all async actions have finished.
     /// </returns>
-    public static Task ForEach<T>(this IEnumerable<T> values, Func<T, Task> execute)
-        => Task.WhenAll(values.OrEmpty().Select(execute));
+    public static Task ForEach<T>(this IEnumerable<T> values, Func<T, Task> execute) =>
+        Task.WhenAll(values.OrEmpty().Select(execute));
 
     /// <summary>
     /// Asynchronously projects each element of a sequence using the given async transform
@@ -240,10 +248,13 @@ public static class EnumerableExtensions
     /// </returns>
     public static async IAsyncEnumerable<K> ForEach<T, K>(
         this IEnumerable<T> values,
-        Func<T, Task<K>> execute)
+        Func<T, Task<K>> execute
+    )
     {
         foreach (var item in values.OrEmpty())
+        {
             yield return await execute(item);
+        }
     }
 
     /// <summary>
@@ -283,7 +294,9 @@ public static class EnumerableExtensions
     {
         var acc = initialValue;
         foreach (var item in values.OrEmpty())
+        {
             acc = execute(item, acc);
+        }
         return acc;
     }
 
@@ -323,7 +336,9 @@ public static class EnumerableExtensions
         var collection = values?.ToList() ?? [];
         var acc = initialValue;
         for (int i = 0; i < collection.Count; i++)
+        {
             acc = execute(collection[i], acc, i);
+        }
         return acc;
     }
 
@@ -336,8 +351,7 @@ public static class EnumerableExtensions
     /// <see langword="true"/> if <paramref name="source"/> is not <see langword="null"/> and has at least one element;
     /// otherwise <see langword="false"/>.
     /// </returns>
-    public static bool HasAny<T>(this IEnumerable<T> source)
-        => source != null && source.Any();
+    public static bool HasAny<T>(this IEnumerable<T> source) => source != null && source.Any();
 
     /// <summary>
     /// Returns the sequence unchanged if non-null, or an empty sequence if the source is <see langword="null"/>.
@@ -347,8 +361,8 @@ public static class EnumerableExtensions
     /// <returns>
     /// <paramref name="source"/> if it is not <see langword="null"/>; otherwise <see cref="Enumerable.Empty{T}"/>.
     /// </returns>
-    public static IEnumerable<T> OrEmpty<T>(this IEnumerable<T> source)
-        => source ?? System.Linq.Enumerable.Empty<T>();
+    public static IEnumerable<T> OrEmpty<T>(this IEnumerable<T> source) =>
+        source ?? System.Linq.Enumerable.Empty<T>();
 
     /// <summary>
     /// Returns <see langword="true"/> if the sequence is <see langword="null"/> or contains no elements.
@@ -359,8 +373,7 @@ public static class EnumerableExtensions
     /// <see langword="true"/> if <paramref name="source"/> is <see langword="null"/> or empty;
     /// otherwise <see langword="false"/>.
     /// </returns>
-    public static bool None<T>(this IEnumerable<T> source)
-        => source is null || !source.Any();
+    public static bool None<T>(this IEnumerable<T> source) => source is null || !source.Any();
 
     /// <summary>
     /// Returns <see langword="true"/> if no element in the sequence satisfies the predicate,
@@ -373,8 +386,8 @@ public static class EnumerableExtensions
     /// <see langword="true"/> if <paramref name="source"/> is <see langword="null"/> or no element
     /// matches <paramref name="predicate"/>; otherwise <see langword="false"/>.
     /// </returns>
-    public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-        => source is null || !source.Any(predicate);
+    public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate) =>
+        source is null || !source.Any(predicate);
 
     /// <summary>
     /// Returns <see langword="true"/> if the sequence contains exactly one element.
@@ -389,7 +402,9 @@ public static class EnumerableExtensions
     public static bool IsSingle<T>(this IEnumerable<T> source)
     {
         if (source is null)
+        {
             return false;
+        }
         using var e = source.GetEnumerator();
         return e.MoveNext() && !e.MoveNext();
     }
@@ -405,8 +420,8 @@ public static class EnumerableExtensions
     /// <see langword="true"/> if exactly one element matches <paramref name="predicate"/>;
     /// otherwise <see langword="false"/>.
     /// </returns>
-    public static bool IsSingle<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-        => source?.Count(predicate) == 1;
+    public static bool IsSingle<T>(this IEnumerable<T> source, Func<T, bool> predicate) =>
+        source?.Count(predicate) == 1;
 
     /// <summary>
     /// Returns the zero-based index of the first element in the sequence that satisfies the predicate,
@@ -421,12 +436,16 @@ public static class EnumerableExtensions
     public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source is null)
+        {
             return -1;
+        }
         int index = 0;
         foreach (var item in source)
         {
             if (predicate(item))
+            {
                 return index;
+            }
             index++;
         }
         return -1;
@@ -439,8 +458,11 @@ public static class EnumerableExtensions
     /// <typeparam name="T">The element type (must be a reference type).</typeparam>
     /// <param name="source">The sequence to filter.</param>
     /// <returns>A sequence containing only non-null elements.</returns>
-    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) where T : class
-        => source is null ? System.Linq.Enumerable.Empty<T>() : source.Where(x => x is not null).Cast<T>();
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source)
+        where T : class =>
+        source is null
+            ? System.Linq.Enumerable.Empty<T>()
+            : source.Where(x => x is not null).Cast<T>();
 
     /// <summary>
     /// Materializes the sequence into an <see cref="IReadOnlyList{T}"/>, preserving order.
@@ -449,8 +471,8 @@ public static class EnumerableExtensions
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="source">The sequence to materialize.</param>
     /// <returns>An <see cref="IReadOnlyList{T}"/> containing all elements in order.</returns>
-    public static IReadOnlyList<T> AsReadOnlyList<T>(this IEnumerable<T> source)
-        => (source ?? System.Linq.Enumerable.Empty<T>()).ToList();
+    public static IReadOnlyList<T> AsReadOnlyList<T>(this IEnumerable<T> source) =>
+        (source ?? System.Linq.Enumerable.Empty<T>()).ToList();
 
     /// <summary>
     /// Converts the sequence to a <see cref="HashSet{T}"/>, deduplicating elements.
@@ -459,8 +481,8 @@ public static class EnumerableExtensions
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="source">The sequence to convert.</param>
     /// <returns>A <see cref="HashSet{T}"/> containing the distinct elements.</returns>
-    public static HashSet<T> ToHashSetSafe<T>(this IEnumerable<T> source)
-        => source is null ? new HashSet<T>() : source.ToHashSet();
+    public static HashSet<T> ToHashSetSafe<T>(this IEnumerable<T> source) =>
+        source is null ? new HashSet<T>() : source.ToHashSet();
 
     /// <summary>
     /// Wraps a single value in an <see cref="IEnumerable{T}"/> containing only that item.
@@ -481,8 +503,8 @@ public static class EnumerableExtensions
     /// <param name="source">The sequence whose elements to join.</param>
     /// <param name="separator">The string to use as a separator between elements.</param>
     /// <returns>A string of all elements joined by <paramref name="separator"/>, or <see cref="string.Empty"/> if source is <see langword="null"/>.</returns>
-    public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
-        => string.Join(separator, source ?? System.Linq.Enumerable.Empty<T>());
+    public static string JoinAsString<T>(this IEnumerable<T> source, string separator) =>
+        string.Join(separator, source ?? System.Linq.Enumerable.Empty<T>());
 
     /// <summary>
     /// Projects each element of a sequence into a tuple of its zero-based index and the element itself.
@@ -491,8 +513,8 @@ public static class EnumerableExtensions
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="source">The sequence to index.</param>
     /// <returns>A sequence of <c>(Index, Item)</c> tuples.</returns>
-    public static IEnumerable<(int Index, T Item)> WithIndex<T>(this IEnumerable<T> source)
-        => (source ?? System.Linq.Enumerable.Empty<T>()).Select((item, i) => (i, item));
+    public static IEnumerable<(int Index, T Item)> WithIndex<T>(this IEnumerable<T> source) =>
+        (source ?? System.Linq.Enumerable.Empty<T>()).Select((item, i) => (i, item));
 
     /// <summary>
     /// Converts a sequence to a <see cref="Dictionary{TKey, TValue}"/> using the specified key and value selectors.
@@ -526,12 +548,15 @@ public static class EnumerableExtensions
     public static Dictionary<TKey, TValue> ToDictionarySafe<TSource, TKey, TValue>(
         this IEnumerable<TSource> source,
         Func<TSource, TKey> keySelector,
-        Func<TSource, TValue> valueSelector)
+        Func<TSource, TValue> valueSelector
+    )
         where TKey : notnull
     {
         var dict = new Dictionary<TKey, TValue>();
         foreach (var item in source ?? System.Linq.Enumerable.Empty<TSource>())
+        {
             dict[keySelector(item)] = valueSelector(item);
+        }
         return dict;
     }
 
@@ -553,7 +578,9 @@ public static class EnumerableExtensions
     public static IList<T> AddIf<T>(this IList<T> list, bool condition, T item)
     {
         if (condition)
+        {
             list.Add(item);
+        }
         return list;
     }
 
@@ -576,8 +603,12 @@ public static class EnumerableExtensions
     public static IList<T> AddRangeIf<T>(this IList<T> list, bool condition, IEnumerable<T> items)
     {
         if (condition)
+        {
             foreach (var item in items ?? System.Linq.Enumerable.Empty<T>())
+            {
                 list.Add(item);
+            }
+        }
         return list;
     }
 
@@ -604,7 +635,10 @@ public static class EnumerableExtensions
     /// </code>
     /// </example>
     public static IEnumerable<T> ConcatIf<T>(
-        this IEnumerable<T> source, bool condition, IEnumerable<T> other)
+        this IEnumerable<T> source,
+        bool condition,
+        IEnumerable<T> other
+    )
     {
         var first = source ?? System.Linq.Enumerable.Empty<T>();
         return condition ? first.Concat(other ?? System.Linq.Enumerable.Empty<T>()) : first;
@@ -623,16 +657,22 @@ public static class EnumerableExtensions
     /// and <c>Rest</c> containing all other elements, both in original order.
     /// </returns>
     public static (IReadOnlyList<T> Matched, IReadOnlyList<T> Remaining) Partition<T>(
-        this IEnumerable<T> source, Func<T, bool> predicate)
+        this IEnumerable<T> source,
+        Func<T, bool> predicate
+    )
     {
         var matched = new List<T>();
         var rest = new List<T>();
         foreach (var item in source ?? System.Linq.Enumerable.Empty<T>())
         {
             if (predicate(item))
+            {
                 matched.Add(item);
+            }
             else
+            {
                 rest.Add(item);
+            }
         }
         return (matched, rest);
     }
@@ -646,8 +686,8 @@ public static class EnumerableExtensions
     /// <param name="source">The sequence to batch. If <see langword="null"/>, treated as empty.</param>
     /// <param name="size">The maximum number of elements per chunk.</param>
     /// <returns>A sequence of read-only lists, each containing at most <paramref name="size"/> elements.</returns>
-    public static IEnumerable<IReadOnlyList<T>> Batch<T>(this IEnumerable<T> source, int size)
-        => (source ?? System.Linq.Enumerable.Empty<T>()).Chunk(size).Select(c => (IReadOnlyList<T>)c);
+    public static IEnumerable<IReadOnlyList<T>> Batch<T>(this IEnumerable<T> source, int size) =>
+        (source ?? System.Linq.Enumerable.Empty<T>()).Chunk(size).Select(c => (IReadOnlyList<T>)c);
 
     /// <summary>
     /// Returns the element with the smallest key value, or <see langword="default"/>(<typeparamref name="T"/>)
@@ -666,8 +706,10 @@ public static class EnumerableExtensions
     /// System.Linq.Enumerable.Empty&lt;string&gt;().MinByOrDefault(x => x)  // null
     /// </code>
     /// </example>
-    public static T? MinByOrDefault<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector)
-        => source is null ? default : source.MinBy(keySelector);
+    public static T? MinByOrDefault<T, TKey>(
+        this IEnumerable<T> source,
+        Func<T, TKey> keySelector
+    ) => source is null ? default : source.MinBy(keySelector);
 
     /// <summary>
     /// Returns the element with the largest key value, or <see langword="default"/>(<typeparamref name="T"/>)
@@ -686,8 +728,10 @@ public static class EnumerableExtensions
     /// System.Linq.Enumerable.Empty&lt;string&gt;().MaxByOrDefault(x => x)  // null
     /// </code>
     /// </example>
-    public static T? MaxByOrDefault<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector)
-        => source is null ? default : source.MaxBy(keySelector);
+    public static T? MaxByOrDefault<T, TKey>(
+        this IEnumerable<T> source,
+        Func<T, TKey> keySelector
+    ) => source is null ? default : source.MaxBy(keySelector);
 
     /// <summary>
     /// Projects each element of a sequence to a <typeparamref name="TResult"/> using an async selector,
@@ -709,21 +753,31 @@ public static class EnumerableExtensions
     public static async Task<IReadOnlyList<TResult>> SelectAsync<T, TResult>(
         this IEnumerable<T> source,
         Func<T, Task<TResult>> selector,
-        int? maxParallel = null)
+        int? maxParallel = null
+    )
     {
         if (source is null)
+        {
             return [];
+        }
 
         if (maxParallel is null)
+        {
             return await Task.WhenAll(source.Select(selector));
+        }
 
         using var semaphore = new SemaphoreSlim(maxParallel.Value);
         var tasks = source.Select(async item =>
         {
             await semaphore.WaitAsync();
             try
-            { return await selector(item); }
-            finally { semaphore.Release(); }
+            {
+                return await selector(item);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         });
         return await Task.WhenAll(tasks);
     }
@@ -737,6 +791,6 @@ public static class EnumerableExtensions
     /// <returns>
     /// A <see cref="Task{T}"/> that completes with an <see cref="IReadOnlyList{T}"/> containing all task results.
     /// </returns>
-    public static async Task<IReadOnlyList<T>> WhenAllList<T>(this IEnumerable<Task<T>> tasks)
-        => await Task.WhenAll(tasks ?? []);
+    public static async Task<IReadOnlyList<T>> WhenAllList<T>(this IEnumerable<Task<T>> tasks) =>
+        await Task.WhenAll(tasks ?? []);
 }
