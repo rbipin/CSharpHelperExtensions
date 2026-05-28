@@ -397,5 +397,89 @@ namespace CSharpHelperExtensions.Test
         {
             ((IEnumerable<int>)null).ConcatIf(false, new[] { 1, 2 }).ShouldBeEmpty();
         }
+
+        [Fact]
+        public void None_WithPredicate_ReturnsTrue_WhenNoElementMatches()
+        {
+            new[] { 1, 2, 3 }.None(x => x > 10).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void None_WithPredicate_ReturnsFalse_WhenAnyElementMatches()
+        {
+            new[] { 1, 2, 3 }.None(x => x > 2).ShouldBeFalse();
+        }
+
+        [Fact]
+        public void None_WithPredicate_ReturnsTrue_WhenSourceIsNull()
+        {
+            ((IEnumerable<int>)null).None(x => x > 0).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void IsSingle_ReturnsTrue_WhenExactlyOneElement()
+        {
+            new[] { 42 }.IsSingle().ShouldBeTrue();
+        }
+
+        [Fact]
+        public void IsSingle_ReturnsFalse_WhenEmpty()
+        {
+            System.Linq.Enumerable.Empty<int>().IsSingle().ShouldBeFalse();
+        }
+
+        [Fact]
+        public void IsSingle_ReturnsFalse_WhenMoreThanOneElement()
+        {
+            new[] { 1, 2 }.IsSingle().ShouldBeFalse();
+        }
+
+        [Fact]
+        public void IsSingle_ReturnsFalse_WhenNull()
+        {
+            ((IEnumerable<int>)null).IsSingle().ShouldBeFalse();
+        }
+
+        [Fact]
+        public void IsSingle_WithPredicate_ReturnsTrue_WhenExactlyOneMatches()
+        {
+            new[] { 1, 2, 3 }.IsSingle(x => x > 2).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void IsSingle_WithPredicate_ReturnsFalse_WhenZeroMatch()
+        {
+            new[] { 1, 2, 3 }.IsSingle(x => x > 10).ShouldBeFalse();
+        }
+
+        [Fact]
+        public void IsSingle_WithPredicate_ReturnsFalse_WhenMoreThanOneMatch()
+        {
+            new[] { 1, 2, 3 }.IsSingle(x => x > 1).ShouldBeFalse();
+        }
+
+        [Fact]
+        public void IndexOf_ReturnsFirstMatchingIndex()
+        {
+            new[] { "a", "b", "c" }.IndexOf(x => x == "b").ShouldBe(1);
+        }
+
+        [Fact]
+        public void IndexOf_ReturnsZero_WhenFirstElementMatches()
+        {
+            new[] { "a", "b", "c" }.IndexOf(x => x == "a").ShouldBe(0);
+        }
+
+        [Fact]
+        public void IndexOf_ReturnsMinusOne_WhenNoMatch()
+        {
+            new[] { "a", "b", "c" }.IndexOf(x => x == "z").ShouldBe(-1);
+        }
+
+        [Fact]
+        public void IndexOf_ReturnsMinusOne_WhenSourceIsNull()
+        {
+            ((IEnumerable<string>)null).IndexOf(x => x == "a").ShouldBe(-1);
+        }
     }
 }

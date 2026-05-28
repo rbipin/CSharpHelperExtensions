@@ -409,6 +409,73 @@ public static class EnumerableExtensions
         => source is null || !source.Any();
 
     /// <summary>
+    /// Returns <see langword="true"/> if no element in the sequence satisfies the predicate,
+    /// or if the sequence is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to check.</param>
+    /// <param name="predicate">A function to test each element.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="source"/> is <see langword="null"/> or no element
+    /// matches <paramref name="predicate"/>; otherwise <see langword="false"/>.
+    /// </returns>
+    public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        => source is null || !source.Any(predicate);
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the sequence contains exactly one element.
+    /// Returns <see langword="false"/> if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="source"/> has exactly one element;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    public static bool IsSingle<T>(this IEnumerable<T> source)
+    {
+        if (source is null) return false;
+        using var e = source.GetEnumerator();
+        return e.MoveNext() && !e.MoveNext();
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> if exactly one element in the sequence satisfies the predicate.
+    /// Returns <see langword="false"/> if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to check.</param>
+    /// <param name="predicate">A function to test each element.</param>
+    /// <returns>
+    /// <see langword="true"/> if exactly one element matches <paramref name="predicate"/>;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    public static bool IsSingle<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        => source?.Count(predicate) == 1;
+
+    /// <summary>
+    /// Returns the zero-based index of the first element in the sequence that satisfies the predicate,
+    /// or <c>-1</c> if no element matches or the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to search.</param>
+    /// <param name="predicate">A function to test each element.</param>
+    /// <returns>
+    /// The index of the first matching element, or <c>-1</c> if none is found or source is <see langword="null"/>.
+    /// </returns>
+    public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        if (source is null) return -1;
+        int index = 0;
+        foreach (var item in source)
+        {
+            if (predicate(item)) return index;
+            index++;
+        }
+        return -1;
+    }
+
+    /// <summary>
     /// Filters out <see langword="null"/> elements from a sequence of reference types.
     /// Returns an empty sequence if the source is <see langword="null"/>.
     /// </summary>
