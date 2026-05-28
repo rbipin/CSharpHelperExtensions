@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using CSharpHelperExtensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace CSharpHelperExtensions.Test
@@ -17,21 +17,21 @@ namespace CSharpHelperExtensions.Test
         public void Verify_In_Exists()
         {
             var result = "Magic".In("Magic", "Bean", "Stalk");
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
         public void Verify_In_Integer_Exists()
         {
             var result = 1.In(1, 2, 3);
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
         public void Verify_In_NotExists()
         {
             var result = "Giant".In("Magic", "Bean", "Stalk");
-            result.Should().BeFalse();
+            result.ShouldBeFalse();
         }
 
         [Fact]
@@ -39,19 +39,19 @@ namespace CSharpHelperExtensions.Test
         {
             string testString = null;
             var nullableDecimal = testString.ToNullable<decimal>();
-            nullableDecimal.Should().BeNull();
-            
+            nullableDecimal.ShouldBeNull();
+
             testString = "0";
             nullableDecimal = testString.ToNullable<decimal>();
-            nullableDecimal.Should().Be(0);
-            
+            nullableDecimal.ShouldBe(0);
+
             testString = "1.5";
             nullableDecimal = testString.ToNullable<decimal>();
-            nullableDecimal.Should().Be(1.5m);
+            nullableDecimal.ShouldBe(1.5m);
 
             testString = "";
             var decimalValue = testString.ToNullable<decimal>();
-            decimalValue.Should().BeNull();
+            decimalValue.ShouldBeNull();
         }
 
         [Fact]
@@ -61,34 +61,33 @@ namespace CSharpHelperExtensions.Test
             decimal lower = 1;
             decimal upper = 3;
             var result = value.IsBetween(lower, upper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 1;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 2;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 4;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 2.5m;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
         }
-        
+
         [Fact]
         public void Verify_Is_InBetween_ExcludeBothComparison()
         {
@@ -96,33 +95,33 @@ namespace CSharpHelperExtensions.Test
             decimal lower = 1;
             decimal upper = 3;
             var result = value.IsBetween(lower, upper, BetweenComparison.ExcludeBoth);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 1;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeBoth);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 3;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeBoth);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 4;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeBoth);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 2.5m;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeBoth);
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
-        
+
         [Fact]
         public void Verify_Is_InBetween_ExcludeLower()
         {
@@ -130,31 +129,31 @@ namespace CSharpHelperExtensions.Test
             decimal lower = 1;
             decimal upper = 3;
             var result = value.IsBetween(lower, upper, BetweenComparison.ExcludeLower);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 1;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeLower);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 3;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeLower);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 4;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeLower);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 2.5m;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeLower);
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -164,39 +163,39 @@ namespace CSharpHelperExtensions.Test
             decimal lower = 1;
             decimal upper = 3;
             var result = value.IsBetween(lower, upper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 1;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.None);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 4;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 4;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.None);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 2.5m;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper);
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
 
             value = 2.5m;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.None);
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
-        
+
         [Fact]
         public void Verify_Is_InBetween_ExcludeUpper()
         {
@@ -204,32 +203,31 @@ namespace CSharpHelperExtensions.Test
             decimal lower = 1;
             decimal upper = 3;
             var result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 1;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper);
-            result.Should().BeTrue();
-            
+            result.ShouldBeTrue();
+
             value = 3;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 4;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper);
-            result.Should().BeFalse();
-            
+            result.ShouldBeFalse();
+
             value = 2.5m;
             lower = 1;
             upper = 3;
             result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper);
-            result.Should().BeTrue();
+            result.ShouldBeTrue();
         }
-        
     }
 }

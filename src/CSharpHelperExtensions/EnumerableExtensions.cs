@@ -231,11 +231,11 @@ public static class EnumerableExtensions
     public static IEnumerable<T> ForEach<T>(this IEnumerable<T> values, Action<T> execute)
     {
         var collection = values?.ToList() ?? new List<T>();
-        return collection.Select(item =>
+        foreach (var item in collection)
         {
             execute(item);
-            return item;
-        });
+        }
+        return collection;
     }
 
     /// <summary>
