@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CSharpHelperExtensions.Strings;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 namespace CSharpHelperExtensions.Test
 {
@@ -13,264 +13,263 @@ namespace CSharpHelperExtensions.Test
         public void Verify_StringIsEmpty_CheckForWhitespace()
         {
             string strNull = null;
-            strNull.IsNullOrEmpty().Should().BeTrue();
-            "".IsNullOrEmpty().Should().BeTrue();
-            "   ".IsNullOrEmpty().Should().BeTrue();
-            " ".IsNullOrEmpty().Should().BeTrue();
+            strNull.IsNullOrEmpty().ShouldBeTrue();
+            "".IsNullOrEmpty().ShouldBeTrue();
+            "   ".IsNullOrEmpty().ShouldBeTrue();
+            " ".IsNullOrEmpty().ShouldBeTrue();
         }
 
         [Fact]
         public void Verify_HasValue_ReturnsTrue_WhenNotNullOrWhitespace()
         {
-            "hello".HasValue().Should().BeTrue();
-            "  x  ".HasValue().Should().BeTrue();
+            "hello".HasValue().ShouldBeTrue();
+            "  x  ".HasValue().ShouldBeTrue();
         }
 
         [Fact]
         public void Verify_HasValue_ReturnsFalse_WhenNullOrWhitespace()
         {
-            ((string)null).HasValue().Should().BeFalse();
-            "".HasValue().Should().BeFalse();
-            "   ".HasValue().Should().BeFalse();
+            ((string)null).HasValue().ShouldBeFalse();
+            "".HasValue().ShouldBeFalse();
+            "   ".HasValue().ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_OrEmpty_ReturnsEmpty_WhenNull()
         {
-            ((string)null).OrEmpty().Should().Be(string.Empty);
-            "hello".OrEmpty().Should().Be("hello");
-            "   ".OrEmpty().Should().Be("   ");
+            ((string)null).OrEmpty().ShouldBe(string.Empty);
+            "hello".OrEmpty().ShouldBe("hello");
+            "   ".OrEmpty().ShouldBe("   ");
         }
 
         [Fact]
         public void Verify_OrDefault_ReturnsFallback_WhenNullOrWhitespace()
         {
-            ((string)null).OrDefault("fallback").Should().Be("fallback");
-            "".OrDefault("fallback").Should().Be("fallback");
-            "   ".OrDefault("fallback").Should().Be("fallback");
-            "hello".OrDefault("fallback").Should().Be("hello");
+            ((string)null).OrDefault("fallback").ShouldBe("fallback");
+            "".OrDefault("fallback").ShouldBe("fallback");
+            "   ".OrDefault("fallback").ShouldBe("fallback");
+            "hello".OrDefault("fallback").ShouldBe("hello");
         }
 
         [Fact]
         public void Verify_Truncate_CutsAtMaxLength()
         {
-            "hello world".Truncate(5).Should().Be("hello");
-            "hi".Truncate(10).Should().Be("hi");
-            "".Truncate(5).Should().Be("");
-            ((string)null).Truncate(5).Should().Be("");
+            "hello world".Truncate(5).ShouldBe("hello");
+            "hi".Truncate(10).ShouldBe("hi");
+            "".Truncate(5).ShouldBe("");
+            ((string)null).Truncate(5).ShouldBe("");
         }
 
         [Fact]
         public void Verify_Truncate_ThrowsOnNegativeLength()
         {
-            var act = () => "hello".Truncate(-1);
-            act.Should().Throw<ArgumentOutOfRangeException>();
+            Should.Throw<ArgumentOutOfRangeException>(() => "hello".Truncate(-1));
         }
 
         [Fact]
         public void Verify_Reverse_ReturnsReversedString()
         {
-            "hello".Reverse().Should().Be("olleh");
-            "a".Reverse().Should().Be("a");
-            "".Reverse().Should().Be("");
-            ((string)null).Reverse().Should().Be("");
+            "hello".Reverse().ShouldBe("olleh");
+            "a".Reverse().ShouldBe("a");
+            "".Reverse().ShouldBe("");
+            ((string)null).Reverse().ShouldBe("");
         }
 
         [Fact]
         public void Verify_TrimToLower_TrimsAndLowers()
         {
-            "  HELLO  ".TrimToLower().Should().Be("hello");
-            "WORLD".TrimToLower().Should().Be("world");
-            ((string)null).TrimToLower().Should().Be("");
+            "  HELLO  ".TrimToLower().ShouldBe("hello");
+            "WORLD".TrimToLower().ShouldBe("world");
+            ((string)null).TrimToLower().ShouldBe("");
         }
 
         [Fact]
         public void Verify_TrimToUpper_TrimsAndUppers()
         {
-            "  hello  ".TrimToUpper().Should().Be("HELLO");
-            ((string)null).TrimToUpper().Should().Be("");
+            "  hello  ".TrimToUpper().ShouldBe("HELLO");
+            ((string)null).TrimToUpper().ShouldBe("");
         }
 
         [Fact]
         public void Verify_EqualsIgnoreCase_ComparesIgnoringCase()
         {
-            "Hello".EqualsIgnoreCase("hello").Should().BeTrue();
-            "Hello".EqualsIgnoreCase("HELLO").Should().BeTrue();
-            "Hello".EqualsIgnoreCase("world").Should().BeFalse();
-            ((string)null).EqualsIgnoreCase(null).Should().BeTrue();
-            ((string)null).EqualsIgnoreCase("x").Should().BeFalse();
+            "Hello".EqualsIgnoreCase("hello").ShouldBeTrue();
+            "Hello".EqualsIgnoreCase("HELLO").ShouldBeTrue();
+            "Hello".EqualsIgnoreCase("world").ShouldBeFalse();
+            ((string)null).EqualsIgnoreCase(null).ShouldBeTrue();
+            ((string)null).EqualsIgnoreCase("x").ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_ContainsIgnoreCase_FindsSubstring()
         {
-            "Hello World".ContainsIgnoreCase("world").Should().BeTrue();
-            "Hello World".ContainsIgnoreCase("HELLO").Should().BeTrue();
-            "Hello World".ContainsIgnoreCase("xyz").Should().BeFalse();
-            ((string)null).ContainsIgnoreCase("x").Should().BeFalse();
+            "Hello World".ContainsIgnoreCase("world").ShouldBeTrue();
+            "Hello World".ContainsIgnoreCase("HELLO").ShouldBeTrue();
+            "Hello World".ContainsIgnoreCase("xyz").ShouldBeFalse();
+            ((string)null).ContainsIgnoreCase("x").ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_StartsWithIgnoreCase_ChecksPrefix()
         {
-            "Hello World".StartsWithIgnoreCase("hello").Should().BeTrue();
-            "Hello World".StartsWithIgnoreCase("world").Should().BeFalse();
-            ((string)null).StartsWithIgnoreCase("x").Should().BeFalse();
+            "Hello World".StartsWithIgnoreCase("hello").ShouldBeTrue();
+            "Hello World".StartsWithIgnoreCase("world").ShouldBeFalse();
+            ((string)null).StartsWithIgnoreCase("x").ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_EndsWithIgnoreCase_ChecksSuffix()
         {
-            "Hello World".EndsWithIgnoreCase("WORLD").Should().BeTrue();
-            "Hello World".EndsWithIgnoreCase("hello").Should().BeFalse();
-            ((string)null).EndsWithIgnoreCase("x").Should().BeFalse();
+            "Hello World".EndsWithIgnoreCase("WORLD").ShouldBeTrue();
+            "Hello World".EndsWithIgnoreCase("hello").ShouldBeFalse();
+            ((string)null).EndsWithIgnoreCase("x").ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_MaskStart_MasksAllButLastN()
         {
-            "123456".MaskStart(2).Should().Be("****56");
-            "AB".MaskStart(2).Should().Be("AB");
-            "hello".MaskStart(0).Should().Be("*****");
-            ((string)null).MaskStart(2).Should().Be("");
+            "123456".MaskStart(2).ShouldBe("****56");
+            "AB".MaskStart(2).ShouldBe("AB");
+            "hello".MaskStart(0).ShouldBe("*****");
+            ((string)null).MaskStart(2).ShouldBe("");
         }
 
         [Fact]
         public void Verify_MaskStart_UsesCustomChar()
         {
-            "123456".MaskStart(2, '#').Should().Be("####56");
+            "123456".MaskStart(2, '#').ShouldBe("####56");
         }
 
         [Fact]
         public void Verify_ToIntOrNull_ParsesValidInt()
         {
-            "42".ToIntOrNull().Should().Be(42);
-            "-10".ToIntOrNull().Should().Be(-10);
-            "not-a-number".ToIntOrNull().Should().BeNull();
-            ((string)null).ToIntOrNull().Should().BeNull();
-            "".ToIntOrNull().Should().BeNull();
+            "42".ToIntOrNull().ShouldBe(42);
+            "-10".ToIntOrNull().ShouldBe(-10);
+            "not-a-number".ToIntOrNull().ShouldBeNull();
+            ((string)null).ToIntOrNull().ShouldBeNull();
+            "".ToIntOrNull().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_ToDecimalOrNull_ParsesValidDecimal()
         {
-            "3.14".ToDecimalOrNull().Should().Be(3.14m);
-            "abc".ToDecimalOrNull().Should().BeNull();
-            ((string)null).ToDecimalOrNull().Should().BeNull();
+            "3.14".ToDecimalOrNull().ShouldBe(3.14m);
+            "abc".ToDecimalOrNull().ShouldBeNull();
+            ((string)null).ToDecimalOrNull().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_ToDateTimeOrNull_ParsesValidDate()
         {
-            "2024-01-15".ToDateTimeOrNull().Should().NotBeNull();
-            "not-a-date".ToDateTimeOrNull().Should().BeNull();
-            ((string)null).ToDateTimeOrNull().Should().BeNull();
+            "2024-01-15".ToDateTimeOrNull().ShouldNotBeNull();
+            "not-a-date".ToDateTimeOrNull().ShouldBeNull();
+            ((string)null).ToDateTimeOrNull().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_ToGuidOrNull_ParsesValidGuid()
         {
-            "d3b07384-d9a0-4b6f-9e4d-5e3b7a9c2d1e".ToGuidOrNull().Should().NotBeNull();
-            "not-a-guid".ToGuidOrNull().Should().BeNull();
-            ((string)null).ToGuidOrNull().Should().BeNull();
+            "d3b07384-d9a0-4b6f-9e4d-5e3b7a9c2d1e".ToGuidOrNull().ShouldNotBeNull();
+            "not-a-guid".ToGuidOrNull().ShouldBeNull();
+            ((string)null).ToGuidOrNull().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_ToBoolOrNull_ParsesValidBool()
         {
-            "true".ToBoolOrNull().Should().BeTrue();
-            "false".ToBoolOrNull().Should().BeFalse();
-            "True".ToBoolOrNull().Should().BeTrue();
-            "yes".ToBoolOrNull().Should().BeNull();
-            ((string)null).ToBoolOrNull().Should().BeNull();
+            "true".ToBoolOrNull().ShouldBe(true);
+            "false".ToBoolOrNull().ShouldBe(false);
+            "True".ToBoolOrNull().ShouldBe(true);
+            "yes".ToBoolOrNull().ShouldBeNull();
+            ((string)null).ToBoolOrNull().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_Base64Encode_EncodesString()
         {
-            "hello".Base64Encode().Should().Be("aGVsbG8=");
-            ((string)null).Base64Encode().Should().BeNull();
+            "hello".Base64Encode().ShouldBe("aGVsbG8=");
+            ((string)null).Base64Encode().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_Base64Decode_DecodesString()
         {
-            "aGVsbG8=".Base64Decode().Should().Be("hello");
-            ((string)null).Base64Decode().Should().BeNull();
+            "aGVsbG8=".Base64Decode().ShouldBe("hello");
+            ((string)null).Base64Decode().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_Base64_RoundTrip()
         {
             var original = "Hello, World! Émoji: 🌍";
-            original.Base64Encode().Base64Decode().Should().Be(original);
+            original.Base64Encode().Base64Decode().ShouldBe(original);
         }
 
         [Fact]
         public void Verify_ToBase64Url_ProducesUrlSafeString()
         {
             var encoded = "hello world".ToBase64Url();
-            encoded.Should().NotContain("+");
-            encoded.Should().NotContain("/");
-            encoded.Should().NotContain("=");
-            ((string)null).ToBase64Url().Should().BeNull();
+            encoded.ShouldNotContain("+");
+            encoded.ShouldNotContain("/");
+            encoded.ShouldNotContain("=");
+            ((string)null).ToBase64Url().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_Base64Url_RoundTrip()
         {
             var original = "Hello, World! 123";
-            original.ToBase64Url().FromBase64Url().Should().Be(original);
-            ((string)null).FromBase64Url().Should().BeNull();
+            original.ToBase64Url().FromBase64Url().ShouldBe(original);
+            ((string)null).FromBase64Url().ShouldBeNull();
         }
 
         [Fact]
         public void Verify_ToUtf8Bytes_ReturnsBytes()
         {
-            "hello".ToUtf8Bytes().Should().Equal(Encoding.UTF8.GetBytes("hello"));
-            ((string)null).ToUtf8Bytes().Should().BeEmpty();
+            "hello".ToUtf8Bytes().ShouldBe(Encoding.UTF8.GetBytes("hello"));
+            ((string)null).ToUtf8Bytes().ShouldBeEmpty();
         }
 
         [Fact]
         public void Verify_ToUtf8Stream_ReturnsReadableStream()
         {
             using var stream = "hello".ToUtf8Stream();
-            stream.Length.Should().Be(5);
-            ((string)null).ToUtf8Stream().Length.Should().Be(0);
+            stream.Length.ShouldBe(5);
+            ((string)null).ToUtf8Stream().Length.ShouldBe(0);
         }
 
         [Fact]
         public void Verify_JoinWith_JoinsWithSeparator()
         {
-            ", ".JoinWith(new[] { "a", "b", "c" }).Should().Be("a, b, c");
-            "-".JoinWith(new[] { "x" }).Should().Be("x");
-            ", ".JoinWith(Array.Empty<string>()).Should().Be("");
+            ", ".JoinWith(new[] { "a", "b", "c" }).ShouldBe("a, b, c");
+            "-".JoinWith(new[] { "x" }).ShouldBe("x");
+            ", ".JoinWith(Array.Empty<string>()).ShouldBe("");
         }
 
         [Fact]
         public void Verify_SplitNonEmpty_SplitsAndRemovesEmpty()
         {
-            "a,b,,c".SplitNonEmpty(',').Should().Equal(new[] { "a", "b", "c" });
-            ((string)null).SplitNonEmpty(',').Should().BeEmpty();
-            "   ".SplitNonEmpty(' ').Should().BeEmpty();
+            "a,b,,c".SplitNonEmpty(',').ShouldBe(new[] { "a", "b", "c" });
+            ((string)null).SplitNonEmpty(',').ShouldBeEmpty();
+            "   ".SplitNonEmpty(' ').ShouldBeEmpty();
         }
 
         [Fact]
         public void Verify_RemoveWhitespace_RemovesAllWhitespace()
         {
-            "h e l l o".RemoveWhitespace().Should().Be("hello");
-            "  hello  ".RemoveWhitespace().Should().Be("hello");
-            "\thello\n".RemoveWhitespace().Should().Be("hello");
-            ((string)null).RemoveWhitespace().Should().Be("");
+            "h e l l o".RemoveWhitespace().ShouldBe("hello");
+            "  hello  ".RemoveWhitespace().ShouldBe("hello");
+            "\thello\n".RemoveWhitespace().ShouldBe("hello");
+            ((string)null).RemoveWhitespace().ShouldBe("");
         }
 
         [Fact]
         public void Verify_CollapseWhitespace_CollapsesRunsToSingleSpace()
         {
-            "hello   world".CollapseWhitespace().Should().Be("hello world");
-            "  hello  world  ".CollapseWhitespace().Should().Be("hello world");
-            "hello\t\nworld".CollapseWhitespace().Should().Be("hello world");
-            ((string)null).CollapseWhitespace().Should().Be("");
+            "hello   world".CollapseWhitespace().ShouldBe("hello world");
+            "  hello  world  ".CollapseWhitespace().ShouldBe("hello world");
+            "hello\t\nworld".CollapseWhitespace().ShouldBe("hello world");
+            ((string)null).CollapseWhitespace().ShouldBe("");
         }
 
         [Fact]
@@ -278,7 +277,7 @@ namespace CSharpHelperExtensions.Test
         {
             "hello world"
                 .ReplaceMany(new[] { ("hello", "hi"), ("world", "there") })
-                .Should().Be("hi there");
+                .ShouldBe("hi there");
         }
 
         [Fact]
@@ -286,119 +285,116 @@ namespace CSharpHelperExtensions.Test
         {
             "aaa"
                 .ReplaceMany(new[] { ("aaa", "bbb"), ("bbb", "ccc") })
-                .Should().Be("ccc");
+                .ShouldBe("ccc");
         }
 
         [Fact]
         public void Verify_ReplaceMany_ReturnsEmptyForNull()
         {
-            ((string)null).ReplaceMany(new[] { ("a", "b") }).Should().Be("");
+            ((string)null).ReplaceMany(new[] { ("a", "b") }).ShouldBe("");
         }
 
         [Fact]
         public void Verify_RemoveDiacritics_StripAccents()
         {
-            "café".RemoveDiacritics().Should().Be("cafe");
-            "résumé".RemoveDiacritics().Should().Be("resume");
-            "naïve".RemoveDiacritics().Should().Be("naive");
-            "hello".RemoveDiacritics().Should().Be("hello");
-            ((string)null).RemoveDiacritics().Should().Be("");
+            "café".RemoveDiacritics().ShouldBe("cafe");
+            "résumé".RemoveDiacritics().ShouldBe("resume");
+            "naïve".RemoveDiacritics().ShouldBe("naive");
+            "hello".RemoveDiacritics().ShouldBe("hello");
+            ((string)null).RemoveDiacritics().ShouldBe("");
         }
 
         [Fact]
         public void Verify_ToSlug_CreatesSlug()
         {
-            "Hello World".ToSlug().Should().Be("hello-world");
-            "  Café au Lait  ".ToSlug().Should().Be("cafe-au-lait");
-            "C# is great!".ToSlug().Should().Be("c-is-great");
-            "---".ToSlug().Should().Be("");
-            ((string)null).ToSlug().Should().Be("");
+            "Hello World".ToSlug().ShouldBe("hello-world");
+            "  Café au Lait  ".ToSlug().ShouldBe("cafe-au-lait");
+            "C# is great!".ToSlug().ShouldBe("c-is-great");
+            "---".ToSlug().ShouldBe("");
+            ((string)null).ToSlug().ShouldBe("");
         }
 
         [Fact]
         public void Verify_IsNumeric_DetectsDigitOnlyStrings()
         {
-            "123".IsNumeric().Should().BeTrue();
-            "12.3".IsNumeric().Should().BeFalse();
-            "abc".IsNumeric().Should().BeFalse();
-            ((string)null).IsNumeric().Should().BeFalse();
-            "".IsNumeric().Should().BeFalse();
+            "123".IsNumeric().ShouldBeTrue();
+            "12.3".IsNumeric().ShouldBeFalse();
+            "abc".IsNumeric().ShouldBeFalse();
+            ((string)null).IsNumeric().ShouldBeFalse();
+            "".IsNumeric().ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_IsAlpha_DetectsLetterOnlyStrings()
         {
-            "hello".IsAlpha().Should().BeTrue();
-            "hello1".IsAlpha().Should().BeFalse();
-            "héllo".IsAlpha().Should().BeTrue();
-            ((string)null).IsAlpha().Should().BeFalse();
+            "hello".IsAlpha().ShouldBeTrue();
+            "hello1".IsAlpha().ShouldBeFalse();
+            "héllo".IsAlpha().ShouldBeTrue();
+            ((string)null).IsAlpha().ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_IsAlphaNumeric_DetectsLetterOrDigitStrings()
         {
-            "hello123".IsAlphaNumeric().Should().BeTrue();
-            "hello!".IsAlphaNumeric().Should().BeFalse();
-            ((string)null).IsAlphaNumeric().Should().BeFalse();
+            "hello123".IsAlphaNumeric().ShouldBeTrue();
+            "hello!".IsAlphaNumeric().ShouldBeFalse();
+            ((string)null).IsAlphaNumeric().ShouldBeFalse();
         }
 
         [Fact]
         public void Verify_EnsurePrefix_AddsIfMissing()
         {
-            "world".EnsurePrefix("hello ").Should().Be("hello world");
-            "hello world".EnsurePrefix("hello ").Should().Be("hello world");
-            ((string)null).EnsurePrefix("hello ").Should().Be("hello ");
+            "world".EnsurePrefix("hello ").ShouldBe("hello world");
+            "hello world".EnsurePrefix("hello ").ShouldBe("hello world");
+            ((string)null).EnsurePrefix("hello ").ShouldBe("hello ");
         }
 
         [Fact]
         public void Verify_EnsureSuffix_AddsIfMissing()
         {
-            "hello".EnsureSuffix("!").Should().Be("hello!");
-            "hello!".EnsureSuffix("!").Should().Be("hello!");
-            ((string)null).EnsureSuffix("!").Should().Be("!");
+            "hello".EnsureSuffix("!").ShouldBe("hello!");
+            "hello!".EnsureSuffix("!").ShouldBe("hello!");
+            ((string)null).EnsureSuffix("!").ShouldBe("!");
         }
 
         [Fact]
         public void Verify_TrimPrefix_RemovesIfPresent()
         {
-            "hello world".TrimPrefix("hello ").Should().Be("world");
-            "world".TrimPrefix("hello ").Should().Be("world");
-            ((string)null).TrimPrefix("hello ").Should().Be("");
+            "hello world".TrimPrefix("hello ").ShouldBe("world");
+            "world".TrimPrefix("hello ").ShouldBe("world");
+            ((string)null).TrimPrefix("hello ").ShouldBe("");
         }
 
         [Fact]
         public void Verify_TrimSuffix_RemovesIfPresent()
         {
-            "hello!".TrimSuffix("!").Should().Be("hello");
-            "hello".TrimSuffix("!").Should().Be("hello");
-            ((string)null).TrimSuffix("!").Should().Be("");
+            "hello!".TrimSuffix("!").ShouldBe("hello");
+            "hello".TrimSuffix("!").ShouldBe("hello");
+            ((string)null).TrimSuffix("!").ShouldBe("");
         }
 
         [Fact]
         public void Verify_EnsurePrefix_ThrowsOnNullPrefix()
         {
-            var act = () => "hello".EnsurePrefix(null);
-            act.Should().Throw<ArgumentNullException>();
+            Should.Throw<ArgumentNullException>(() => "hello".EnsurePrefix(null));
         }
 
         [Fact]
         public void Verify_TrimPrefix_ThrowsOnNullPrefix()
         {
-            var act = () => "hello".TrimPrefix(null);
-            act.Should().Throw<ArgumentNullException>();
+            Should.Throw<ArgumentNullException>(() => "hello".TrimPrefix(null));
         }
 
         [Fact]
         public void Verify_ToTitleCase_CapitalizesFirstLetterOfEachWord()
         {
-            "hello world".ToTitleCase().Should().Be("Hello World");
-            "  hELLO   wORLD  ".ToTitleCase().Should().Be("Hello World");
-            "it's a test".ToTitleCase().Should().Be("It's A Test");
-            "SINGLE".ToTitleCase().Should().Be("Single");
-            ((string)null).ToTitleCase().Should().Be("");
-            "".ToTitleCase().Should().Be("");
-            "   ".ToTitleCase().Should().Be("");
+            "hello world".ToTitleCase().ShouldBe("Hello World");
+            "  hELLO   wORLD  ".ToTitleCase().ShouldBe("Hello World");
+            "it's a test".ToTitleCase().ShouldBe("It's A Test");
+            "SINGLE".ToTitleCase().ShouldBe("Single");
+            ((string)null).ToTitleCase().ShouldBe("");
+            "".ToTitleCase().ShouldBe("");
+            "   ".ToTitleCase().ShouldBe("");
         }
     }
 }
-

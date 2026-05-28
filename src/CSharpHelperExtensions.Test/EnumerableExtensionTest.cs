@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CSharpHelperExtensions.Enumerable;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace CSharpHelperExtensions.Test
@@ -11,12 +11,12 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void IsNullOrEmpty_Test()
         {
-            ((List<string>) null).IsNullOrEmpty().Should().BeTrue();
+            ((List<string>) null).IsNullOrEmpty().ShouldBeTrue();
             var emptyList = new List<string>();
-            emptyList.IsNullOrEmpty().Should().BeTrue();
+            emptyList.IsNullOrEmpty().ShouldBeTrue();
 
             var nonEmptyList = new List<int> { 1 };
-            nonEmptyList.IsNullOrEmpty().Should().BeFalse();
+            nonEmptyList.IsNullOrEmpty().ShouldBeFalse();
         }
 
         [Fact]
@@ -34,15 +34,13 @@ namespace CSharpHelperExtensions.Test
                 new List<string> { "Magic", "Bean", "Stalk", "Giant" };
             var expectedIntList = new List<int?> { 1, 2 };
 
-            stringList.CleanNullOrEmptyItems().Should().Equal(expectedStrList);
+            stringList.CleanNullOrEmptyItems().ShouldBe(expectedStrList);
             numEnumerable
                 .CleanNullOrEmptyItems()
-                .Should()
-                .Equal(expectedIntList);
+                .ShouldBe(expectedIntList);
             strListWithNullEmptyWs
                 .CleanNullOrEmptyItems()
-                .Should()
-                .Equal(expectedStrList);
+                .ShouldBe(expectedStrList);
         }
 
         [Fact]
@@ -51,19 +49,17 @@ namespace CSharpHelperExtensions.Test
             var stringList =
                 new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
 
-            stringList.ContainsOnly("Magic").Should().BeFalse();
+            stringList.ContainsOnly("Magic").ShouldBeFalse();
             stringList
                 .ContainsOnly("Magic", "Bean", "Stalk", "Giant")
-                .Should()
-                .BeTrue();
+                .ShouldBeTrue();
             stringList
                 .ContainsOnly("Magic", "Bean", "Stalk", "Jack")
-                .Should()
-                .BeFalse();
+                .ShouldBeFalse();
 
             var integerList = new List<int>() { 123 };
-            integerList.ContainsOnly(123).Should().BeTrue();
-            integerList.ContainsOnly(123, 111).Should().BeFalse();
+            integerList.ContainsOnly(123).ShouldBeTrue();
+            integerList.ContainsOnly(123, 111).ShouldBeFalse();
         }
 
         [Fact]
@@ -75,28 +71,25 @@ namespace CSharpHelperExtensions.Test
             var stringList2 =
                 new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
 
-            stringList.AreEqual(stringList).Should().BeTrue();
-            stringList.AreEqual(stringList2).Should().BeTrue();
+            stringList.AreEqual(stringList).ShouldBeTrue();
+            stringList.AreEqual(stringList2).ShouldBeTrue();
 
             stringList2
                 .AreEqual(stringList2, Compare.InOrder)
-                .Should()
-                .BeTrue();
+                .ShouldBeTrue();
             stringList2
                 .AreEqual(stringList2, Compare.NoOrder)
-                .Should()
-                .BeTrue();
+                .ShouldBeTrue();
 
             stringList2 = new List<string>() { "Magic", "Bean", "Stalk" };
-            stringList.AreEqual(stringList2).Should().BeFalse();
+            stringList.AreEqual(stringList2).ShouldBeFalse();
 
             stringList2 =
                 new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
-            stringList.AreEqual(stringList2).Should().BeTrue();
+            stringList.AreEqual(stringList2).ShouldBeTrue();
             stringList
                 .AreEqual(stringList2, Compare.InOrder)
-                .Should()
-                .BeFalse();
+                .ShouldBeFalse();
         }
 
         [Fact]
@@ -104,18 +97,17 @@ namespace CSharpHelperExtensions.Test
         {
             List<string> stringList = null;
             List<string> stringList2 = null;
-            stringList.AreEqual(stringList2).Should().BeTrue();
+            stringList.AreEqual(stringList2).ShouldBeTrue();
 
             stringList2 = new List<string>();
-            stringList.AreEqual(stringList2).Should().BeTrue();
+            stringList.AreEqual(stringList2).ShouldBeTrue();
 
             stringList2 =
                 new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
             var result = stringList.AreEqual(stringList2);
             stringList
                 .AreEqual(stringList2, Compare.InOrder)
-                .Should()
-                .BeFalse();
+                .ShouldBeFalse();
         }
 
         [Fact]
@@ -123,14 +115,14 @@ namespace CSharpHelperExtensions.Test
         {
             List<string> source = null;
             List<string> other = null;
-            source.AreEqual(other).Should().BeTrue();
+            source.AreEqual(other).ShouldBeTrue();
 
             source = new List<string>();
-            source.AreEqual(other).Should().BeTrue();
+            source.AreEqual(other).ShouldBeTrue();
 
             source = new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
-            source.AreEqual(other).Should().BeFalse();
-            source.AreEqual(other, Compare.InOrder).Should().BeFalse();
+            source.AreEqual(other).ShouldBeFalse();
+            source.AreEqual(other, Compare.InOrder).ShouldBeFalse();
         }
 
         [Fact]
@@ -139,12 +131,12 @@ namespace CSharpHelperExtensions.Test
             IEnumerable<int> source = new List<int>() { 1, 2, 3, 4 };
             int expected = 10;
             int actual = 0;
-            source
-                .ForEach(item =>
-                {
-                    actual += item;
-                });
-            actual.Should().Be(expected);
+            var returnValue =source
+                                .ForEach(item =>
+                                {
+                                    actual += item;
+                                });
+            actual.ShouldBe(expected);
         }
 
         [Fact]
@@ -153,7 +145,7 @@ namespace CSharpHelperExtensions.Test
             IEnumerable<int> source = new List<int>() { 1, 2, 3, 4 };
             int expected = 10;
             var actual = source.Reduce<int, int>((item, temp) => temp + item);
-            actual.Should().Be(expected);
+            actual.ShouldBe(expected);
         }
 
         [Fact]
@@ -166,8 +158,8 @@ namespace CSharpHelperExtensions.Test
                     .Reduce<int, Decimal>((item, currentTotal) =>
                         currentTotal + item,
                     1);
-            actual.Should().Be(expected);
-            actual.Should().BeOfType(expected.GetType());
+            actual.ShouldBe(expected);
+            actual.GetType().ShouldBe(expected.GetType());
         }
 
         [Fact]
@@ -180,8 +172,8 @@ namespace CSharpHelperExtensions.Test
                     .Reduce<int, Decimal>((item, currentTotal) =>
                         currentTotal + item,
                     1.5m);
-            actual.Should().Be(expected);
-            actual.Should().BeOfType(expected.GetType());
+            actual.ShouldBe(expected);
+            actual.GetType().ShouldBe(expected.GetType());
         }
     }
 }
