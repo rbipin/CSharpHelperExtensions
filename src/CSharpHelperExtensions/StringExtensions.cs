@@ -357,6 +357,46 @@ public static class StringExtensions
     public static bool IsAlphaNumeric(this string input)
         => !input.IsNullOrEmpty() && input.All(char.IsLetterOrDigit);
 
+    /// <summary>Returns <paramref name="input"/> with <paramref name="prefix"/> prepended if it does not already start with it.</summary>
+    /// <param name="input">The string to check. Returns <paramref name="prefix"/> when <see langword="null"/>.</param>
+    /// <param name="prefix">The prefix to ensure.</param>
+    public static string EnsurePrefix(this string input, string prefix)
+    {
+        if (input == null) return prefix;
+        return input.StartsWith(prefix, StringComparison.Ordinal) ? input : prefix + input;
+    }
+
+    /// <summary>Returns <paramref name="input"/> with <paramref name="suffix"/> appended if it does not already end with it.</summary>
+    /// <param name="input">The string to check. Returns <paramref name="suffix"/> when <see langword="null"/>.</param>
+    /// <param name="suffix">The suffix to ensure.</param>
+    public static string EnsureSuffix(this string input, string suffix)
+    {
+        if (input == null) return suffix;
+        return input.EndsWith(suffix, StringComparison.Ordinal) ? input : input + suffix;
+    }
+
+    /// <summary>Removes <paramref name="prefix"/> from the start of <paramref name="input"/> if present.</summary>
+    /// <param name="input">The string to trim. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
+    /// <param name="prefix">The prefix to remove.</param>
+    public static string TrimPrefix(this string input, string prefix)
+    {
+        if (input == null) return string.Empty;
+        return input.StartsWith(prefix, StringComparison.Ordinal)
+            ? input[prefix.Length..]
+            : input;
+    }
+
+    /// <summary>Removes <paramref name="suffix"/> from the end of <paramref name="input"/> if present.</summary>
+    /// <param name="input">The string to trim. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
+    /// <param name="suffix">The suffix to remove.</param>
+    public static string TrimSuffix(this string input, string suffix)
+    {
+        if (input == null) return string.Empty;
+        return input.EndsWith(suffix, StringComparison.Ordinal)
+            ? input[..^suffix.Length]
+            : input;
+    }
+
     /// <summary>
     /// Converts <paramref name="input"/> to a URL-friendly slug: lowercase, diacritics removed,
     /// non-alphanumeric characters replaced with a single dash.

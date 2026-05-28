@@ -341,6 +341,38 @@ namespace CSharpHelperExtensions.Test
             "hello!".IsAlphaNumeric().Should().BeFalse();
             ((string)null).IsAlphaNumeric().Should().BeFalse();
         }
+
+        [Fact]
+        public void Verify_EnsurePrefix_AddsIfMissing()
+        {
+            "world".EnsurePrefix("hello ").Should().Be("hello world");
+            "hello world".EnsurePrefix("hello ").Should().Be("hello world");
+            ((string)null).EnsurePrefix("hello ").Should().Be("hello ");
+        }
+
+        [Fact]
+        public void Verify_EnsureSuffix_AddsIfMissing()
+        {
+            "hello".EnsureSuffix("!").Should().Be("hello!");
+            "hello!".EnsureSuffix("!").Should().Be("hello!");
+            ((string)null).EnsureSuffix("!").Should().Be("!");
+        }
+
+        [Fact]
+        public void Verify_TrimPrefix_RemovesIfPresent()
+        {
+            "hello world".TrimPrefix("hello ").Should().Be("world");
+            "world".TrimPrefix("hello ").Should().Be("world");
+            ((string)null).TrimPrefix("hello ").Should().Be("");
+        }
+
+        [Fact]
+        public void Verify_TrimSuffix_RemovesIfPresent()
+        {
+            "hello!".TrimSuffix("!").Should().Be("hello");
+            "hello".TrimSuffix("!").Should().Be("hello");
+            ((string)null).TrimSuffix("!").Should().Be("");
+        }
     }
 }
 
