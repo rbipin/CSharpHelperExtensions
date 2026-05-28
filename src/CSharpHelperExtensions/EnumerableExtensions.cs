@@ -53,14 +53,12 @@ public static class EnumerableExtensions
     public static bool ContainsOnly<T>(this IEnumerable<T> enumerable, params T[] value)
     {
         if (value.IsNullOrEmpty() || enumerable.IsNullOrEmpty())
-        {
             return false;
-        }
-        if (enumerable.Count() != value.Count())
-        {
+        var list = enumerable.ToList();
+        if (list.Count != value.Length)
             return false;
-        }
-        return value.All(item => enumerable.Contains(item));
+        var set = new HashSet<T>(list);
+        return value.All(set.Contains);
     }
 
     /// <summary>
@@ -106,37 +104,27 @@ public static class EnumerableExtensions
         {
             return true;
         }
-        values ??= new List<T>();
-        enumerable ??= new List<T>();
+
         if (ReferenceEquals(enumerable, values))
         {
             return true;
         }
-        if (values.Count() != enumerable.Count())
+
+        var left = enumerable?.ToList() ?? [];
+        var right = values?.ToList() ?? [];
+
+        if (left.Count != right.Count)
         {
             return false;
         }
-        return comparison switch
-        {
-            Compare.InOrder => CompareItemsInOrder(enumerable, values),
-            Compare.NoOrder => enumerable.All(item => values.Contains(item)),
-            _ => false,
-        };
-    }
 
-    private static bool CompareItemsInOrder<T>(IEnumerable<T> list1, IEnumerable<T> list2)
-    {
-        var firstList = list1.ToList();
-        var secondList = list2.ToList();
-        for (int index = 0; index <= firstList.Count - 1; index++)
+        if (comparison == Compare.InOrder)
         {
-            var areEqual = firstList[index].Equals(secondList[index]);
-            if (!areEqual)
-            {
-                return false;
-            }
+            return left.SequenceEqual(right);
         }
-        return true;
+
+        var rightSet = new HashSet<T>(right);
+        return left.All(rightSet.Contains);
     }
 
     /// <summary>
@@ -166,21 +154,10 @@ public static class EnumerableExtensions
     /// </example>
     public static IEnumerable<T> CleanNullOrEmptyItems<T>(this IEnumerable<T> value)
     {
-        var list = value?.ToList();
-        if (list is null || !list.Any())
-        {
+        if (value is null)
             return [];
-        }
-
-        return list.Where(item =>
-            {
-                if (item is string itemStr)
-                {
-                    return !string.IsNullOrWhiteSpace(itemStr);
-                }
-
-                return item is not null;
-            })
+        return value
+            .Where(item => item is string s ? !string.IsNullOrWhiteSpace(s) : item is not null)
             .ToList();
     }
 
@@ -203,10 +180,7 @@ public static class EnumerableExtensions
     /// </code>
     /// </example>
     public static bool IsNullOrEmpty<T>(this IEnumerable<T> values)
-    {
-        var enumerable = values?.ToArray();
-        return enumerable == null || !enumerable.Any() || enumerable.All(item => item is null);
-    }
+        => values is null || !values.Any(item => item is not null);
 
     /// <summary>
     /// Executes an action on each element of the sequence and returns the original sequence unchanged.
@@ -250,10 +224,7 @@ public static class EnumerableExtensions
     /// A <see cref="Task"/> that completes when all async actions have finished.
     /// </returns>
     public static Task ForEach<T>(this IEnumerable<T> values, Func<T, Task> execute)
-    {
-        var collection = values?.ToList() ?? new List<T>();
-        return Task.WhenAll(collection.Select(item => execute(item)));
-    }
+        => Task.WhenAll(values.OrEmpty().Select(execute));
 
     /// <summary>
     /// Asynchronously projects each element of a sequence using the given async transform
@@ -268,15 +239,11 @@ public static class EnumerableExtensions
     /// as each async operation completes.
     /// </returns>
     public static async IAsyncEnumerable<K> ForEach<T, K>(
-    this IEnumerable<T> values,
-    Func<T, Task<K>> execute
-)
+        this IEnumerable<T> values,
+        Func<T, Task<K>> execute)
     {
-        var collection = values?.ToList() ?? new List<T>();
-        foreach (var item in collection)
-        {
+        foreach (var item in values.OrEmpty())
             yield return await execute(item);
-        }
     }
 
     /// <summary>
@@ -285,8 +252,7 @@ public static class EnumerableExtensions
     /// </summary>
     /// <param name="values">
     /// The sequence to reduce.
-    /// If <see langword="null"/> or empty, <paramref name="initialValue"/> is ignored and
-    /// <see langword="default"/>(<typeparamref name="TOut"/>) is returned.
+    /// If <see langword="null"/> or empty, returns <paramref name="initialValue"/> unchanged.
     /// </param>
     /// <param name="execute">
     /// The reducer function. Receives the current element and the current accumulated value,
@@ -312,19 +278,13 @@ public static class EnumerableExtensions
     public static TOut Reduce<TIn, TOut>(
         this IEnumerable<TIn> values,
         Func<TIn, TOut, TOut> execute,
-        TOut initialValue = default
+        TOut initialValue = default!
     )
     {
-        var collection = values?.ToList() ?? new List<TIn>();
-        var result = default(TOut);
-        var temp = initialValue;
-        foreach (var item in collection)
-        {
-            result = execute(item, temp);
-            temp = result;
-        }
-
-        return result;
+        var acc = initialValue;
+        foreach (var item in values.OrEmpty())
+            acc = execute(item, acc);
+        return acc;
     }
 
     /// <summary>
@@ -333,8 +293,7 @@ public static class EnumerableExtensions
     /// </summary>
     /// <param name="values">
     /// The sequence to reduce.
-    /// If <see langword="null"/> or empty, <paramref name="initialValue"/> is ignored and
-    /// <see langword="default"/>(<typeparamref name="TOut"/>) is returned.
+    /// If <see langword="null"/> or empty, returns <paramref name="initialValue"/> unchanged.
     /// </param>
     /// <param name="execute">
     /// The reducer function. Receives the current element, the current accumulated value,
@@ -358,20 +317,14 @@ public static class EnumerableExtensions
     public static TOut Reduce<TIn, TOut>(
         this IEnumerable<TIn> values,
         Func<TIn, TOut, int, TOut> execute,
-        TOut initialValue = default
+        TOut initialValue = default!
     )
     {
-        var collection = values?.ToList() ?? new List<TIn>();
-        var result = default(TOut);
-        var temp = initialValue;
-        for (int counter = 0; counter <= collection.Count - 1; counter++)
-        {
-            var item = collection[counter];
-            result = execute(item, temp, counter);
-            temp = result;
-        }
-
-        return result;
+        var collection = values?.ToList() ?? [];
+        var acc = initialValue;
+        for (int i = 0; i < collection.Count; i++)
+            acc = execute(collection[i], acc, i);
+        return acc;
     }
 
     /// <summary>
@@ -435,7 +388,8 @@ public static class EnumerableExtensions
     /// </returns>
     public static bool IsSingle<T>(this IEnumerable<T> source)
     {
-        if (source is null) return false;
+        if (source is null)
+            return false;
         using var e = source.GetEnumerator();
         return e.MoveNext() && !e.MoveNext();
     }
@@ -466,11 +420,13 @@ public static class EnumerableExtensions
     /// </returns>
     public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
-        if (source is null) return -1;
+        if (source is null)
+            return -1;
         int index = 0;
         foreach (var item in source)
         {
-            if (predicate(item)) return index;
+            if (predicate(item))
+                return index;
             index++;
         }
         return -1;
@@ -483,10 +439,8 @@ public static class EnumerableExtensions
     /// <typeparam name="T">The element type (must be a reference type).</typeparam>
     /// <param name="source">The sequence to filter.</param>
     /// <returns>A sequence containing only non-null elements.</returns>
-#nullable enable
     public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) where T : class
         => source is null ? System.Linq.Enumerable.Empty<T>() : source.Where(x => x is not null).Cast<T>();
-#nullable restore
 
     /// <summary>
     /// Materializes the sequence into an <see cref="IReadOnlyList{T}"/>, preserving order.
@@ -598,7 +552,8 @@ public static class EnumerableExtensions
     /// </example>
     public static IList<T> AddIf<T>(this IList<T> list, bool condition, T item)
     {
-        if (condition) list.Add(item);
+        if (condition)
+            list.Add(item);
         return list;
     }
 
@@ -674,8 +629,10 @@ public static class EnumerableExtensions
         var rest = new List<T>();
         foreach (var item in source ?? System.Linq.Enumerable.Empty<T>())
         {
-            if (predicate(item)) matched.Add(item);
-            else rest.Add(item);
+            if (predicate(item))
+                matched.Add(item);
+            else
+                rest.Add(item);
         }
         return (matched, rest);
     }
@@ -754,7 +711,8 @@ public static class EnumerableExtensions
         Func<T, Task<TResult>> selector,
         int? maxParallel = null)
     {
-        if (source is null) return [];
+        if (source is null)
+            return [];
 
         if (maxParallel is null)
             return await Task.WhenAll(source.Select(selector));
@@ -763,7 +721,8 @@ public static class EnumerableExtensions
         var tasks = source.Select(async item =>
         {
             await semaphore.WaitAsync();
-            try { return await selector(item); }
+            try
+            { return await selector(item); }
             finally { semaphore.Release(); }
         });
         return await Task.WhenAll(tasks);

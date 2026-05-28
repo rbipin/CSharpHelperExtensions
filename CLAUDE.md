@@ -19,8 +19,8 @@ dotnet test --filter "FullyQualifiedName~<TestMethodName>"
 # Example:
 dotnet test --filter "FullyQualifiedName~Verify_In_Exists"
 
-# Run all tests in a specific class
-dotnet test --filter "ClassName~EnumerableExtensionTest"
+# Run all tests in a specific class (ClassName~ filter does NOT work; use FullyQualifiedName~)
+dotnet test --filter "FullyQualifiedName~EnumerableExtensionTest"
 
 # Build only the library project
 dotnet build src/CSharpHelperExtensions/CSharpHelperExtensions.csproj
@@ -43,7 +43,7 @@ dotnet test CSharpHelperExtensions.slnx
 This is a two-project solution:
 
 - **`src/CSharpHelperExtensions/`** — `net10.0` class library. The publishable NuGet package (`CSharpHelperExtensions` v2.0.0). Depends only on `Newtonsoft.Json`.
-- **`src/CSharpHelperExtensions.Test/`** — xUnit test project (`net10.0`) using FluentAssertions.
+- **`src/CSharpHelperExtensions.Test/`** — xUnit test project (`net10.0`) using Shouldly for assertions.
 
 Root-level config files: `CSharpHelperExtensions.slnx` (solution entry point), `global.json` (pins SDK to 10.0.x), `.editorconfig` (C# code style + formatting rules), `.config/dotnet-tools.json` (CSharpier formatter).
 
@@ -54,8 +54,8 @@ The library splits extensions across three namespaces — callers must import th
 | File | Namespace | Key types |
 |------|-----------|-----------|
 | `GenericExtensions.cs` | `CSharpHelperExtensions` | `In`, `IsNullOrEmpty` (string), `IsBetween`, `ToJson` |
-| `EnumerableExtensions.cs` | `CSharpHelperExtensions.Enumerable` | `IsNullOrEmpty<T>`, `CleanNullOrEmptyItems`, `ContainsOnly`, `AreEqual`, `ForEach`, `Reduce` |
-| `StringExtensions.cs` | `CSharpHelperExtensions.Strings` | `ToNullable<T>` |
+| `EnumerableExtensions.cs` | `CSharpHelperExtensions.Enumerable` | `IsNullOrEmpty<T>`, `HasAny`, `None`, `CleanNullOrEmptyItems`, `WhereNotNull`, `ContainsOnly`, `AreEqual`, `ForEach`, `Reduce`, `SelectAsync`, `WhenAllList`, `Partition`, `Batch`, `MinByOrDefault`, `MaxByOrDefault`, `ToDictionarySafe`, `AddIf`, `AddRangeIf`, `ConcatIf`, `IsSingle`, `IndexOf`, `Yield`, `WithIndex`, `JoinAsString`, `AsReadOnlyList`, `ToHashSetSafe`, `OrEmpty` |
+| `StringExtensions.cs` | `CSharpHelperExtensions.Strings` | `IsNullOrEmpty`, `HasValue`, `OrEmpty`, `OrDefault`, `Truncate`, `Reverse`, `TrimToLower`, `TrimToUpper`, `ToTitleCase`, `ToSlug`, `MaskStart`, `EqualsIgnoreCase`, `ContainsIgnoreCase`, `StartsWithIgnoreCase`, `EndsWithIgnoreCase`, `EnsurePrefix`, `EnsureSuffix`, `TrimPrefix`, `TrimSuffix`, `SplitNonEmpty`, `JoinWith`, `ReplaceMany`, `RemoveWhitespace`, `CollapseWhitespace`, `RemoveDiacritics`, `IsNumeric`, `IsAlpha`, `IsAlphaNumeric`, `ToNullable<T>`, `ToIntOrNull`, `ToDecimalOrNull`, `ToDateTimeOrNull`, `ToGuidOrNull`, `ToBoolOrNull`, `Base64Encode`, `Base64Decode`, `ToBase64Url`, `FromBase64Url`, `ToUtf8Bytes`, `ToUtf8Stream` |
 
 `IsNullOrEmpty` exists in **both** `GenericExtensions` (for `string`) and `EnumerableExtensions` (for `IEnumerable<T>`). Be careful about which namespace is imported.
 

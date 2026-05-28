@@ -14,6 +14,37 @@ public static class StringExtensions
     private static readonly Regex CollapseRegex = new(@"\s+", RegexOptions.Compiled);
 
     /// <summary>
+    /// Returns <see langword="true"/> if the string is <see langword="null"/>, empty,
+    /// or consists only of whitespace characters.
+    /// Delegates to <see cref="string.IsNullOrWhiteSpace"/>.
+    /// </summary>
+    /// <remarks>
+    /// Despite the name, whitespace-only strings are treated as empty (uses <see cref="string.IsNullOrWhiteSpace"/> internally,
+    /// not <see cref="string.IsNullOrEmpty"/>).
+    /// This overload operates on <see cref="string"/>.
+    /// For collections, use
+    /// <see cref="CSharpHelperExtensions.Enumerable.EnumerableExtensions.IsNullOrEmpty{T}(IEnumerable{T})"/>
+    /// (requires the <c>CSharpHelperExtensions.Enumerable</c> namespace).
+    /// </remarks>
+    /// <param name="value">The string to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="value"/> is <see langword="null"/>, empty, or whitespace-only;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// ((string)null).IsNullOrEmpty()   // true
+    /// "".IsNullOrEmpty()               // true
+    /// "   ".IsNullOrEmpty()            // true  (whitespace only)
+    /// "hello".IsNullOrEmpty()          // false
+    /// </code>
+    /// </example>
+    public static bool IsNullOrEmpty(this string value)
+    {
+        return string.IsNullOrWhiteSpace(value);
+    }
+
+    /// <summary>
     /// Converts a string to the specified nullable value type using its registered <see cref="TypeConverter"/>.
     /// Returns <see langword="null"/> when the input is <see langword="null"/>, empty, or whitespace.
     /// </summary>
@@ -45,7 +76,10 @@ public static class StringExtensions
     public static T? ToNullable<T>(this string input) where T : struct
     {
         if (input.IsNullOrEmpty())
+        {
             return null;
+        }
+
         var converter = TypeDescriptor.GetConverter(typeof(T));
         return (T?)converter.ConvertFrom(input);
     }
@@ -90,7 +124,8 @@ public static class StringExtensions
     public static string Truncate(this string input, int maxLength)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(maxLength);
-        if (input == null) return string.Empty;
+        if (input == null)
+            return string.Empty;
         return input.Length <= maxLength ? input : input[..maxLength];
     }
 
@@ -102,7 +137,8 @@ public static class StringExtensions
     /// <returns>The reversed string.</returns>
     public static string Reverse(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+            return string.Empty;
         var chars = input.ToCharArray();
         Array.Reverse(chars);
         return new string(chars);
@@ -131,7 +167,8 @@ public static class StringExtensions
     /// <param name="value">The substring to search for.</param>
     public static bool ContainsIgnoreCase(this string input, string value)
     {
-        if (input == null || value == null) return false;
+        if (input == null || value == null)
+            return false;
         return input.Contains(value, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -140,7 +177,8 @@ public static class StringExtensions
     /// <param name="value">The prefix to look for.</param>
     public static bool StartsWithIgnoreCase(this string input, string value)
     {
-        if (input == null || value == null) return false;
+        if (input == null || value == null)
+            return false;
         return input.StartsWith(value, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -149,7 +187,8 @@ public static class StringExtensions
     /// <param name="value">The suffix to look for.</param>
     public static bool EndsWithIgnoreCase(this string input, string value)
     {
-        if (input == null || value == null) return false;
+        if (input == null || value == null)
+            return false;
         return input.EndsWith(value, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -169,8 +208,10 @@ public static class StringExtensions
     /// </example>
     public static string MaskStart(this string input, int visibleCount, char maskChar = '*')
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
-        if (visibleCount >= input.Length) return input;
+        if (input.IsNullOrEmpty())
+            return string.Empty;
+        if (visibleCount >= input.Length)
+            return input;
         var maskLength = input.Length - visibleCount;
         return new string(maskChar, maskLength) + input[maskLength..];
     }
@@ -208,7 +249,8 @@ public static class StringExtensions
     /// <returns>The Base64-encoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string Base64Encode(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+            return null;
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
     }
 
@@ -217,7 +259,8 @@ public static class StringExtensions
     /// <returns>The decoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string Base64Decode(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+            return null;
         return Encoding.UTF8.GetString(Convert.FromBase64String(input));
     }
 
@@ -229,7 +272,8 @@ public static class StringExtensions
     /// <returns>The URL-safe Base64 string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string ToBase64Url(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+            return null;
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(input))
             .Replace('+', '-')
             .Replace('/', '_')
@@ -243,7 +287,8 @@ public static class StringExtensions
     /// <returns>The decoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string FromBase64Url(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+            return null;
         var padded = input.Replace('-', '+').Replace('_', '/');
         padded = (padded.Length % 4) switch
         {
@@ -285,7 +330,8 @@ public static class StringExtensions
     /// <returns>Non-empty segments after splitting.</returns>
     public static string[] SplitNonEmpty(this string input, params char[] separators)
     {
-        if (input.IsNullOrEmpty()) return [];
+        if (input.IsNullOrEmpty())
+            return [];
         return input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
     }
 
@@ -294,7 +340,8 @@ public static class StringExtensions
     /// <returns>The string with all whitespace removed.</returns>
     public static string RemoveWhitespace(this string input)
     {
-        if (input == null) return string.Empty;
+        if (input == null)
+            return string.Empty;
         return string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
     }
 
@@ -305,7 +352,8 @@ public static class StringExtensions
     /// <returns>The collapsed string.</returns>
     public static string CollapseWhitespace(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+            return string.Empty;
         return CollapseRegex.Replace(input.Trim(), " ");
     }
 
@@ -317,7 +365,8 @@ public static class StringExtensions
     /// <returns>The resulting string after all replacements.</returns>
     public static string ReplaceMany(this string input, IEnumerable<(string OldValue, string NewValue)> pairs)
     {
-        if (input == null) return string.Empty;
+        if (input == null)
+            return string.Empty;
         var result = input;
         foreach (var (oldValue, newValue) in pairs ?? [])
             result = result.Replace(oldValue, newValue);
@@ -332,7 +381,8 @@ public static class StringExtensions
     /// <returns>The string with diacritics removed.</returns>
     public static string RemoveDiacritics(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+            return string.Empty;
         var normalized = input.Normalize(NormalizationForm.FormD);
         var sb = new StringBuilder(normalized.Length);
         foreach (var c in normalized)
@@ -365,7 +415,8 @@ public static class StringExtensions
     public static string EnsurePrefix(this string input, string prefix)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        if (input == null) return prefix;
+        if (input == null)
+            return prefix;
         return input.StartsWith(prefix, StringComparison.Ordinal) ? input : prefix + input;
     }
 
@@ -376,7 +427,8 @@ public static class StringExtensions
     public static string EnsureSuffix(this string input, string suffix)
     {
         ArgumentNullException.ThrowIfNull(suffix);
-        if (input == null) return suffix;
+        if (input == null)
+            return suffix;
         return input.EndsWith(suffix, StringComparison.Ordinal) ? input : input + suffix;
     }
 
@@ -387,7 +439,8 @@ public static class StringExtensions
     public static string TrimPrefix(this string input, string prefix)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        if (input == null) return string.Empty;
+        if (input == null)
+            return string.Empty;
         return input.StartsWith(prefix, StringComparison.Ordinal)
             ? input[prefix.Length..]
             : input;
@@ -400,7 +453,8 @@ public static class StringExtensions
     public static string TrimSuffix(this string input, string suffix)
     {
         ArgumentNullException.ThrowIfNull(suffix);
-        if (input == null) return string.Empty;
+        if (input == null)
+            return string.Empty;
         return input.EndsWith(suffix, StringComparison.Ordinal)
             ? input[..^suffix.Length]
             : input;
@@ -414,7 +468,8 @@ public static class StringExtensions
     /// <returns>The slug string, e.g. <c>"Hello World!"</c> → <c>"hello-world"</c>.</returns>
     public static string ToSlug(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+            return string.Empty;
         var clean = input.RemoveDiacritics().ToLowerInvariant();
         var sb = new StringBuilder(clean.Length);
         var lastWasDash = false;
@@ -444,7 +499,8 @@ public static class StringExtensions
     /// <returns>The title-cased string, e.g. <c>"hello world"</c> → <c>"Hello World"</c>.</returns>
     public static string ToTitleCase(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+            return string.Empty;
         var words = input.ToLowerInvariant().CollapseWhitespace().Split(' ');
         for (var i = 0; i < words.Length; i++)
             words[i] = char.ToUpperInvariant(words[i][0]) + words[i][1..];
