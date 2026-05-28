@@ -435,4 +435,23 @@ public static class StringExtensions
             sb.Length--;
         return sb.ToString();
     }
+
+    /// <summary>
+    /// Converts <paramref name="input"/> to simple title case: lowercases the string,
+    /// collapses whitespace, then capitalizes the first letter of each word.
+    /// </summary>
+    /// <param name="input">The string to convert. Returns <see cref="string.Empty"/> when <see langword="null"/> or whitespace.</param>
+    /// <returns>The title-cased string, e.g. <c>"hello world"</c> → <c>"Hello World"</c>.</returns>
+    public static string ToTitleCase(this string input)
+    {
+        if (input.IsNullOrEmpty()) return string.Empty;
+        var collapsed = CollapseRegex.Replace(input.Trim().ToLowerInvariant(), " ");
+        var words = collapsed.Split(' ');
+        for (var i = 0; i < words.Length; i++)
+        {
+            if (words[i].Length > 0)
+                words[i] = char.ToUpperInvariant(words[i][0]) + words[i][1..];
+        }
+        return string.Join(" ", words);
+    }
 }
