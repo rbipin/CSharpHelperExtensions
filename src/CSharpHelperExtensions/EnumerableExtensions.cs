@@ -169,7 +169,7 @@ public static class EnumerableExtensions
         var list = value?.ToList();
         if (list is null || !list.Any())
         {
-            return null;
+            return [];
         }
 
         return list.Where(item =>
