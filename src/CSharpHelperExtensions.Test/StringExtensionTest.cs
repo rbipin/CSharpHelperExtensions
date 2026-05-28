@@ -373,6 +373,20 @@ namespace CSharpHelperExtensions.Test
             "hello".TrimSuffix("!").Should().Be("hello");
             ((string)null).TrimSuffix("!").Should().Be("");
         }
+
+        [Fact]
+        public void Verify_EnsurePrefix_ThrowsOnNullPrefix()
+        {
+            var act = () => "hello".EnsurePrefix(null);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Verify_TrimPrefix_ThrowsOnNullPrefix()
+        {
+            var act = () => "hello".TrimPrefix(null);
+            act.Should().Throw<ArgumentNullException>();
+        }
     }
 }
 

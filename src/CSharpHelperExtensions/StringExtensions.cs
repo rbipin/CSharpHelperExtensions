@@ -12,6 +12,7 @@ namespace CSharpHelperExtensions.Strings;
 public static class StringExtensions
 {
     private static readonly Regex CollapseRegex = new(@"\s+", RegexOptions.Compiled);
+
     /// <summary>
     /// Converts a string to the specified nullable value type using its registered <see cref="TypeConverter"/>.
     /// Returns <see langword="null"/> when the input is <see langword="null"/>, empty, or whitespace.
@@ -174,15 +175,15 @@ public static class StringExtensions
         return new string(maskChar, maskLength) + input[maskLength..];
     }
 
-    /// <summary>Parses <paramref name="input"/> as <see cref="int"/>. Returns <see langword="null"/> if the string is not a valid integer.</summary>
+    /// <summary>Parses <paramref name="input"/> as <see cref="int"/> using invariant culture. Returns <see langword="null"/> if the string is not a valid integer.</summary>
     /// <param name="input">The string to parse.</param>
     public static int? ToIntOrNull(this string input)
-        => int.TryParse(input, out var v) ? v : null;
+        => int.TryParse(input, NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : null;
 
-    /// <summary>Parses <paramref name="input"/> as <see cref="decimal"/>. Returns <see langword="null"/> if the string is not a valid decimal number.</summary>
+    /// <summary>Parses <paramref name="input"/> as <see cref="decimal"/> using invariant culture. Returns <see langword="null"/> if the string is not a valid decimal number.</summary>
     /// <param name="input">The string to parse.</param>
     public static decimal? ToDecimalOrNull(this string input)
-        => decimal.TryParse(input, out var v) ? v : null;
+        => decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out var v) ? v : null;
 
     /// <summary>Parses <paramref name="input"/> as <see cref="DateTime"/>. Returns <see langword="null"/> if the string is not a valid date/time.</summary>
     /// <param name="input">The string to parse.</param>
@@ -318,7 +319,7 @@ public static class StringExtensions
     {
         if (input == null) return string.Empty;
         var result = input;
-        foreach (var (oldValue, newValue) in pairs)
+        foreach (var (oldValue, newValue) in pairs ?? [])
             result = result.Replace(oldValue, newValue);
         return result;
     }
@@ -360,8 +361,10 @@ public static class StringExtensions
     /// <summary>Returns <paramref name="input"/> with <paramref name="prefix"/> prepended if it does not already start with it.</summary>
     /// <param name="input">The string to check. Returns <paramref name="prefix"/> when <see langword="null"/>.</param>
     /// <param name="prefix">The prefix to ensure.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="prefix"/> is <see langword="null"/>.</exception>
     public static string EnsurePrefix(this string input, string prefix)
     {
+        ArgumentNullException.ThrowIfNull(prefix);
         if (input == null) return prefix;
         return input.StartsWith(prefix, StringComparison.Ordinal) ? input : prefix + input;
     }
@@ -369,8 +372,10 @@ public static class StringExtensions
     /// <summary>Returns <paramref name="input"/> with <paramref name="suffix"/> appended if it does not already end with it.</summary>
     /// <param name="input">The string to check. Returns <paramref name="suffix"/> when <see langword="null"/>.</param>
     /// <param name="suffix">The suffix to ensure.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="suffix"/> is <see langword="null"/>.</exception>
     public static string EnsureSuffix(this string input, string suffix)
     {
+        ArgumentNullException.ThrowIfNull(suffix);
         if (input == null) return suffix;
         return input.EndsWith(suffix, StringComparison.Ordinal) ? input : input + suffix;
     }
@@ -378,8 +383,10 @@ public static class StringExtensions
     /// <summary>Removes <paramref name="prefix"/> from the start of <paramref name="input"/> if present.</summary>
     /// <param name="input">The string to trim. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
     /// <param name="prefix">The prefix to remove.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="prefix"/> is <see langword="null"/>.</exception>
     public static string TrimPrefix(this string input, string prefix)
     {
+        ArgumentNullException.ThrowIfNull(prefix);
         if (input == null) return string.Empty;
         return input.StartsWith(prefix, StringComparison.Ordinal)
             ? input[prefix.Length..]
@@ -389,8 +396,10 @@ public static class StringExtensions
     /// <summary>Removes <paramref name="suffix"/> from the end of <paramref name="input"/> if present.</summary>
     /// <param name="input">The string to trim. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
     /// <param name="suffix">The suffix to remove.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="suffix"/> is <see langword="null"/>.</exception>
     public static string TrimSuffix(this string input, string suffix)
     {
+        ArgumentNullException.ThrowIfNull(suffix);
         if (input == null) return string.Empty;
         return input.EndsWith(suffix, StringComparison.Ordinal)
             ? input[..^suffix.Length]
