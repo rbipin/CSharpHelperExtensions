@@ -314,6 +314,33 @@ namespace CSharpHelperExtensions.Test
             "---".ToSlug().Should().Be("");
             ((string)null).ToSlug().Should().Be("");
         }
+
+        [Fact]
+        public void Verify_IsNumeric_DetectsDigitOnlyStrings()
+        {
+            "123".IsNumeric().Should().BeTrue();
+            "12.3".IsNumeric().Should().BeFalse();
+            "abc".IsNumeric().Should().BeFalse();
+            ((string)null).IsNumeric().Should().BeFalse();
+            "".IsNumeric().Should().BeFalse();
+        }
+
+        [Fact]
+        public void Verify_IsAlpha_DetectsLetterOnlyStrings()
+        {
+            "hello".IsAlpha().Should().BeTrue();
+            "hello1".IsAlpha().Should().BeFalse();
+            "héllo".IsAlpha().Should().BeTrue();
+            ((string)null).IsAlpha().Should().BeFalse();
+        }
+
+        [Fact]
+        public void Verify_IsAlphaNumeric_DetectsLetterOrDigitStrings()
+        {
+            "hello123".IsAlphaNumeric().Should().BeTrue();
+            "hello!".IsAlphaNumeric().Should().BeFalse();
+            ((string)null).IsAlphaNumeric().Should().BeFalse();
+        }
     }
 }
 

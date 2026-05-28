@@ -342,6 +342,21 @@ public static class StringExtensions
         return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 
+    /// <summary>Returns <see langword="true"/> if <paramref name="input"/> is non-empty and all characters are digits (0–9).</summary>
+    /// <param name="input">The string to test.</param>
+    public static bool IsNumeric(this string input)
+        => !input.IsNullOrEmpty() && input.All(char.IsDigit);
+
+    /// <summary>Returns <see langword="true"/> if <paramref name="input"/> is non-empty and all characters are Unicode letters.</summary>
+    /// <param name="input">The string to test.</param>
+    public static bool IsAlpha(this string input)
+        => !input.IsNullOrEmpty() && input.All(char.IsLetter);
+
+    /// <summary>Returns <see langword="true"/> if <paramref name="input"/> is non-empty and all characters are Unicode letters or digits.</summary>
+    /// <param name="input">The string to test.</param>
+    public static bool IsAlphaNumeric(this string input)
+        => !input.IsNullOrEmpty() && input.All(char.IsLetterOrDigit);
+
     /// <summary>
     /// Converts <paramref name="input"/> to a URL-friendly slug: lowercase, diacritics removed,
     /// non-alphanumeric characters replaced with a single dash.
