@@ -445,13 +445,9 @@ public static class StringExtensions
     public static string ToTitleCase(this string input)
     {
         if (input.IsNullOrEmpty()) return string.Empty;
-        var collapsed = CollapseRegex.Replace(input.Trim().ToLowerInvariant(), " ");
-        var words = collapsed.Split(' ');
+        var words = input.ToLowerInvariant().CollapseWhitespace().Split(' ');
         for (var i = 0; i < words.Length; i++)
-        {
-            if (words[i].Length > 0)
-                words[i] = char.ToUpperInvariant(words[i][0]) + words[i][1..];
-        }
+            words[i] = char.ToUpperInvariant(words[i][0]) + words[i][1..];
         return string.Join(" ", words);
     }
 }
