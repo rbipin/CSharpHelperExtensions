@@ -300,5 +300,30 @@ namespace CSharpHelperExtensions.Test
         {
             ((IEnumerable<string>)null).WithIndex().ShouldBeEmpty();
         }
+
+        [Fact]
+        public void ToDictionarySafe_CreatesDictionaryFromSequence()
+        {
+            var result = new[] { ("a", 1), ("b", 2) }
+                .ToDictionarySafe(x => x.Item1, x => x.Item2);
+            result["a"].ShouldBe(1);
+            result["b"].ShouldBe(2);
+        }
+
+        [Fact]
+        public void ToDictionarySafe_KeepsLastValue_OnDuplicateKey()
+        {
+            var result = new[] { ("a", 1), ("a", 99) }
+                .ToDictionarySafe(x => x.Item1, x => x.Item2);
+            result["a"].ShouldBe(99);
+        }
+
+        [Fact]
+        public void ToDictionarySafe_OnNullSource_ReturnsEmptyDictionary()
+        {
+            var result = ((IEnumerable<(string, int)>)null)
+                .ToDictionarySafe(x => x.Item1, x => x.Item2);
+            result.ShouldBeEmpty();
+        }
     }
 }

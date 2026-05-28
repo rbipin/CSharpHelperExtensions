@@ -471,4 +471,45 @@ public static class EnumerableExtensions
     /// <returns>A sequence of <c>(Index, Item)</c> tuples.</returns>
     public static IEnumerable<(int Index, T Item)> WithIndex<T>(this IEnumerable<T> source)
         => (source ?? System.Linq.Enumerable.Empty<T>()).Select((item, i) => (i, item));
+
+    /// <summary>
+    /// Converts a sequence to a <see cref="Dictionary{TKey, TValue}"/> using the specified key and value selectors.
+    /// Returns an empty dictionary if the source is <see langword="null"/>.
+    /// When duplicate keys are encountered, the last value for that key is retained.
+    /// </summary>
+    /// <typeparam name="TSource">The element type of the input sequence.</typeparam>
+    /// <typeparam name="TKey">The type of the dictionary keys.</typeparam>
+    /// <typeparam name="TValue">The type of the dictionary values.</typeparam>
+    /// <param name="source">The sequence to convert to a dictionary.</param>
+    /// <param name="keySelector">A function to extract the key from each element.</param>
+    /// <param name="valueSelector">A function to extract the value from each element.</param>
+    /// <returns>
+    /// A <see cref="Dictionary{TKey, TValue}"/> containing the projected key-value pairs,
+    /// or an empty dictionary if source is <see langword="null"/>.
+    /// </returns>
+    /// <remarks>
+    /// Unlike <see cref="Enumerable.ToDictionary{TSource, TKey, TValue}"/>,
+    /// this method does not throw an <see cref="ArgumentException"/> on duplicate keys.
+    /// Instead, the last occurrence of a duplicate key overwrites previous values.
+    /// This is similar to dictionary initialization with repeated keys.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// var pairs = new[] { ("a", 1), ("b", 2), ("a", 99) };
+    /// var dict = pairs.ToDictionarySafe(x => x.Item1, x => x.Item2);
+    /// // dict["a"] == 99  (last value wins)
+    /// // dict["b"] == 2
+    /// </code>
+    /// </example>
+    public static Dictionary<TKey, TValue> ToDictionarySafe<TSource, TKey, TValue>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        Func<TSource, TValue> valueSelector)
+        where TKey : notnull
+    {
+        var dict = new Dictionary<TKey, TValue>();
+        foreach (var item in source ?? System.Linq.Enumerable.Empty<TSource>())
+            dict[keySelector(item)] = valueSelector(item);
+        return dict;
+    }
 }
