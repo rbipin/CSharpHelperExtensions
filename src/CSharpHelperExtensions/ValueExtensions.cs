@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace CSharpHelperExtensions;
+namespace CSharpHelperExtensions.Values;
 
 /// <summary>
-/// Controls which bounds are included when using <see cref="GenericExtensions.IsBetween{T}"/>.
+/// Controls which bounds are included when using <see cref="ValueExtensions.IsBetween{T}"/>.
 /// </summary>
 public enum BetweenComparison
 {
@@ -20,7 +18,7 @@ public enum BetweenComparison
     /// <summary>Inclusive lower bound, exclusive upper: lower ≤ value &lt; upper.</summary>
     ExcludeUpper
 }
-public static class GenericExtensions
+public static class ValueExtensions
 {
 
     /// <summary>
@@ -55,7 +53,7 @@ public static class GenericExtensions
             BetweenComparison.ExcludeBoth => (value.CompareTo(lower) > 0) && (value.CompareTo(upper) < 0),
             BetweenComparison.ExcludeLower => (value.CompareTo(lower) > 0) && (value.CompareTo(upper) <= 0),
             BetweenComparison.ExcludeUpper => (value.CompareTo(lower) >= 0) && (value.CompareTo(upper) < 0),
-            _ => (lower.CompareTo(value) <= 0) && (value.CompareTo(upper) <= 0)
+            _ => value.CompareTo(lower) >= 0 && value.CompareTo(upper) <= 0
         };
     }
 
@@ -65,7 +63,6 @@ public static class GenericExtensions
     /// </summary>
     /// <param name="value">The value to look for.</param>
     /// <param name="input">One or more candidate values to match against.</param>
-    /// <typeparam name="T">The type of the value and candidates.</typeparam>
     /// <remarks>
     /// Returns <see langword="false"/> when no candidates are supplied.
     /// Equality is determined by the default equality comparer for <typeparamref name="T"/>.
@@ -83,7 +80,7 @@ public static class GenericExtensions
     /// </example>
     public static bool In<T>(this T value, params T[] input)
     {
-        return input is { } && input.Contains(value);
+        return input.Contains(value);
     }
 
     /// <summary>
@@ -96,10 +93,6 @@ public static class GenericExtensions
     /// When <see langword="true"/>, the JSON output is pretty-printed with indentation.
     /// Defaults to <see langword="false"/> (compact, single-line output).
     /// </param>
-    /// <typeparam name="T">
-    /// The type of the object to serialize. Must be a reference type (<c>class</c>).
-    /// Value types (structs) must be boxed to <see cref="object"/> before calling this method.
-    /// </typeparam>
     /// <returns>
     /// A JSON string representing <paramref name="value"/>,
     /// or <see langword="null"/> if <paramref name="value"/> is <see langword="null"/>.
@@ -113,12 +106,12 @@ public static class GenericExtensions
     /// //   "Name": "Alice",
     /// //   "Age": 30
     /// // }
-    /// ((object)null).ToJson()        // null
+    /// 42.ToJson()                    // 42
     /// </code>
     /// </example>
-    public static string ToJson<T>(this T value, bool indentation = false) where T : class
+    public static string ToJson<T>(this T value, bool indentation = false)
     {
         var formatting = indentation ? Formatting.Indented : Formatting.None;
-        return value == null ? null : JsonConvert.SerializeObject(value, formatting);
+        return value is null ? null : JsonConvert.SerializeObject(value, formatting);
     }
 }

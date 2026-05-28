@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CSharpHelperExtensions.Strings;
+using CSharpHelperExtensions.Values;
 using Shouldly;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace CSharpHelperExtensions.Test
         public string LastName { get; set; }
     }
 
-    public class GenericExtensionsTest
+    public class ValueExtensionsTest
     {
         [Fact]
         public void Verify_In_Exists()

@@ -3,6 +3,14 @@ Don't Repeat Yourself Extensions
 
 A set of helper extension methods that are used very often when coding
 
+## Namespaces
+
+| Namespace | Methods |
+|---|---|
+| `CSharpHelperExtensions.Values` | `In`, `IsBetween`, `ToJson` |
+| `CSharpHelperExtensions.Enumerable` | All `IEnumerable<T>` extensions |
+| `CSharpHelperExtensions.Strings` | All `string` extensions |
+
 1. _**In() Method**_
 
 Checks to see if a item is part of the quick list
@@ -67,6 +75,7 @@ The item being compared needs to be comparable (IComparable<T>)
 
 Usage
 ```c#
+// using CSharpHelperExtensions.Values;
 decimal value = 3;
 decimal lower = 1;
 decimal upper = 3;
