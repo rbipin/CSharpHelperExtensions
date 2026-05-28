@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -755,7 +754,7 @@ public static class EnumerableExtensions
         Func<T, Task<TResult>> selector,
         int? maxParallel = null)
     {
-        if (source is null) return Array.Empty<TResult>();
+        if (source is null) return [];
 
         if (maxParallel is null)
             return await Task.WhenAll(source.Select(selector));
@@ -780,5 +779,5 @@ public static class EnumerableExtensions
     /// A <see cref="Task{T}"/> that completes with an <see cref="IReadOnlyList{T}"/> containing all task results.
     /// </returns>
     public static async Task<IReadOnlyList<T>> WhenAllList<T>(this IEnumerable<Task<T>> tasks)
-        => await Task.WhenAll(tasks ?? System.Linq.Enumerable.Empty<Task<T>>());
+        => await Task.WhenAll(tasks ?? []);
 }
