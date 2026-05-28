@@ -387,6 +387,18 @@ namespace CSharpHelperExtensions.Test
             var act = () => "hello".TrimPrefix(null);
             act.Should().Throw<ArgumentNullException>();
         }
+
+        [Fact]
+        public void Verify_ToTitleCase_CapitalizesFirstLetterOfEachWord()
+        {
+            "hello world".ToTitleCase().Should().Be("Hello World");
+            "  hELLO   wORLD  ".ToTitleCase().Should().Be("Hello World");
+            "it's a test".ToTitleCase().Should().Be("It's A Test");
+            "SINGLE".ToTitleCase().Should().Be("Single");
+            ((string)null).ToTitleCase().Should().Be("");
+            "".ToTitleCase().Should().Be("");
+            "   ".ToTitleCase().Should().Be("");
+        }
     }
 }
 
