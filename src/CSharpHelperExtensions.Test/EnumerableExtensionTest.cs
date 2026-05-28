@@ -481,5 +481,61 @@ namespace CSharpHelperExtensions.Test
         {
             ((IEnumerable<string>)null).IndexOf(x => x == "a").ShouldBe(-1);
         }
+
+        [Fact]
+        public void Partition_SplitsSequenceIntoMatchedAndRest()
+        {
+            var (matched, rest) = new[] { 1, 2, 3, 4, 5 }.Partition(x => x % 2 == 0);
+            matched.ShouldBe(new[] { 2, 4 });
+            rest.ShouldBe(new[] { 1, 3, 5 });
+        }
+
+        [Fact]
+        public void Partition_AllMatch_ReturnsEmptyRest()
+        {
+            var (matched, rest) = new[] { 2, 4, 6 }.Partition(x => x % 2 == 0);
+            matched.ShouldBe(new[] { 2, 4, 6 });
+            rest.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void Partition_NoneMatch_ReturnsEmptyMatched()
+        {
+            var (matched, rest) = new[] { 1, 3, 5 }.Partition(x => x % 2 == 0);
+            matched.ShouldBeEmpty();
+            rest.ShouldBe(new[] { 1, 3, 5 });
+        }
+
+        [Fact]
+        public void Partition_OnNullSource_ReturnsTwoEmptyLists()
+        {
+            var (matched, rest) = ((IEnumerable<int>)null).Partition(x => x > 0);
+            matched.ShouldBeEmpty();
+            rest.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void Batch_SplitsSequenceIntoChunksOfGivenSize()
+        {
+            var result = new[] { 1, 2, 3, 4, 5 }.Batch(2).ToList();
+            result.Count.ShouldBe(3);
+            result[0].ShouldBe(new[] { 1, 2 });
+            result[1].ShouldBe(new[] { 3, 4 });
+            result[2].ShouldBe(new[] { 5 });
+        }
+
+        [Fact]
+        public void Batch_OnNullSource_ReturnsEmpty()
+        {
+            ((IEnumerable<int>)null).Batch(3).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void Batch_WhenSizeLargerThanSequence_ReturnsSingleChunk()
+        {
+            var result = new[] { 1, 2 }.Batch(10).ToList();
+            result.Count.ShouldBe(1);
+            result[0].ShouldBe(new[] { 1, 2 });
+        }
     }
 }

@@ -653,4 +653,41 @@ public static class EnumerableExtensions
         var first = source ?? System.Linq.Enumerable.Empty<T>();
         return condition ? first.Concat(other ?? System.Linq.Enumerable.Empty<T>()) : first;
     }
+
+    /// <summary>
+    /// Splits a sequence into two lists based on a predicate: elements that match go into
+    /// <c>Matched</c>, all others go into <c>Rest</c>.
+    /// Returns two empty lists if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to partition. If <see langword="null"/>, treated as empty.</param>
+    /// <param name="predicate">A function that returns <see langword="true"/> for elements to include in <c>Matched</c>.</param>
+    /// <returns>
+    /// A tuple of two read-only lists: <c>Matched</c> containing elements that satisfy the predicate,
+    /// and <c>Rest</c> containing all other elements, both in original order.
+    /// </returns>
+    public static (IReadOnlyList<T> Matched, IReadOnlyList<T> Remaining) Partition<T>(
+        this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        var matched = new List<T>();
+        var rest = new List<T>();
+        foreach (var item in source ?? System.Linq.Enumerable.Empty<T>())
+        {
+            if (predicate(item)) matched.Add(item);
+            else rest.Add(item);
+        }
+        return (matched, rest);
+    }
+
+    /// <summary>
+    /// Splits a sequence into chunks of at most <paramref name="size"/> elements each.
+    /// The last chunk may contain fewer elements if the sequence length is not evenly divisible.
+    /// Returns an empty sequence if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to batch. If <see langword="null"/>, treated as empty.</param>
+    /// <param name="size">The maximum number of elements per chunk.</param>
+    /// <returns>A sequence of read-only lists, each containing at most <paramref name="size"/> elements.</returns>
+    public static IEnumerable<IReadOnlyList<T>> Batch<T>(this IEnumerable<T> source, int size)
+        => (source ?? System.Linq.Enumerable.Empty<T>()).Chunk(size).Select(c => (IReadOnlyList<T>)c);
 }
