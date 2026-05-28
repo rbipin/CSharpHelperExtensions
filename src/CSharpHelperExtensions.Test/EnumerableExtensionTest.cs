@@ -175,45 +175,45 @@ namespace CSharpHelperExtensions.Test
                     1.5m);
             actual.ShouldBe(expected);
             actual.GetType().ShouldBe(expected.GetType());
+            }
+
+        [Fact]
+        public void HasAny_ReturnsTrue_WhenSequenceHasElements()
+        {
+            new[] { 1, 2, 3 }.HasAny().ShouldBeTrue();
+            new[] { (string)null }.HasAny().ShouldBeTrue();
         }
 
-    [Fact]
-    public void HasAny_ReturnsTrue_WhenSequenceHasElements()
-    {
-        new[] { 1, 2, 3 }.HasAny().ShouldBeTrue();
-        new[] { (string)null }.HasAny().ShouldBeTrue();
-    }
+        [Fact]
+        public void HasAny_ReturnsFalse_WhenNullOrEmpty()
+        {
+            ((IEnumerable<int>)null).HasAny().ShouldBeFalse();
+            System.Linq.Enumerable.Empty<string>().HasAny().ShouldBeFalse();
+        }
 
-    [Fact]
-    public void HasAny_ReturnsFalse_WhenNullOrEmpty()
-    {
-        ((IEnumerable<int>)null).HasAny().ShouldBeFalse();
-        System.Linq.Enumerable.Empty<string>().HasAny().ShouldBeFalse();
-    }
+        [Fact]
+        public void OrEmpty_ReturnsOriginal_WhenNotNull()
+        {
+            new[] { 1, 2 }.OrEmpty().ShouldBe(new[] { 1, 2 });
+        }
 
-    [Fact]
-    public void OrEmpty_ReturnsOriginal_WhenNotNull()
-    {
-        new[] { 1, 2 }.OrEmpty().ShouldBe(new[] { 1, 2 });
-    }
+        [Fact]
+        public void OrEmpty_ReturnsEmpty_WhenNull()
+        {
+            ((IEnumerable<int>)null).OrEmpty().ShouldBeEmpty();
+        }
 
-    [Fact]
-    public void OrEmpty_ReturnsEmpty_WhenNull()
-    {
-        ((IEnumerable<int>)null).OrEmpty().ShouldBeEmpty();
-    }
+        [Fact]
+        public void None_ReturnsTrue_WhenNullOrEmpty()
+        {
+            ((IEnumerable<int>)null).None().ShouldBeTrue();
+            System.Linq.Enumerable.Empty<int>().None().ShouldBeTrue();
+        }
 
-    [Fact]
-    public void None_ReturnsTrue_WhenNullOrEmpty()
-    {
-        ((IEnumerable<int>)null).None().ShouldBeTrue();
-        System.Linq.Enumerable.Empty<int>().None().ShouldBeTrue();
-    }
-
-    [Fact]
-    public void None_ReturnsFalse_WhenSequenceHasElements()
-    {
-        new[] { 1, 2 }.None().ShouldBeFalse();
-    }
+        [Fact]
+        public void None_ReturnsFalse_WhenSequenceHasElements()
+        {
+            new[] { 1, 2 }.None().ShouldBeFalse();
+        }
     }
 }
