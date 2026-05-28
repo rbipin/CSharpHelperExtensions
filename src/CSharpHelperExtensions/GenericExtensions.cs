@@ -87,37 +87,6 @@ public static class GenericExtensions
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> if the string is <see langword="null"/>, empty,
-    /// or consists only of whitespace characters.
-    /// Delegates to <see cref="string.IsNullOrWhiteSpace"/>.
-    /// </summary>
-    /// <remarks>
-    /// Despite the name, whitespace-only strings are treated as empty (uses <see cref="string.IsNullOrWhiteSpace"/> internally,
-    /// not <see cref="string.IsNullOrEmpty"/>).
-    /// This overload operates on <see cref="string"/>.
-    /// For collections, use
-    /// <see cref="CSharpHelperExtensions.Enumerable.EnumerableExtensions.IsNullOrEmpty{T}(IEnumerable{T})"/>
-    /// (requires the <c>CSharpHelperExtensions.Enumerable</c> namespace).
-    /// </remarks>
-    /// <param name="value">The string to check.</param>
-    /// <returns>
-    /// <see langword="true"/> if <paramref name="value"/> is <see langword="null"/>, empty, or whitespace-only;
-    /// otherwise <see langword="false"/>.
-    /// </returns>
-    /// <example>
-    /// <code>
-    /// ((string)null).IsNullOrEmpty()   // true
-    /// "".IsNullOrEmpty()               // true
-    /// "   ".IsNullOrEmpty()            // true  (whitespace only)
-    /// "hello".IsNullOrEmpty()          // false
-    /// </code>
-    /// </example>
-    public static bool IsNullOrEmpty(this string value)
-    {
-        return string.IsNullOrWhiteSpace(value);
-    }
-
-    /// <summary>
     /// Serializes an object to its JSON string representation using Newtonsoft.Json.
     /// </summary>
     /// <param name="value">

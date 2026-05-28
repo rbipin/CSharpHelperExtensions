@@ -39,6 +39,7 @@ indent_size = 4
 tab_width = 4
 
 # ---- .NET code style ----
+csharp_prefer_braces = true:warning
 
 # Prefer language keywords over BCL type names
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion

@@ -14,6 +14,37 @@ public static class StringExtensions
     private static readonly Regex CollapseRegex = new(@"\s+", RegexOptions.Compiled);
 
     /// <summary>
+    /// Returns <see langword="true"/> if the string is <see langword="null"/>, empty,
+    /// or consists only of whitespace characters.
+    /// Delegates to <see cref="string.IsNullOrWhiteSpace"/>.
+    /// </summary>
+    /// <remarks>
+    /// Despite the name, whitespace-only strings are treated as empty (uses <see cref="string.IsNullOrWhiteSpace"/> internally,
+    /// not <see cref="string.IsNullOrEmpty"/>).
+    /// This overload operates on <see cref="string"/>.
+    /// For collections, use
+    /// <see cref="CSharpHelperExtensions.Enumerable.EnumerableExtensions.IsNullOrEmpty{T}(IEnumerable{T})"/>
+    /// (requires the <c>CSharpHelperExtensions.Enumerable</c> namespace).
+    /// </remarks>
+    /// <param name="value">The string to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="value"/> is <see langword="null"/>, empty, or whitespace-only;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// ((string)null).IsNullOrEmpty()   // true
+    /// "".IsNullOrEmpty()               // true
+    /// "   ".IsNullOrEmpty()            // true  (whitespace only)
+    /// "hello".IsNullOrEmpty()          // false
+    /// </code>
+    /// </example>
+    public static bool IsNullOrEmpty(this string value)
+    {
+        return string.IsNullOrWhiteSpace(value);
+    }
+
+    /// <summary>
     /// Converts a string to the specified nullable value type using its registered <see cref="TypeConverter"/>.
     /// Returns <see langword="null"/> when the input is <see langword="null"/>, empty, or whitespace.
     /// </summary>
@@ -42,10 +73,14 @@ public static class StringExtensions
     /// "not-a-number".ToNullable&lt;int&gt;()       // throws FormatException
     /// </code>
     /// </example>
-    public static T? ToNullable<T>(this string input) where T : struct
+    public static T? ToNullable<T>(this string input)
+        where T : struct
     {
         if (input.IsNullOrEmpty())
+        {
             return null;
+        }
+
         var converter = TypeDescriptor.GetConverter(typeof(T));
         return (T?)converter.ConvertFrom(input);
     }
@@ -75,8 +110,8 @@ public static class StringExtensions
     /// <param name="input">The string to test.</param>
     /// <param name="fallback">The value to return when <paramref name="input"/> is absent.</param>
     /// <returns><paramref name="input"/> if it has content; otherwise <paramref name="fallback"/>.</returns>
-    public static string OrDefault(this string input, string fallback)
-        => string.IsNullOrWhiteSpace(input) ? fallback : input;
+    public static string OrDefault(this string input, string fallback) =>
+        string.IsNullOrWhiteSpace(input) ? fallback : input;
 
     /// <summary>
     /// Returns the first <paramref name="maxLength"/> characters of <paramref name="input"/>.
@@ -90,7 +125,10 @@ public static class StringExtensions
     public static string Truncate(this string input, int maxLength)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(maxLength);
-        if (input == null) return string.Empty;
+        if (input == null)
+        {
+            return string.Empty;
+        }
         return input.Length <= maxLength ? input : input[..maxLength];
     }
 
@@ -102,7 +140,10 @@ public static class StringExtensions
     /// <returns>The reversed string.</returns>
     public static string Reverse(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
         var chars = input.ToCharArray();
         Array.Reverse(chars);
         return new string(chars);
@@ -111,27 +152,30 @@ public static class StringExtensions
     /// <summary>Trims whitespace then converts to lowercase.</summary>
     /// <param name="input">The string to transform. Accepts <see langword="null"/>.</param>
     /// <returns>The trimmed, lowercased string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
-    public static string TrimToLower(this string input)
-        => input?.Trim().ToLowerInvariant() ?? string.Empty;
+    public static string TrimToLower(this string input) =>
+        input?.Trim().ToLowerInvariant() ?? string.Empty;
 
     /// <summary>Trims whitespace then converts to uppercase.</summary>
     /// <param name="input">The string to transform. Accepts <see langword="null"/>.</param>
     /// <returns>The trimmed, upper-cased string, or <see cref="string.Empty"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
-    public static string TrimToUpper(this string input)
-        => input?.Trim().ToUpperInvariant() ?? string.Empty;
+    public static string TrimToUpper(this string input) =>
+        input?.Trim().ToUpperInvariant() ?? string.Empty;
 
     /// <summary>Returns <see langword="true"/> if both strings are equal using ordinal case-insensitive comparison.</summary>
     /// <param name="input">The source string.</param>
     /// <param name="other">The string to compare to.</param>
-    public static bool EqualsIgnoreCase(this string input, string other)
-        => string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
+    public static bool EqualsIgnoreCase(this string input, string other) =>
+        string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Returns <see langword="true"/> if <paramref name="input"/> contains <paramref name="value"/> using ordinal case-insensitive comparison.</summary>
     /// <param name="input">The string to search in.</param>
     /// <param name="value">The substring to search for.</param>
     public static bool ContainsIgnoreCase(this string input, string value)
     {
-        if (input == null || value == null) return false;
+        if (input == null || value == null)
+        {
+            return false;
+        }
         return input.Contains(value, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -140,7 +184,10 @@ public static class StringExtensions
     /// <param name="value">The prefix to look for.</param>
     public static bool StartsWithIgnoreCase(this string input, string value)
     {
-        if (input == null || value == null) return false;
+        if (input == null || value == null)
+        {
+            return false;
+        }
         return input.StartsWith(value, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -149,7 +196,10 @@ public static class StringExtensions
     /// <param name="value">The suffix to look for.</param>
     public static bool EndsWithIgnoreCase(this string input, string value)
     {
-        if (input == null || value == null) return false;
+        if (input == null || value == null)
+        {
+            return false;
+        }
         return input.EndsWith(value, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -169,46 +219,59 @@ public static class StringExtensions
     /// </example>
     public static string MaskStart(this string input, int visibleCount, char maskChar = '*')
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
-        if (visibleCount >= input.Length) return input;
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
+        if (visibleCount >= input.Length)
+        {
+            return input;
+        }
         var maskLength = input.Length - visibleCount;
         return new string(maskChar, maskLength) + input[maskLength..];
     }
 
     /// <summary>Parses <paramref name="input"/> as <see cref="int"/> using invariant culture. Returns <see langword="null"/> if the string is not a valid integer.</summary>
     /// <param name="input">The string to parse.</param>
-    public static int? ToIntOrNull(this string input)
-        => int.TryParse(input, NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : null;
+    public static int? ToIntOrNull(this string input) =>
+        int.TryParse(input, NumberStyles.Integer, CultureInfo.InvariantCulture, out var v)
+            ? v
+            : null;
 
     /// <summary>Parses <paramref name="input"/> as <see cref="decimal"/> using invariant culture. Returns <see langword="null"/> if the string is not a valid decimal number.</summary>
     /// <param name="input">The string to parse.</param>
-    public static decimal? ToDecimalOrNull(this string input)
-        => decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out var v) ? v : null;
+    public static decimal? ToDecimalOrNull(this string input) =>
+        decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out var v)
+            ? v
+            : null;
 
     /// <summary>Parses <paramref name="input"/> as <see cref="DateTime"/>. Returns <see langword="null"/> if the string is not a valid date/time.</summary>
     /// <param name="input">The string to parse.</param>
-    public static DateTime? ToDateTimeOrNull(this string input)
-        => DateTime.TryParse(input, out var v) ? v : null;
+    public static DateTime? ToDateTimeOrNull(this string input) =>
+        DateTime.TryParse(input, out var v) ? v : null;
 
     /// <summary>Parses <paramref name="input"/> as <see cref="Guid"/>. Returns <see langword="null"/> if the string is not a valid GUID.</summary>
     /// <param name="input">The string to parse.</param>
-    public static Guid? ToGuidOrNull(this string input)
-        => Guid.TryParse(input, out var v) ? v : null;
+    public static Guid? ToGuidOrNull(this string input) =>
+        Guid.TryParse(input, out var v) ? v : null;
 
     /// <summary>
     /// Parses <paramref name="input"/> as <see cref="bool"/>. Returns <see langword="null"/> if the string is not a valid boolean
     /// (<c>"true"</c> and <c>"false"</c> are accepted, case-insensitive; other values return <see langword="null"/>).
     /// </summary>
     /// <param name="input">The string to parse.</param>
-    public static bool? ToBoolOrNull(this string input)
-        => bool.TryParse(input, out var v) ? v : null;
+    public static bool? ToBoolOrNull(this string input) =>
+        bool.TryParse(input, out var v) ? v : null;
 
     /// <summary>Encodes <paramref name="input"/> as a standard Base64 string using UTF-8 encoding.</summary>
     /// <param name="input">The string to encode.</param>
     /// <returns>The Base64-encoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string Base64Encode(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+        {
+            return null;
+        }
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
     }
 
@@ -217,7 +280,10 @@ public static class StringExtensions
     /// <returns>The decoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string Base64Decode(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+        {
+            return null;
+        }
         return Encoding.UTF8.GetString(Convert.FromBase64String(input));
     }
 
@@ -229,8 +295,12 @@ public static class StringExtensions
     /// <returns>The URL-safe Base64 string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string ToBase64Url(this string input)
     {
-        if (input == null) return null;
-        return Convert.ToBase64String(Encoding.UTF8.GetBytes(input))
+        if (input == null)
+        {
+            return null;
+        }
+        return Convert
+            .ToBase64String(Encoding.UTF8.GetBytes(input))
             .Replace('+', '-')
             .Replace('/', '_')
             .TrimEnd('=');
@@ -243,13 +313,16 @@ public static class StringExtensions
     /// <returns>The decoded string, or <see langword="null"/> if <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string FromBase64Url(this string input)
     {
-        if (input == null) return null;
+        if (input == null)
+        {
+            return null;
+        }
         var padded = input.Replace('-', '+').Replace('_', '/');
         padded = (padded.Length % 4) switch
         {
             2 => padded + "==",
             3 => padded + "=",
-            _ => padded
+            _ => padded,
         };
         return Encoding.UTF8.GetString(Convert.FromBase64String(padded));
     }
@@ -257,14 +330,14 @@ public static class StringExtensions
     /// <summary>Converts <paramref name="input"/> to its UTF-8 byte representation.</summary>
     /// <param name="input">The string to encode. Returns an empty array when <see langword="null"/>.</param>
     /// <returns>UTF-8 encoded bytes.</returns>
-    public static byte[] ToUtf8Bytes(this string input)
-        => Encoding.UTF8.GetBytes(input ?? string.Empty);
+    public static byte[] ToUtf8Bytes(this string input) =>
+        Encoding.UTF8.GetBytes(input ?? string.Empty);
 
     /// <summary>Converts <paramref name="input"/> to a seekable <see cref="MemoryStream"/> using UTF-8 encoding.</summary>
     /// <param name="input">The string to stream. Returns an empty stream when <see langword="null"/>.</param>
     /// <returns>A <see cref="MemoryStream"/> containing the UTF-8 bytes.</returns>
-    public static MemoryStream ToUtf8Stream(this string input)
-        => new(Encoding.UTF8.GetBytes(input ?? string.Empty));
+    public static MemoryStream ToUtf8Stream(this string input) =>
+        new(Encoding.UTF8.GetBytes(input ?? string.Empty));
 
     /// <summary>
     /// Joins <paramref name="values"/> using <paramref name="separator"/> as the delimiter.
@@ -273,8 +346,8 @@ public static class StringExtensions
     /// <param name="separator">The separator string (this). A <see langword="null"/> separator is treated as empty.</param>
     /// <param name="values">The strings to join.</param>
     /// <returns>The joined string.</returns>
-    public static string JoinWith(this string separator, IEnumerable<string> values)
-        => string.Join(separator ?? string.Empty, values ?? []);
+    public static string JoinWith(this string separator, IEnumerable<string> values) =>
+        string.Join(separator ?? string.Empty, values ?? []);
 
     /// <summary>
     /// Splits <paramref name="input"/> on <paramref name="separators"/> and removes empty entries.
@@ -285,7 +358,10 @@ public static class StringExtensions
     /// <returns>Non-empty segments after splitting.</returns>
     public static string[] SplitNonEmpty(this string input, params char[] separators)
     {
-        if (input.IsNullOrEmpty()) return [];
+        if (input.IsNullOrEmpty())
+        {
+            return [];
+        }
         return input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
     }
 
@@ -294,7 +370,10 @@ public static class StringExtensions
     /// <returns>The string with all whitespace removed.</returns>
     public static string RemoveWhitespace(this string input)
     {
-        if (input == null) return string.Empty;
+        if (input == null)
+        {
+            return string.Empty;
+        }
         return string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
     }
 
@@ -305,7 +384,10 @@ public static class StringExtensions
     /// <returns>The collapsed string.</returns>
     public static string CollapseWhitespace(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
         return CollapseRegex.Replace(input.Trim(), " ");
     }
 
@@ -315,12 +397,20 @@ public static class StringExtensions
     /// <param name="input">The string to modify. Returns <see cref="string.Empty"/> when <see langword="null"/>.</param>
     /// <param name="pairs">Replacement pairs: each <c>OldValue</c> is replaced by <c>NewValue</c>, applied sequentially.</param>
     /// <returns>The resulting string after all replacements.</returns>
-    public static string ReplaceMany(this string input, IEnumerable<(string OldValue, string NewValue)> pairs)
+    public static string ReplaceMany(
+        this string input,
+        IEnumerable<(string OldValue, string NewValue)> pairs
+    )
     {
-        if (input == null) return string.Empty;
+        if (input == null)
+        {
+            return string.Empty;
+        }
         var result = input;
         foreach (var (oldValue, newValue) in pairs ?? [])
+        {
             result = result.Replace(oldValue, newValue);
+        }
         return result;
     }
 
@@ -332,31 +422,36 @@ public static class StringExtensions
     /// <returns>The string with diacritics removed.</returns>
     public static string RemoveDiacritics(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
         var normalized = input.Normalize(NormalizationForm.FormD);
         var sb = new StringBuilder(normalized.Length);
         foreach (var c in normalized)
         {
             if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            {
                 sb.Append(c);
+            }
         }
         return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 
     /// <summary>Returns <see langword="true"/> if <paramref name="input"/> is non-empty and all characters are digits (0–9).</summary>
     /// <param name="input">The string to test.</param>
-    public static bool IsNumeric(this string input)
-        => !input.IsNullOrEmpty() && input.All(char.IsDigit);
+    public static bool IsNumeric(this string input) =>
+        !input.IsNullOrEmpty() && input.All(char.IsDigit);
 
     /// <summary>Returns <see langword="true"/> if <paramref name="input"/> is non-empty and all characters are Unicode letters.</summary>
     /// <param name="input">The string to test.</param>
-    public static bool IsAlpha(this string input)
-        => !input.IsNullOrEmpty() && input.All(char.IsLetter);
+    public static bool IsAlpha(this string input) =>
+        !input.IsNullOrEmpty() && input.All(char.IsLetter);
 
     /// <summary>Returns <see langword="true"/> if <paramref name="input"/> is non-empty and all characters are Unicode letters or digits.</summary>
     /// <param name="input">The string to test.</param>
-    public static bool IsAlphaNumeric(this string input)
-        => !input.IsNullOrEmpty() && input.All(char.IsLetterOrDigit);
+    public static bool IsAlphaNumeric(this string input) =>
+        !input.IsNullOrEmpty() && input.All(char.IsLetterOrDigit);
 
     /// <summary>Returns <paramref name="input"/> with <paramref name="prefix"/> prepended if it does not already start with it.</summary>
     /// <param name="input">The string to check. Returns <paramref name="prefix"/> when <see langword="null"/>.</param>
@@ -365,7 +460,10 @@ public static class StringExtensions
     public static string EnsurePrefix(this string input, string prefix)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        if (input == null) return prefix;
+        if (input == null)
+        {
+            return prefix;
+        }
         return input.StartsWith(prefix, StringComparison.Ordinal) ? input : prefix + input;
     }
 
@@ -376,7 +474,10 @@ public static class StringExtensions
     public static string EnsureSuffix(this string input, string suffix)
     {
         ArgumentNullException.ThrowIfNull(suffix);
-        if (input == null) return suffix;
+        if (input == null)
+        {
+            return suffix;
+        }
         return input.EndsWith(suffix, StringComparison.Ordinal) ? input : input + suffix;
     }
 
@@ -387,10 +488,11 @@ public static class StringExtensions
     public static string TrimPrefix(this string input, string prefix)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        if (input == null) return string.Empty;
-        return input.StartsWith(prefix, StringComparison.Ordinal)
-            ? input[prefix.Length..]
-            : input;
+        if (input == null)
+        {
+            return string.Empty;
+        }
+        return input.StartsWith(prefix, StringComparison.Ordinal) ? input[prefix.Length..] : input;
     }
 
     /// <summary>Removes <paramref name="suffix"/> from the end of <paramref name="input"/> if present.</summary>
@@ -400,10 +502,11 @@ public static class StringExtensions
     public static string TrimSuffix(this string input, string suffix)
     {
         ArgumentNullException.ThrowIfNull(suffix);
-        if (input == null) return string.Empty;
-        return input.EndsWith(suffix, StringComparison.Ordinal)
-            ? input[..^suffix.Length]
-            : input;
+        if (input == null)
+        {
+            return string.Empty;
+        }
+        return input.EndsWith(suffix, StringComparison.Ordinal) ? input[..^suffix.Length] : input;
     }
 
     /// <summary>
@@ -414,7 +517,10 @@ public static class StringExtensions
     /// <returns>The slug string, e.g. <c>"Hello World!"</c> → <c>"hello-world"</c>.</returns>
     public static string ToSlug(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
         var clean = input.RemoveDiacritics().ToLowerInvariant();
         var sb = new StringBuilder(clean.Length);
         var lastWasDash = false;
@@ -432,7 +538,9 @@ public static class StringExtensions
             }
         }
         if (sb.Length > 0 && sb[^1] == '-')
+        {
             sb.Length--;
+        }
         return sb.ToString();
     }
 
@@ -444,10 +552,15 @@ public static class StringExtensions
     /// <returns>The title-cased string, e.g. <c>"hello world"</c> → <c>"Hello World"</c>.</returns>
     public static string ToTitleCase(this string input)
     {
-        if (input.IsNullOrEmpty()) return string.Empty;
+        if (input.IsNullOrEmpty())
+        {
+            return string.Empty;
+        }
         var words = input.ToLowerInvariant().CollapseWhitespace().Split(' ');
         for (var i = 0; i < words.Length; i++)
+        {
             words[i] = char.ToUpperInvariant(words[i][0]) + words[i][1..];
+        }
         return string.Join(" ", words);
     }
 }

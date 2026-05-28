@@ -20,6 +20,14 @@ namespace CSharpHelperExtensions.Test
         }
 
         [Fact]
+        public void Verify_IsNullOrEmpty_ReturnsFalse_WhenHasContent()
+        {
+            "hello".IsNullOrEmpty().ShouldBeFalse();
+            " x ".IsNullOrEmpty().ShouldBeFalse();
+            "0".IsNullOrEmpty().ShouldBeFalse();
+        }
+
+        [Fact]
         public void Verify_HasValue_ReturnsTrue_WhenNotNullOrWhitespace()
         {
             "hello".HasValue().ShouldBeTrue();
@@ -138,6 +146,22 @@ namespace CSharpHelperExtensions.Test
         public void Verify_MaskStart_UsesCustomChar()
         {
             "123456".MaskStart(2, '#').ShouldBe("####56");
+        }
+
+        [Fact]
+        public void Verify_ToNullable_ParsesValidInput()
+        {
+            "42".ToNullable<int>().ShouldBe(42);
+            "-7".ToNullable<int>().ShouldBe(-7);
+            "".ToNullable<int>().ShouldBeNull();
+            "   ".ToNullable<int>().ShouldBeNull();
+            ((string)null).ToNullable<int>().ShouldBeNull();
+        }
+
+        [Fact]
+        public void Verify_ToNullable_ThrowsOnInvalidFormat()
+        {
+            Should.Throw<Exception>(() => "not-a-number".ToNullable<int>());
         }
 
         [Fact]
@@ -380,9 +404,21 @@ namespace CSharpHelperExtensions.Test
         }
 
         [Fact]
+        public void Verify_EnsureSuffix_ThrowsOnNullSuffix()
+        {
+            Should.Throw<ArgumentNullException>(() => "hello".EnsureSuffix(null));
+        }
+
+        [Fact]
         public void Verify_TrimPrefix_ThrowsOnNullPrefix()
         {
             Should.Throw<ArgumentNullException>(() => "hello".TrimPrefix(null));
+        }
+
+        [Fact]
+        public void Verify_TrimSuffix_ThrowsOnNullSuffix()
+        {
+            Should.Throw<ArgumentNullException>(() => "hello".TrimSuffix(null));
         }
 
         [Fact]
