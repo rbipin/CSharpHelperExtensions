@@ -407,4 +407,36 @@ public static class EnumerableExtensions
     /// </returns>
     public static bool None<T>(this IEnumerable<T> source)
         => source is null || !source.Any();
+
+    /// <summary>
+    /// Filters out <see langword="null"/> elements from a sequence of reference types.
+    /// Returns an empty sequence if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type (must be a reference type).</typeparam>
+    /// <param name="source">The sequence to filter.</param>
+    /// <returns>A sequence containing only non-null elements.</returns>
+#nullable enable
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) where T : class
+        => source is null ? System.Linq.Enumerable.Empty<T>() : source.Where(x => x is not null).Cast<T>();
+#nullable restore
+
+    /// <summary>
+    /// Materializes the sequence into an <see cref="IReadOnlyList{T}"/>, preserving order.
+    /// Returns an empty list if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to materialize.</param>
+    /// <returns>An <see cref="IReadOnlyList{T}"/> containing all elements in order.</returns>
+    public static IReadOnlyList<T> AsReadOnlyList<T>(this IEnumerable<T> source)
+        => (source ?? System.Linq.Enumerable.Empty<T>()).ToList();
+
+    /// <summary>
+    /// Converts the sequence to a <see cref="HashSet{T}"/>, deduplicating elements.
+    /// Returns an empty set if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to convert.</param>
+    /// <returns>A <see cref="HashSet{T}"/> containing the distinct elements.</returns>
+    public static HashSet<T> ToHashSetSafe<T>(this IEnumerable<T> source)
+        => source is null ? new HashSet<T>() : source.ToHashSet();
 }

@@ -215,5 +215,45 @@ namespace CSharpHelperExtensions.Test
         {
             new[] { 1, 2 }.None().ShouldBeFalse();
         }
+
+        [Fact]
+        public void WhereNotNull_FiltersNullsFromReferenceSequence()
+        {
+            var result = new[] { "a", null, "b", null, "c" }.WhereNotNull().ToList();
+            result.ShouldBe(new[] { "a", "b", "c" });
+        }
+
+        [Fact]
+        public void WhereNotNull_OnNullSource_ReturnsEmpty()
+        {
+            ((IEnumerable<string>)null).WhereNotNull().ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void AsReadOnlyList_MaterializesSequenceInOrder()
+        {
+            IReadOnlyList<int> result = new[] { 3, 1, 2 }.AsReadOnlyList();
+            result.ShouldBe(new[] { 3, 1, 2 });
+        }
+
+        [Fact]
+        public void AsReadOnlyList_OnNullSource_ReturnsEmpty()
+        {
+            IReadOnlyList<int> result = ((IEnumerable<int>)null).AsReadOnlyList();
+            result.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void ToHashSetSafe_DeduplicatesElements()
+        {
+            var result = new[] { 1, 2, 2, 3 }.ToHashSetSafe();
+            result.ShouldBe(new HashSet<int> { 1, 2, 3 });
+        }
+
+        [Fact]
+        public void ToHashSetSafe_OnNullSource_ReturnsEmpty()
+        {
+            ((IEnumerable<int>)null).ToHashSetSafe().ShouldBeEmpty();
+        }
     }
 }
