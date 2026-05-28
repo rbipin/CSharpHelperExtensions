@@ -372,4 +372,39 @@ public static class EnumerableExtensions
 
         return result;
     }
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the sequence is non-null and contains at least one element.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="source"/> is not <see langword="null"/> and has at least one element;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    public static bool HasAny<T>(this IEnumerable<T> source)
+        => source != null && source.Any();
+
+    /// <summary>
+    /// Returns the sequence unchanged if non-null, or an empty sequence if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to evaluate.</param>
+    /// <returns>
+    /// <paramref name="source"/> if it is not <see langword="null"/>; otherwise <see cref="Enumerable.Empty{T}"/>.
+    /// </returns>
+    public static IEnumerable<T> OrEmpty<T>(this IEnumerable<T> source)
+        => source ?? System.Linq.Enumerable.Empty<T>();
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the sequence is <see langword="null"/> or contains no elements.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if <paramref name="source"/> is <see langword="null"/> or empty;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    public static bool None<T>(this IEnumerable<T> source)
+        => source is null || !source.Any();
 }
