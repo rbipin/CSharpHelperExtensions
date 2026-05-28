@@ -22,6 +22,7 @@
 ### Task 1: `HasAny`, `OrEmpty`, `None()` — Collection presence shortcuts
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -115,6 +116,7 @@ git commit -m "feat(enumerable): add HasAny, OrEmpty, None"
 ### Task 2: `WhereNotNull`, `AsReadOnlyList`, `ToHashSetSafe` — Materialization helpers
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -207,6 +209,7 @@ git commit -m "feat(enumerable): add WhereNotNull, AsReadOnlyList, ToHashSetSafe
 ### Task 3: `Yield`, `JoinAsString`, `WithIndex` — Sequence transforms
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -306,6 +309,7 @@ git commit -m "feat(enumerable): add Yield, JoinAsString, WithIndex"
 ### Task 4: `ToDictionarySafe` — Duplicate-key-safe dictionary
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -386,6 +390,7 @@ git commit -m "feat(enumerable): add ToDictionarySafe"
 ### Task 5: `AddIf`, `AddRangeIf` — Conditional list mutation
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -491,6 +496,7 @@ git commit -m "feat(enumerable): add AddIf, AddRangeIf"
 ### Task 6: `ConcatIf` — Conditional concatenation
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -565,6 +571,7 @@ git commit -m "feat(enumerable): add ConcatIf"
 ### Task 7: `None(predicate)`, `IsSingle`, `IsSingle(predicate)`, `IndexOf` — Predicate queries
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -717,6 +724,7 @@ git commit -m "feat(enumerable): add None(predicate), IsSingle, IndexOf"
 ### Task 8: `Partition`, `Batch` — Splitting and chunking
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -832,6 +840,7 @@ git commit -m "feat(enumerable): add Partition, Batch"
 ### Task 9: `MinByOrDefault`, `MaxByOrDefault` — Min/Max with null-safe default
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs`
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs`
 
@@ -917,12 +926,14 @@ git commit -m "feat(enumerable): add MinByOrDefault, MaxByOrDefault"
 ### Task 10: `SelectAsync`, `WhenAllList` — Async projection
 
 **Files:**
+
 - Modify: `src/CSharpHelperExtensions/EnumerableExtensions.cs` (add `using System.Threading;`)
 - Modify: `src/CSharpHelperExtensions.Test/EnumerableExtensionTest.cs` (add `using System.Threading;`, `using System.Threading.Tasks;`)
 
 - [ ] **Step 1: Write the failing tests**
 
 Add these usings at the top of `EnumerableExtensionTest.cs` if not present:
+
 ```csharp
 using System.Threading;
 using System.Threading.Tasks;
