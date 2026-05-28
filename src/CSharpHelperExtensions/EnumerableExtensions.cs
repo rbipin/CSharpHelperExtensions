@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace CSharpHelperExtensions.Enumerable;
 
@@ -11,12 +13,14 @@ public enum Compare
 {
     /// <summary>Elements must appear in the same positional order in both sequences.</summary>
     InOrder,
+
     /// <summary>
     /// Sequences are equal if they contain the same elements regardless of order.
     /// This is the default.
     /// </summary>
-    NoOrder
+    NoOrder,
 }
+
 public static class EnumerableExtensions
 {
     /// <summary>
@@ -91,8 +95,11 @@ public static class EnumerableExtensions
     /// ((IEnumerable&lt;int&gt;)null).AreEqual(new List&lt;int&gt;())                  // true  (null == empty)
     /// </code>
     /// </example>
-    public static bool AreEqual<T>(this IEnumerable<T> enumerable, IEnumerable<T> values,
-    Compare comparison = Compare.NoOrder)
+    public static bool AreEqual<T>(
+        this IEnumerable<T> enumerable,
+        IEnumerable<T> values,
+        Compare comparison = Compare.NoOrder
+    )
     {
         if (ReferenceEquals(enumerable, null) && ReferenceEquals(values, null))
         {
@@ -112,7 +119,7 @@ public static class EnumerableExtensions
         {
             Compare.InOrder => CompareItemsInOrder(enumerable, values),
             Compare.NoOrder => enumerable.All(item => values.Contains(item)),
-            _ => false
+            _ => false,
         };
     }
 
@@ -165,14 +172,15 @@ public static class EnumerableExtensions
         }
 
         return list.Where(item =>
-        {
-            if (item is string itemStr)
             {
-                return !string.IsNullOrWhiteSpace(itemStr);
-            }
+                if (item is string itemStr)
+                {
+                    return !string.IsNullOrWhiteSpace(itemStr);
+                }
 
-            return item is not null;
-        }).ToList();
+                return item is not null;
+            })
+            .ToList();
     }
 
     /// <summary>
@@ -223,12 +231,51 @@ public static class EnumerableExtensions
     public static IEnumerable<T> ForEach<T>(this IEnumerable<T> values, Action<T> execute)
     {
         var collection = values?.ToList() ?? new List<T>();
-        foreach (var item in collection)
+        return collection.Select(item =>
         {
             execute(item);
-        }
+            return item;
+        });
+    }
 
-        return values;
+    /// <summary>
+    /// Invokes an async action on each element of a sequence and waits for all operations
+    /// to complete concurrently.
+    /// </summary>
+    /// <param name="values">The source sequence. A null sequence is treated as empty.</param>
+    /// <param name="execute">An async action applied to each element.</param>
+    /// <typeparam name="T">The type of elements in the source sequence.</typeparam>
+    /// <returns>
+    /// A <see cref="Task"/> that completes when all async actions have finished.
+    /// </returns>
+    public static Task ForEach<T>(this IEnumerable<T> values, Func<T, Task> execute)
+    {
+        var collection = values?.ToList() ?? new List<T>();
+        return Task.WhenAll(collection.Select(item => execute(item)));
+    }
+
+    /// <summary>
+    /// Asynchronously projects each element of a sequence using the given async transform
+    /// and yields results lazily as they complete.
+    /// </summary>
+    /// <param name="values">The source sequence. A null sequence is treated as empty.</param>
+    /// <param name="execute">An async transform applied to each element in order.</param>
+    /// <typeparam name="T">The type of elements in the source sequence.</typeparam>
+    /// <typeparam name="K">The type of elements in the result sequence.</typeparam>
+    /// <returns>
+    /// An <see cref="IAsyncEnumerable{K}"/> of transformed values, yielded sequentially
+    /// as each async operation completes.
+    /// </returns>
+    public static async IAsyncEnumerable<K> ForEach<T, K>(
+    this IEnumerable<T> values,
+    Func<T, Task<K>> execute
+)
+    {
+        var collection = values?.ToList() ?? new List<T>();
+        foreach (var item in collection)
+        {
+            yield return await execute(item);
+        }
     }
 
     /// <summary>
@@ -261,7 +308,11 @@ public static class EnumerableExtensions
     ///     .Reduce((item, acc) => acc == "" ? item : acc + ", " + item, "")        // "a, b, c"
     /// </code>
     /// </example>
-    public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, TOut> execute, TOut initialValue = default)
+    public static TOut Reduce<TIn, TOut>(
+        this IEnumerable<TIn> values,
+        Func<TIn, TOut, TOut> execute,
+        TOut initialValue = default
+    )
     {
         var collection = values?.ToList() ?? new List<TIn>();
         var result = default(TOut);
@@ -303,7 +354,11 @@ public static class EnumerableExtensions
     ///     // "0: apple\n1: banana\n2: cherry\n"
     /// </code>
     /// </example>
-    public static TOut Reduce<TIn, TOut>(this IEnumerable<TIn> values, Func<TIn, TOut, int, TOut> execute, TOut initialValue = default)
+    public static TOut Reduce<TIn, TOut>(
+        this IEnumerable<TIn> values,
+        Func<TIn, TOut, int, TOut> execute,
+        TOut initialValue = default
+    )
     {
         var collection = values?.ToList() ?? new List<TIn>();
         var result = default(TOut);
@@ -318,4 +373,3 @@ public static class EnumerableExtensions
         return result;
     }
 }
-
