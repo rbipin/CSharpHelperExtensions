@@ -557,4 +557,33 @@ public static class EnumerableExtensions
                 list.Add(item);
         return list;
     }
+
+    /// <summary>
+    /// Concatenates another sequence to the source sequence if a condition is <see langword="true"/>,
+    /// otherwise returns the source sequence unchanged.
+    /// If the source sequence is <see langword="null"/>, an empty sequence is used.
+    /// If the other sequence is <see langword="null"/>, an empty sequence is used.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The source sequence. If <see langword="null"/>, treated as empty.</param>
+    /// <param name="condition">If <see langword="true"/>, <paramref name="other"/> is concatenated; otherwise only <paramref name="source"/> is returned.</param>
+    /// <param name="other">The sequence to concatenate if the condition is <see langword="true"/>. If <see langword="null"/>, treated as empty.</param>
+    /// <returns>
+    /// If <paramref name="condition"/> is <see langword="true"/>, returns <paramref name="source"/> concatenated with <paramref name="other"/>.
+    /// Otherwise, returns <paramref name="source"/>.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// new[] { 1, 2 }.ConcatIf(true, new[] { 3, 4 })    // [1, 2, 3, 4]
+    /// new[] { 1, 2 }.ConcatIf(false, new[] { 3, 4 })   // [1, 2]
+    /// ((IEnumerable&lt;int&gt;)null).ConcatIf(true, new[] { 1, 2 })   // [1, 2]
+    /// ((IEnumerable&lt;int&gt;)null).ConcatIf(false, new[] { 1, 2 })  // empty
+    /// </code>
+    /// </example>
+    public static IEnumerable<T> ConcatIf<T>(
+        this IEnumerable<T> source, bool condition, IEnumerable<T> other)
+    {
+        var first = source ?? System.Linq.Enumerable.Empty<T>();
+        return condition ? first.Concat(other ?? System.Linq.Enumerable.Empty<T>()) : first;
+    }
 }

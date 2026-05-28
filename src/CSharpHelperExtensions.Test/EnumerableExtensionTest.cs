@@ -373,5 +373,29 @@ namespace CSharpHelperExtensions.Test
             var returned = list.AddRangeIf(true, new[] { 1, 2 });
             ReferenceEquals(list, returned).ShouldBeTrue();
         }
+
+        [Fact]
+        public void ConcatIf_ConcatenatesOther_WhenConditionIsTrue()
+        {
+            new[] { 1, 2 }.ConcatIf(true, new[] { 3, 4 }).ShouldBe(new[] { 1, 2, 3, 4 });
+        }
+
+        [Fact]
+        public void ConcatIf_ReturnsSource_WhenConditionIsFalse()
+        {
+            new[] { 1, 2 }.ConcatIf(false, new[] { 3, 4 }).ShouldBe(new[] { 1, 2 });
+        }
+
+        [Fact]
+        public void ConcatIf_OnNullSource_ReturnsOther_WhenConditionIsTrue()
+        {
+            ((IEnumerable<int>)null).ConcatIf(true, new[] { 1, 2 }).ShouldBe(new[] { 1, 2 });
+        }
+
+        [Fact]
+        public void ConcatIf_OnNullSource_ReturnsEmpty_WhenConditionIsFalse()
+        {
+            ((IEnumerable<int>)null).ConcatIf(false, new[] { 1, 2 }).ShouldBeEmpty();
+        }
     }
 }
