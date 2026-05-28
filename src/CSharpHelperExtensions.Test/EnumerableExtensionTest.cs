@@ -255,5 +255,50 @@ namespace CSharpHelperExtensions.Test
         {
             ((IEnumerable<int>)null).ToHashSetSafe().ShouldBeEmpty();
         }
+
+        [Fact]
+        public void Yield_WrapsValueTypeAsSingleItemSequence()
+        {
+            42.Yield().ToList().ShouldBe(new[] { 42 });
+        }
+
+        [Fact]
+        public void Yield_WrapsReferenceTypeAsSingleItemSequence()
+        {
+            "hello".Yield().Single().ShouldBe("hello");
+        }
+
+        [Fact]
+        public void JoinAsString_JoinsWithSeparator()
+        {
+            new[] { "a", "b", "c" }.JoinAsString(", ").ShouldBe("a, b, c");
+        }
+
+        [Fact]
+        public void JoinAsString_WorksForNonStringTypes()
+        {
+            new[] { 1, 2, 3 }.JoinAsString("-").ShouldBe("1-2-3");
+        }
+
+        [Fact]
+        public void JoinAsString_OnNullSource_ReturnsEmptyString()
+        {
+            ((IEnumerable<string>)null).JoinAsString(",").ShouldBe(string.Empty);
+        }
+
+        [Fact]
+        public void WithIndex_ProjectsZeroBasedIndexAndItem()
+        {
+            var result = new[] { "a", "b", "c" }.WithIndex().ToList();
+            result[0].ShouldBe((0, "a"));
+            result[1].ShouldBe((1, "b"));
+            result[2].ShouldBe((2, "c"));
+        }
+
+        [Fact]
+        public void WithIndex_OnNullSource_ReturnsEmpty()
+        {
+            ((IEnumerable<string>)null).WithIndex().ShouldBeEmpty();
+        }
     }
 }

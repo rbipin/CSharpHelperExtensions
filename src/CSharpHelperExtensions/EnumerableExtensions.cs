@@ -439,4 +439,36 @@ public static class EnumerableExtensions
     /// <returns>A <see cref="HashSet{T}"/> containing the distinct elements.</returns>
     public static HashSet<T> ToHashSetSafe<T>(this IEnumerable<T> source)
         => source is null ? new HashSet<T>() : source.ToHashSet();
+
+    /// <summary>
+    /// Wraps a single value in an <see cref="IEnumerable{T}"/> containing only that item.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="item">The value to wrap.</param>
+    /// <returns>A sequence containing exactly one element: <paramref name="item"/>.</returns>
+    public static IEnumerable<T> Yield<T>(this T item)
+    {
+        yield return item;
+    }
+
+    /// <summary>
+    /// Concatenates the elements of a sequence into a single string using the specified separator.
+    /// Returns <see cref="string.Empty"/> if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence whose elements to join.</param>
+    /// <param name="separator">The string to use as a separator between elements.</param>
+    /// <returns>A string of all elements joined by <paramref name="separator"/>, or <see cref="string.Empty"/> if source is <see langword="null"/>.</returns>
+    public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
+        => string.Join(separator, source ?? System.Linq.Enumerable.Empty<T>());
+
+    /// <summary>
+    /// Projects each element of a sequence into a tuple of its zero-based index and the element itself.
+    /// Returns an empty sequence if the source is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="source">The sequence to index.</param>
+    /// <returns>A sequence of <c>(Index, Item)</c> tuples.</returns>
+    public static IEnumerable<(int Index, T Item)> WithIndex<T>(this IEnumerable<T> source)
+        => (source ?? System.Linq.Enumerable.Empty<T>()).Select((item, i) => (i, item));
 }
