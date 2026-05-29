@@ -115,3 +115,4 @@ public static class ValueExtensions
         return value is null ? null : JsonConvert.SerializeObject(value, formatting);
     }
 }
+
