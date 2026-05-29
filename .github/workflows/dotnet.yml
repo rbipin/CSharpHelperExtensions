@@ -22,4 +22,11 @@ jobs:
     - name: Build
       run: dotnet build src/CSharpHelperExtensions.slnx --no-restore
     - name: Test
-      run: dotnet test src/CSharpHelperExtensions.slnx --no-build --verbosity normal
+      run: dotnet test --logger "trx;LogFileName=test-results.trx" src/CSharpHelperExtensions.slnx --no-build --verbosity normal
+
+    - uses: dorny/test-reporter@v3
+      with:
+        path: test-results.trx
+        name: dotnet tests
+        artifact: test-results
+        reporter: 'dotnet-trx'
