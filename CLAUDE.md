@@ -53,15 +53,15 @@ The library splits extensions across three namespaces — callers must import th
 
 | File | Namespace | Key types |
 |------|-----------|-----------|
-| `GenericExtensions.cs` | `CSharpHelperExtensions` | `In`, `IsNullOrEmpty` (string), `IsBetween`, `ToJson` |
+| `ValueExtensions.cs` | `CSharpHelperExtensions.Values` | `In`, `IsBetween`, `ToJson` |
 | `EnumerableExtensions.cs` | `CSharpHelperExtensions.Enumerable` | `IsNullOrEmpty<T>`, `HasAny`, `None`, `CleanNullOrEmptyItems`, `WhereNotNull`, `ContainsOnly`, `AreEqual`, `ForEach`, `Reduce`, `SelectAsync`, `WhenAllList`, `Partition`, `Batch`, `MinByOrDefault`, `MaxByOrDefault`, `ToDictionarySafe`, `AddIf`, `AddRangeIf`, `ConcatIf`, `IsSingle`, `IndexOf`, `Yield`, `WithIndex`, `JoinAsString`, `AsReadOnlyList`, `ToHashSetSafe`, `OrEmpty` |
 | `StringExtensions.cs` | `CSharpHelperExtensions.Strings` | `IsNullOrEmpty`, `HasValue`, `OrEmpty`, `OrDefault`, `Truncate`, `Reverse`, `TrimToLower`, `TrimToUpper`, `ToTitleCase`, `ToSlug`, `MaskStart`, `EqualsIgnoreCase`, `ContainsIgnoreCase`, `StartsWithIgnoreCase`, `EndsWithIgnoreCase`, `EnsurePrefix`, `EnsureSuffix`, `TrimPrefix`, `TrimSuffix`, `SplitNonEmpty`, `JoinWith`, `ReplaceMany`, `RemoveWhitespace`, `CollapseWhitespace`, `RemoveDiacritics`, `IsNumeric`, `IsAlpha`, `IsAlphaNumeric`, `ToNullable<T>`, `ToIntOrNull`, `ToDecimalOrNull`, `ToDateTimeOrNull`, `ToGuidOrNull`, `ToBoolOrNull`, `Base64Encode`, `Base64Decode`, `ToBase64Url`, `FromBase64Url`, `ToUtf8Bytes`, `ToUtf8Stream` |
 
-`IsNullOrEmpty` exists in **both** `GenericExtensions` (for `string`) and `EnumerableExtensions` (for `IEnumerable<T>`). Be careful about which namespace is imported.
+`IsNullOrEmpty` exists in **both** `StringExtensions` (for `string`, namespace `CSharpHelperExtensions.Strings`) and `EnumerableExtensions` (for `IEnumerable<T>`, namespace `CSharpHelperExtensions.Enumerable`). Be careful about which namespace is imported.
 
 ### `BetweenComparison` enum
 
-Defined in `GenericExtensions.cs`, controls how `IsBetween` handles bounds:
+Defined in `ValueExtensions.cs` (namespace `CSharpHelperExtensions.Values`), controls how `IsBetween` handles bounds:
 - `None` (default) — inclusive on both ends
 - `ExcludeBoth` — exclusive on both ends
 - `ExcludeLower` — excludes lower bound, includes upper
