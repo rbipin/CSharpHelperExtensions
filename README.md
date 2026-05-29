@@ -1,98 +1,142 @@
-# DryExtensions
-Don't Repeat Yourself Extensions
+![logo](./assets/logo.svg)
 
-A set of helper extension methods that are used very often when coding
+# CSharpHelperExtensions
+
+A set of commonly used C# extension methods that reduce boilerplate across three focused namespaces: value checks, string manipulation, and collection operations.
+
+[![.NET](https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml/badge.svg)](https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml)
+
+## Installation
+
+```bash
+dotnet add package CSharpHelperExtensions
+```
 
 ## Namespaces
 
-| Namespace | Methods |
+Import the namespace for the extensions you need:
+
+| Namespace | What it covers |
 |---|---|
 | `CSharpHelperExtensions.Values` | `In`, `IsBetween`, `ToJson` |
-| `CSharpHelperExtensions.Enumerable` | All `IEnumerable<T>` extensions |
 | `CSharpHelperExtensions.Strings` | All `string` extensions |
+| `CSharpHelperExtensions.Enumerable` | All `IEnumerable<T>` and collection extensions |
 
-1. _**In() Method**_
+## Interactive Samples
 
-Checks to see if a item is part of the quick list
+The `sample/` folder contains three [.NET Interactive](https://github.com/dotnet/interactive) notebooks you can run directly in VS Code (with the [Polyglot Notebooks](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode) extension) or Jupyter.
 
-Usage
-```c#
-"Magic".In("Magic", "Bean", "Stalk");
-1.In(1, 2, 3);
+**Before running any notebook**, build the library so the DLL is available:
+
+```bash
+dotnet build
 ```
 
-2. _**string.IsNullOrEmpty() Method**_
+Each notebook loads the compiled DLL and imports the relevant namespace in its **Setup** cell — run that cell first, then run any section independently.
 
-Takes an additional bool parameter to see if you want to check whitespace or not
+| Notebook | Namespace | What it covers |
+|---|---|---|
+| [`sample/value-extensions.ipynb`](sample/value-extensions.ipynb) | `CSharpHelperExtensions.Values` | `In`, `IsBetween` (all four `BetweenComparison` modes), `ToJson`, and chaining examples |
+| [`sample/string-extensions.ipynb`](sample/string-extensions.ipynb) | `CSharpHelperExtensions.Strings` | All 50+ string methods grouped by category: null-safety, parsing, transformation, whitespace, comparisons, prefix/suffix, encoding, and chaining pipelines |
+| [`sample/enumerable-extension.ipynb`](sample/enumerable-extension.ipynb) | `CSharpHelperExtensions.Enumerable` | All collection methods: presence checks, materialization, async projection, partitioning, batching, conditional mutation, and chaining pipelines |
 
-default will check whitespace also.
+## Usage
 
-Usage
-```c#
-//also checks whitespace by default
-"".IsNullOrEmpty(); // return true
-" ".IsNullOrEmpty(); // return true
+### Values
 
-//to not check for whitespace
-" ".IsNullOrEmpty(false); //return false
-```
-Much cleaner than
+```csharp
+using CSharpHelperExtensions.Values;
 
-```c#
-string.IsNullOrWhitespace(" ");
-```
+// Membership check — like SQL IN
+"admin".In("admin", "superadmin");          // true
+HttpMethod.Post.In(Post, Put, Patch);       // true
 
-3. _**IEnumerable.CleanNullOrEmpty() Method**_
+// Range check — inclusive by default
+5.IsBetween(1, 10);                         // true
+1.IsBetween(1, 10, BetweenComparison.ExcludeBoth);  // false
 
-Cleans up any null items in IEnumerable if available.
-
-Usage
-```c#
-var strListWithNullEmptyWs = new List<string>() {"Magic", null, "Bean", "Stalk", "", "Giant", " "};
-strListWithNullEmptyWs.CleanNullOrEmpty();
-
-IEnumerable<int?> numEnumerable = new List<int?>() {1, null, 2};
-numEnumerable.CleanNullOrEmpty();
+// JSON serialisation via Newtonsoft.Json
+new { Name = "Alice", Age = 30 }.ToJson();              // {"Name":"Alice","Age":30}
+new { Name = "Alice" }.ToJson(indentation: true);        // pretty-printed
 ```
 
-4. _**IEnumerable.IsNullOrEmpty() Method**_
+### Strings
 
-Check if IEnumerable is null or has no items.
+```csharp
+using CSharpHelperExtensions.Strings;
 
-Usage
-```c#
-var emptyList = new List<string>();
-emptyList.IsNullOrEmpty(); // returns true
+// Null-safety
+"  ".IsNullOrEmpty();                       // true (checks whitespace)
+"hello".HasValue();                         // true
+((string)null).OrDefault("N/A");            // "N/A"
 
-IEnumerable<int?> numEnumerable = new List<int>();
-numEnumerable.IsNullOrEmpty();
+// Transformation
+"  Hello World  ".TrimToLower();            // "hello world"
+"café au lait".ToSlug();                    // "cafe-au-lait"
+"4111111111111234".MaskStart(4);            // "************1234"
+
+// Safe parsing — returns null instead of throwing
+"42".ToIntOrNull();                         // 42
+"abc".ToIntOrNull();                        // null
+
+// Comparisons
+"Hello".EqualsIgnoreCase("HELLO");          // true
+"path/".EnsurePrefix("/");                  // "/path/"
+"report.csv".TrimSuffix(".csv");            // "report"
+
+// Encoding
+"Hello".Base64Encode();                     // "SGVsbG8="
+"Hello".ToBase64Url();                      // URL-safe, no padding chars
 ```
 
-5 _**comparableItem.IsBetween(lowerbound, upperbound) Method**_
+### Enumerable
 
-Check if a value is in between two comparable values default comparison type is None and it will include the lower and upper bounds in the comparison
-The item being compared needs to be comparable (IComparable<T>)
+```csharp
+using CSharpHelperExtensions.Enumerable;
 
-Usage
-```c#
-// using CSharpHelperExtensions.Values;
-decimal value = 3;
-decimal lower = 1;
-decimal upper = 3;
-var result = value.IsBetween(lower, upper); // returns true
+// Null-safe presence checks
+list.HasAny();                              // non-null and non-empty
+list.None();                                // null or empty
+list.OrEmpty();                             // null → empty sequence
 
-value = 1;
-lower = 1;
-upper = 3;
-result = value.IsBetween(lower, upper, BetweenComparison.ExcludeBoth); // returns false
+// Filtering
+items.WhereNotNull();                       // removes null elements
+strings.CleanNullOrEmptyItems();            // removes null, empty, and whitespace strings
 
-value = 1;
-lower = 1;
-upper = 3;
-result = value.IsBetween(lower, upper, BetweenComparison.ExcludeLower); // return false
+// Async projection with optional concurrency cap
+var results = await ids.SelectAsync(FetchAsync, maxParallel: 4);
 
-value = 3;
-lower = 1;
-upper = 3;
-result = value.IsBetween(lower, upper, BetweenComparison.ExcludeUpper); // return false
+// Splitting
+var (passed, failed) = scores.Partition(s => s >= 60);
+var batches = items.Batch(100);             // process in chunks
+
+// Conditional building — fluent, returns same list
+var tags = new List<string>()
+    .AddIf(isPremium, "premium")
+    .AddIf(isAdmin, "admin");
+
+// Min/Max that return default instead of throwing on empty
+people.MinByOrDefault(p => p.Age);
+people.MaxByOrDefault(p => p.Age);
+
+// Utilities
+42.Yield();                                 // wrap a single value as IEnumerable<T>
+items.WithIndex();                          // (Index, Item) tuples
+names.JoinAsString(", ");                   // fluent string.Join
+```
+
+## Building and Testing
+
+```bash
+# Build
+dotnet build
+
+# Run all tests
+dotnet test
+
+# Run tests with output
+dotnet test --verbosity normal
+
+# Run a specific test
+dotnet test --filter "FullyQualifiedName~MethodName"
 ```
