@@ -1,9 +1,9 @@
 <Project>
-
     <PropertyGroup>
-        <PackageId Condition="'$(MSBuildProjectName)' == 'CSharpHelperExtensions'">CSharpHelperExtensions</PackageId>
+        <PackageId Condition="'$(MSBuildProjectName)' == 'CSharpHelperExtensions'"
+        >
+            CSharpHelperExtensions</PackageId>
         <Version>2.0.0</Version>
-        <PackageVersion>2.0.0</PackageVersion>
         <Authors>Bipin Radhakrishnan</Authors>
         <Description>A set of helper extension methods that are used very often when coding</Description>
         <PackageTags>extensions;helpers;enumerable;string;utilities;csharp</PackageTags>
@@ -16,10 +16,8 @@
         <PackageReleaseNotes></PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
-
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
         <None Include="$(MSBuildThisFileDirectory)assets\logo-nuget.png" Pack="true" PackagePath="\" />
     </ItemGroup>
-
 </Project>
