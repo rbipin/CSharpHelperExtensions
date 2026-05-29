@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/CSharpHelperExtensions.Test/CSharpHelperExtensions.Test.csproj" />
-  <Project Path="src/CSharpHelperExtensions/CSharpHelperExtensions.csproj" />
-</Solution>
