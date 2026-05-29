@@ -1,22 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <PackageId>CSharpHelperExtensions</PackageId>
-        <Version>2.0.0</Version>
-        <Authors>Bipin Radhakrishnan</Authors>
         <TargetFramework>net10.0</TargetFramework>
-        <PackageVersion>2.0.0</PackageVersion>
-        <Description>A set of helper extension methods that are used very often when coding</Description>
-        <RepositoryUrl>https://github.com/rbipin/dry-extensions-csharp</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes></PackageReleaseNotes>
         <AssemblyName>CSharpHelperExtensions</AssemblyName>
         <RootNamespace>CSharpHelperExtensions</RootNamespace>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
 </Project>
