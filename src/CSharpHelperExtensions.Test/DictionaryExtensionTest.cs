@@ -33,4 +33,11 @@ public class DictionaryExtensionTest
         var dict = new Dictionary<string, int>();
         Should.Throw<ArgumentNullException>(() => dict.GetOrAdd("a", null!));
     }
+
+    [Fact]
+    public void GetOrAdd_NullKey_Throws()
+    {
+        var dict = new Dictionary<string, int>();
+        Should.Throw<ArgumentNullException>(() => dict.GetOrAdd(null!, _ => 42));
+    }
 }
