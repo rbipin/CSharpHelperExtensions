@@ -40,4 +40,42 @@ public class DictionaryExtensionTest
         var dict = new Dictionary<string, int>();
         Should.Throw<ArgumentNullException>(() => dict.GetOrAdd(null!, _ => 42));
     }
+
+    [Fact]
+    public void Merge_NoOverlap_AddsAllEntries()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var other = new Dictionary<string, int> { ["b"] = 2 };
+        var result = dict.Merge(other);
+        result.ShouldBeSameAs(dict);
+        dict.Count.ShouldBe(2);
+        dict["b"].ShouldBe(2);
+    }
+
+    [Fact]
+    public void Merge_DuplicateKey_OverwriteFalse_KeepsExisting()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var other = new Dictionary<string, int> { ["a"] = 99 };
+        dict.Merge(other, overwrite: false);
+        dict["a"].ShouldBe(1);
+    }
+
+    [Fact]
+    public void Merge_DuplicateKey_OverwriteTrue_ReplacesExisting()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var other = new Dictionary<string, int> { ["a"] = 99 };
+        dict.Merge(other, overwrite: true);
+        dict["a"].ShouldBe(99);
+    }
+
+    [Fact]
+    public void Merge_NullOther_NoOp()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var result = dict.Merge(null!);
+        result.ShouldBeSameAs(dict);
+        dict.Count.ShouldBe(1);
+    }
 }

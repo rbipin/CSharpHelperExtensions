@@ -33,4 +33,30 @@ public static class DictionaryExtensions
         dict[key] = value;
         return value;
     }
+
+    /// <summary>
+    /// Merges all entries from <paramref name="other"/> into this dictionary.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="dict">The target dictionary.</param>
+    /// <param name="other">The source dictionary to merge from. A <see langword="null"/> value is silently ignored.</param>
+    /// <param name="overwrite">When <see langword="true"/>, existing keys are overwritten. Defaults to <see langword="false"/> (skip duplicates).</param>
+    /// <returns>The original <paramref name="dict"/> for fluent chaining.</returns>
+    public static IDictionary<TKey, TValue> Merge<TKey, TValue>(
+        this IDictionary<TKey, TValue> dict,
+        IDictionary<TKey, TValue>? other,
+        bool overwrite = false)
+    {
+        if (other is null)
+            return dict;
+
+        foreach (var pair in other)
+        {
+            if (overwrite || !dict.ContainsKey(pair.Key))
+                dict[pair.Key] = pair.Value;
+        }
+
+        return dict;
+    }
 }
