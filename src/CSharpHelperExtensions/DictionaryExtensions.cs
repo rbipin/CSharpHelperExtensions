@@ -114,4 +114,18 @@ public static class DictionaryExtensions
 
         return dict;
     }
+
+    /// <summary>
+    /// Wraps this dictionary in a read-only view.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="dict">The dictionary to wrap.</param>
+    /// <returns>
+    /// A <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}"/> that reflects
+    /// subsequent mutations to the underlying dictionary (live view, not a copy).
+    /// </returns>
+    public static IReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
+        this IDictionary<TKey, TValue> dict) where TKey : notnull =>
+        new ReadOnlyDictionary<TKey, TValue>(dict);
 }

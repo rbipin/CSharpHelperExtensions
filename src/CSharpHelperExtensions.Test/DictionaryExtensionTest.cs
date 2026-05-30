@@ -148,4 +148,23 @@ public class DictionaryExtensionTest
         var dict = new Dictionary<string, int> { ["a"] = 1 };
         Should.Throw<ArgumentNullException>(() => dict.RemoveWhere(null!));
     }
+
+    [Fact]
+    public void AsReadOnly_ReturnsIReadOnlyDictionary()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+        IReadOnlyDictionary<string, int> readOnly = DictionaryExtensions.AsReadOnly(dict);
+        readOnly.Count.ShouldBe(2);
+        readOnly["a"].ShouldBe(1);
+    }
+
+    [Fact]
+    public void AsReadOnly_ReflectsMutationsToUnderlying()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var readOnly = DictionaryExtensions.AsReadOnly(dict);
+        dict["b"] = 2;
+        readOnly.Count.ShouldBe(2);
+        readOnly["b"].ShouldBe(2);
+    }
 }
