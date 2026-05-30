@@ -85,4 +85,33 @@ public static class DictionaryExtensions
 
         return dict;
     }
+
+    /// <summary>
+    /// Removes all entries whose key satisfies <paramref name="predicate"/>.
+    /// Mutates the dictionary in-place.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="dict">The dictionary to filter.</param>
+    /// <param name="predicate">A function that returns <see langword="true"/> for keys to remove.</param>
+    /// <returns>The original <paramref name="dict"/> for fluent chaining.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
+    public static IDictionary<TKey, TValue> RemoveWhere<TKey, TValue>(
+        this IDictionary<TKey, TValue> dict,
+        Func<TKey, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var keysToRemove = new List<TKey>();
+        foreach (var key in dict.Keys)
+        {
+            if (predicate(key))
+                keysToRemove.Add(key);
+        }
+
+        foreach (var key in keysToRemove)
+            dict.Remove(key);
+
+        return dict;
+    }
 }

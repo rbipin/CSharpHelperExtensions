@@ -115,4 +115,37 @@ public class DictionaryExtensionTest
         result.ShouldBeSameAs(dict);
         dict.Count.ShouldBe(1);
     }
+
+    [Fact]
+    public void RemoveWhere_RemovesMatchingKeys()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2, ["c"] = 3 };
+        var result = dict.RemoveWhere(k => k == "a" || k == "c");
+        result.ShouldBeSameAs(dict);
+        dict.Count.ShouldBe(1);
+        dict.ContainsKey("b").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void RemoveWhere_NoMatch_LeavesAllEntries()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+        dict.RemoveWhere(k => k == "z");
+        dict.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public void RemoveWhere_EmptyDict_NoOp()
+    {
+        var dict = new Dictionary<string, int>();
+        dict.RemoveWhere(k => true);
+        dict.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public void RemoveWhere_NullPredicate_Throws()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        Should.Throw<ArgumentNullException>(() => dict.RemoveWhere(null!));
+    }
 }
