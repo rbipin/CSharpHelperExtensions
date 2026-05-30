@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CSharpHelperExtensions.Dictionaries;
 using Shouldly;
 using Xunit;
+using static global::CSharpHelperExtensions.Dictionaries.DictionaryExtensions;
 
 namespace CSharpHelperExtensions.Test;
 
@@ -153,6 +154,7 @@ public class DictionaryExtensionTest
     public void AsReadOnly_ReturnsIReadOnlyDictionary()
     {
         var dict = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+        // Qualify to disambiguate from System.Collections.Generic.CollectionExtensions.AsReadOnly
         IReadOnlyDictionary<string, int> readOnly = DictionaryExtensions.AsReadOnly(dict);
         readOnly.Count.ShouldBe(2);
         readOnly["a"].ShouldBe(1);
@@ -162,6 +164,7 @@ public class DictionaryExtensionTest
     public void AsReadOnly_ReflectsMutationsToUnderlying()
     {
         var dict = new Dictionary<string, int> { ["a"] = 1 };
+        // Qualify to disambiguate from System.Collections.Generic.CollectionExtensions.AsReadOnly
         var readOnly = DictionaryExtensions.AsReadOnly(dict);
         dict["b"] = 2;
         readOnly.Count.ShouldBe(2);

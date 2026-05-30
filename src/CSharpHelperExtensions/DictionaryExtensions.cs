@@ -125,7 +125,11 @@ public static class DictionaryExtensions
     /// A <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}"/> that reflects
     /// subsequent mutations to the underlying dictionary (live view, not a copy).
     /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="dict"/> is <see langword="null"/>.</exception>
     public static IReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
-        this IDictionary<TKey, TValue> dict) where TKey : notnull =>
-        new ReadOnlyDictionary<TKey, TValue>(dict);
+        this IDictionary<TKey, TValue> dict)
+    {
+        ArgumentNullException.ThrowIfNull(dict);
+        return new ReadOnlyDictionary<TKey, TValue>(dict);
+    }
 }

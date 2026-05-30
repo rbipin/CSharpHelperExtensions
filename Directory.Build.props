@@ -11,13 +11,13 @@
         <PackageProjectUrl>https://github.com/rbipin/dry-extensions-csharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/rbipin/dry-extensions-csharp</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>docs/README.md</PackageReadmeFile>
         <PackageIcon>logo-nuget.png</PackageIcon>
         <PackageReleaseNotes></PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+        <None Include="$(MSBuildThisFileDirectory)docs\README.md" Pack="true" PackagePath="docs\" />
         <None Include="$(MSBuildThisFileDirectory)assets\logo-nuget.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
