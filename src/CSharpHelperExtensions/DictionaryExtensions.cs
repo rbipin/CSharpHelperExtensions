@@ -59,4 +59,30 @@ public static class DictionaryExtensions
 
         return dict;
     }
+
+    /// <summary>
+    /// Bulk-adds <paramref name="pairs"/> into this dictionary.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="dict">The target dictionary.</param>
+    /// <param name="pairs">The key-value pairs to add. A <see langword="null"/> value is silently ignored.</param>
+    /// <param name="overwrite">When <see langword="true"/>, existing keys are overwritten. Defaults to <see langword="false"/> (skip duplicates).</param>
+    /// <returns>The original <paramref name="dict"/> for fluent chaining.</returns>
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(
+        this IDictionary<TKey, TValue> dict,
+        IEnumerable<KeyValuePair<TKey, TValue>>? pairs,
+        bool overwrite = false)
+    {
+        if (pairs is null)
+            return dict;
+
+        foreach (var pair in pairs)
+        {
+            if (overwrite || !dict.ContainsKey(pair.Key))
+                dict[pair.Key] = pair.Value;
+        }
+
+        return dict;
+    }
 }

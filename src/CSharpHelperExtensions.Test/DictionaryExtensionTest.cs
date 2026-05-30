@@ -78,4 +78,41 @@ public class DictionaryExtensionTest
         result.ShouldBeSameAs(dict);
         dict.Count.ShouldBe(1);
     }
+
+    [Fact]
+    public void AddRange_NoOverlap_AddsAllPairs()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var pairs = new List<KeyValuePair<string, int>> { new("b", 2), new("c", 3) };
+        var result = dict.AddRange(pairs);
+        result.ShouldBeSameAs(dict);
+        dict.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public void AddRange_DuplicateKey_OverwriteFalse_KeepsExisting()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var pairs = new List<KeyValuePair<string, int>> { new("a", 99) };
+        dict.AddRange(pairs, overwrite: false);
+        dict["a"].ShouldBe(1);
+    }
+
+    [Fact]
+    public void AddRange_DuplicateKey_OverwriteTrue_ReplacesExisting()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var pairs = new List<KeyValuePair<string, int>> { new("a", 99) };
+        dict.AddRange(pairs, overwrite: true);
+        dict["a"].ShouldBe(99);
+    }
+
+    [Fact]
+    public void AddRange_NullPairs_NoOp()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        var result = dict.AddRange(null!);
+        result.ShouldBeSameAs(dict);
+        dict.Count.ShouldBe(1);
+    }
 }
