@@ -21,7 +21,8 @@ public static class DictionaryExtensions
     public static TValue GetOrAdd<TKey, TValue>(
         this IDictionary<TKey, TValue> dict,
         TKey key,
-        Func<TKey, TValue> factory)
+        Func<TKey, TValue> factory
+    )
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(factory);
@@ -46,7 +47,8 @@ public static class DictionaryExtensions
     public static IDictionary<TKey, TValue> Merge<TKey, TValue>(
         this IDictionary<TKey, TValue> dict,
         IDictionary<TKey, TValue>? other,
-        bool overwrite = false)
+        bool overwrite = false
+    )
     {
         if (other is null)
             return dict;
@@ -72,7 +74,8 @@ public static class DictionaryExtensions
     public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(
         this IDictionary<TKey, TValue> dict,
         IEnumerable<KeyValuePair<TKey, TValue>>? pairs,
-        bool overwrite = false)
+        bool overwrite = false
+    )
     {
         if (pairs is null)
             return dict;
@@ -98,7 +101,8 @@ public static class DictionaryExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="predicate"/> is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> RemoveWhere<TKey, TValue>(
         this IDictionary<TKey, TValue> dict,
-        Func<TKey, bool> predicate)
+        Func<TKey, bool> predicate
+    )
     {
         ArgumentNullException.ThrowIfNull(predicate);
 
@@ -127,7 +131,8 @@ public static class DictionaryExtensions
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="dict"/> is <see langword="null"/>.</exception>
     public static IReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
-        this IDictionary<TKey, TValue> dict)
+        this IDictionary<TKey, TValue> dict
+    )
     {
         ArgumentNullException.ThrowIfNull(dict);
         return new ReadOnlyDictionary<TKey, TValue>(dict);

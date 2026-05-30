@@ -14,7 +14,14 @@ public class DictionaryExtensionTest
     {
         var dict = new Dictionary<string, int> { ["a"] = 1 };
         var factoryCalled = false;
-        var result = dict.GetOrAdd("a", _ => { factoryCalled = true; return 99; });
+        var result = dict.GetOrAdd(
+            "a",
+            _ =>
+            {
+                factoryCalled = true;
+                return 99;
+            }
+        );
         result.ShouldBe(1);
         factoryCalled.ShouldBeFalse();
     }
@@ -120,7 +127,12 @@ public class DictionaryExtensionTest
     [Fact]
     public void RemoveWhere_RemovesMatchingKeys()
     {
-        var dict = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2, ["c"] = 3 };
+        var dict = new Dictionary<string, int>
+        {
+            ["a"] = 1,
+            ["b"] = 2,
+            ["c"] = 3,
+        };
         var result = dict.RemoveWhere(k => k == "a" || k == "c");
         result.ShouldBeSameAs(dict);
         dict.Count.ShouldBe(1);
