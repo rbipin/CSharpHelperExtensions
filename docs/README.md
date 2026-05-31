@@ -1,6 +1,6 @@
 # CSharpHelperExtensions
 
-A set of commonly used C# extension methods that reduce boilerplate across three focused namespaces: value checks, string manipulation, and collection operations.
+A set of commonly used C# extension methods that reduce boilerplate across four focused namespaces: value checks, string manipulation, collection operations, and dictionary helpers.
 
 [![.NET](https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml/badge.svg)](https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml)
 
@@ -19,6 +19,7 @@ Import the namespace for the extensions you need:
 | `CSharpHelperExtensions.Values` | `In`, `IsBetween`, `ToJson` |
 | `CSharpHelperExtensions.Strings` | All `string` extensions |
 | `CSharpHelperExtensions.Enumerable` | All `IEnumerable<T>` and collection extensions |
+| `CSharpHelperExtensions.Dictionaries` | All `IDictionary<TKey,TValue>` extensions |
 
 ## Interactive Samples
 
@@ -31,6 +32,7 @@ Each notebook loads the compiled DLL and imports the relevant namespace in its *
 | [`sample/value-extensions.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/value-extensions.ipynb) | `CSharpHelperExtensions.Values` | `In`, `IsBetween` (all four `BetweenComparison` modes), `ToJson`, and chaining examples |
 | [`sample/string-extensions.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/string-extensions.ipynb) | `CSharpHelperExtensions.Strings` | All 50+ string methods grouped by category: null-safety, parsing, transformation, whitespace, comparisons, prefix/suffix, encoding, and chaining pipelines |
 | [`sample/enumerable-extension.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/enumerable-extension.ipynb) | `CSharpHelperExtensions.Enumerable` | All collection methods: presence checks, materialization, async projection, partitioning, batching, conditional mutation, and chaining pipelines |
+| [`sample/dictionary-extensions.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/dictionary-extensions.ipynb) | `CSharpHelperExtensions.Dictionaries` | All dictionary methods: safe lookup, add-if-missing, merging, bulk add, in-place filtering, read-only views, and chaining pipelines |
 
 ## Usage
 
@@ -115,4 +117,28 @@ people.MaxByOrDefault(p => p.Age);
 42.Yield();                                 // wrap a single value as IEnumerable<T>
 items.WithIndex();                          // (Index, Item) tuples
 names.JoinAsString(", ");                   // fluent string.Join
+```
+
+### Dictionaries
+
+```csharp
+using CSharpHelperExtensions.Dictionaries;
+
+// Safe lookup — returns default instead of throwing on missing key or null dict
+DictionaryExtensions.GetValueOrDefault(dict, "key");    // value or default(TValue)
+
+// Add-if-missing — factory only called when key is absent
+cache.GetOrAdd("user:1", key => LoadFromDb(key));       // existing or newly stored value
+
+// Merge two dictionaries — overwrite:false keeps existing values (default)
+defaults.Merge(overrides, overwrite: true);             // returns same dict for chaining
+
+// Bulk add from any IEnumerable<KeyValuePair>
+inventory.AddRange(incomingItems);                      // returns same dict for chaining
+
+// Filter in-place by key predicate
+config.RemoveWhere(k => k.StartsWith("internal."));     // returns same dict for chaining
+
+// Expose as a live read-only view
+IReadOnlyDictionary<string, int> view = DictionaryExtensions.AsReadOnly(dict);
 ```

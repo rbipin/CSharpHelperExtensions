@@ -8,6 +8,29 @@ namespace CSharpHelperExtensions.Dictionaries;
 public static class DictionaryExtensions
 {
     /// <summary>
+    /// Returns the value for <paramref name="key"/> if it exists; otherwise returns
+    /// <see langword="default"/>. Returns <see langword="default"/> when <paramref name="dict"/>
+    /// or <paramref name="key"/> is <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="dict">The dictionary to look up. A <see langword="null"/> value returns <see langword="default"/>.</param>
+    /// <param name="key">The key to look up. A <see langword="null"/> value returns <see langword="default"/>.</param>
+    /// <returns>The value for <paramref name="key"/>, or <see langword="default"/> if not found.</returns>
+    public static TValue? GetValueOrDefault<TKey, TValue>(
+        this IDictionary<TKey, TValue>? dict,
+        TKey key
+    )
+    {
+        if (dict is null || key is null)
+        {
+            return default;
+        }
+
+        return dict.TryGetValue(key, out var value) ? value : default;
+    }
+
+    /// <summary>
     /// Returns the value for <paramref name="key"/> if it exists; otherwise invokes
     /// <paramref name="factory"/>, adds the result to the dictionary, and returns it.
     /// </summary>
@@ -28,7 +51,9 @@ public static class DictionaryExtensions
         ArgumentNullException.ThrowIfNull(factory);
 
         if (dict.TryGetValue(key, out var existing))
+        {
             return existing;
+        }
 
         var value = factory(key);
         dict[key] = value;
@@ -51,12 +76,16 @@ public static class DictionaryExtensions
     )
     {
         if (other is null)
+        {
             return dict;
+        }
 
         foreach (var pair in other)
         {
             if (overwrite || !dict.ContainsKey(pair.Key))
+            {
                 dict[pair.Key] = pair.Value;
+            }
         }
 
         return dict;
@@ -78,12 +107,16 @@ public static class DictionaryExtensions
     )
     {
         if (pairs is null)
+        {
             return dict;
+        }
 
         foreach (var pair in pairs)
         {
             if (overwrite || !dict.ContainsKey(pair.Key))
+            {
                 dict[pair.Key] = pair.Value;
+            }
         }
 
         return dict;
@@ -110,11 +143,15 @@ public static class DictionaryExtensions
         foreach (var key in dict.Keys)
         {
             if (predicate(key))
+            {
                 keysToRemove.Add(key);
+            }
         }
 
         foreach (var key in keysToRemove)
+        {
             dict.Remove(key);
+        }
 
         return dict;
     }
@@ -126,13 +163,14 @@ public static class DictionaryExtensions
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="dict">The dictionary to wrap.</param>
     /// <returns>
-    /// A <see cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}"/> that reflects
+    /// A <see cref="ReadOnlyDictionary{TKey, TValue}"/> that reflects
     /// subsequent mutations to the underlying dictionary (live view, not a copy).
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="dict"/> is <see langword="null"/>.</exception>
     public static IReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
         this IDictionary<TKey, TValue> dict
     )
+        where TKey : notnull
     {
         ArgumentNullException.ThrowIfNull(dict);
         return new ReadOnlyDictionary<TKey, TValue>(dict);

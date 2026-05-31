@@ -182,4 +182,39 @@ public class DictionaryExtensionTest
         readOnly.Count.ShouldBe(2);
         readOnly["b"].ShouldBe(2);
     }
+
+    [Fact]
+    public void GetValueOrDefault_KeyExists_ReturnsValue()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 42 };
+        DictionaryExtensions.GetValueOrDefault(dict, "a").ShouldBe(42);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_KeyMissing_ReturnsDefault()
+    {
+        var dict = new Dictionary<string, int> { ["a"] = 1 };
+        DictionaryExtensions.GetValueOrDefault(dict, "z").ShouldBe(0);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_NullDict_ReturnsDefault()
+    {
+        IDictionary<string, int>? dict = null;
+        DictionaryExtensions.GetValueOrDefault(dict, "a").ShouldBe(0);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_NullKey_ReturnsDefault()
+    {
+        var dict = new Dictionary<string, string> { ["a"] = "hello" };
+        DictionaryExtensions.GetValueOrDefault(dict, null!).ShouldBeNull();
+    }
+
+    [Fact]
+    public void GetValueOrDefault_ReferenceType_KeyMissing_ReturnsNull()
+    {
+        var dict = new Dictionary<string, string> { ["a"] = "hello" };
+        DictionaryExtensions.GetValueOrDefault(dict, "z").ShouldBeNull();
+    }
 }
