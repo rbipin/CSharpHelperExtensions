@@ -14,7 +14,7 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void IsNullOrEmpty_Test()
         {
-            ((List<string>) null).IsNullOrEmpty().ShouldBeTrue();
+            ((List<string>)null).IsNullOrEmpty().ShouldBeTrue();
             var emptyList = new List<string>();
             emptyList.IsNullOrEmpty().ShouldBeTrue();
 
@@ -25,40 +25,36 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void CleanNullOrEmpty_Test()
         {
-            var stringList =
-                new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
+            var stringList = new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
             IEnumerable<int?> numEnumerable = new List<int?>() { 1, null, 2 };
 
-            var strListWithNullEmptyWs =
-                new List<string>()
-                { "Magic", null, "Bean", "Stalk", "", "Giant", " " };
+            var strListWithNullEmptyWs = new List<string>()
+            {
+                "Magic",
+                null,
+                "Bean",
+                "Stalk",
+                "",
+                "Giant",
+                " ",
+            };
 
-            var expectedStrList =
-                new List<string> { "Magic", "Bean", "Stalk", "Giant" };
+            var expectedStrList = new List<string> { "Magic", "Bean", "Stalk", "Giant" };
             var expectedIntList = new List<int?> { 1, 2 };
 
             stringList.CleanNullOrEmptyItems().ShouldBe(expectedStrList);
-            numEnumerable
-                .CleanNullOrEmptyItems()
-                .ShouldBe(expectedIntList);
-            strListWithNullEmptyWs
-                .CleanNullOrEmptyItems()
-                .ShouldBe(expectedStrList);
+            numEnumerable.CleanNullOrEmptyItems().ShouldBe(expectedIntList);
+            strListWithNullEmptyWs.CleanNullOrEmptyItems().ShouldBe(expectedStrList);
         }
 
         [Fact]
         public void ContainsOnly_Test()
         {
-            var stringList =
-                new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
+            var stringList = new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
 
             stringList.ContainsOnly("Magic").ShouldBeFalse();
-            stringList
-                .ContainsOnly("Magic", "Bean", "Stalk", "Giant")
-                .ShouldBeTrue();
-            stringList
-                .ContainsOnly("Magic", "Bean", "Stalk", "Jack")
-                .ShouldBeFalse();
+            stringList.ContainsOnly("Magic", "Bean", "Stalk", "Giant").ShouldBeTrue();
+            stringList.ContainsOnly("Magic", "Bean", "Stalk", "Jack").ShouldBeFalse();
 
             var integerList = new List<int>() { 123 };
             integerList.ContainsOnly(123).ShouldBeTrue();
@@ -68,31 +64,22 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void Verify_Enumerable_AreEqual()
         {
-            var stringList =
-                new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
+            var stringList = new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
 
-            var stringList2 =
-                new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
+            var stringList2 = new List<string>() { "Magic", "Bean", "Stalk", "Giant" };
 
             stringList.AreEqual(stringList).ShouldBeTrue();
             stringList.AreEqual(stringList2).ShouldBeTrue();
 
-            stringList2
-                .AreEqual(stringList2, Compare.InOrder)
-                .ShouldBeTrue();
-            stringList2
-                .AreEqual(stringList2, Compare.NoOrder)
-                .ShouldBeTrue();
+            stringList2.AreEqual(stringList2, Compare.InOrder).ShouldBeTrue();
+            stringList2.AreEqual(stringList2, Compare.NoOrder).ShouldBeTrue();
 
             stringList2 = new List<string>() { "Magic", "Bean", "Stalk" };
             stringList.AreEqual(stringList2).ShouldBeFalse();
 
-            stringList2 =
-                new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
+            stringList2 = new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
             stringList.AreEqual(stringList2).ShouldBeTrue();
-            stringList
-                .AreEqual(stringList2, Compare.InOrder)
-                .ShouldBeFalse();
+            stringList.AreEqual(stringList2, Compare.InOrder).ShouldBeFalse();
         }
 
         [Fact]
@@ -105,12 +92,9 @@ namespace CSharpHelperExtensions.Test
             stringList2 = new List<string>();
             stringList.AreEqual(stringList2).ShouldBeTrue();
 
-            stringList2 =
-                new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
+            stringList2 = new List<string>() { "Giant", "Magic", "Bean", "Stalk" };
             var result = stringList.AreEqual(stringList2);
-            stringList
-                .AreEqual(stringList2, Compare.InOrder)
-                .ShouldBeFalse();
+            stringList.AreEqual(stringList2, Compare.InOrder).ShouldBeFalse();
         }
 
         [Fact]
@@ -134,11 +118,10 @@ namespace CSharpHelperExtensions.Test
             IEnumerable<int> source = new List<int>() { 1, 2, 3, 4 };
             int expected = 10;
             int actual = 0;
-            var returnValue =source
-                                .ForEach(item =>
-                                {
-                                    actual += item;
-                                });
+            var returnValue = source.ForEach(item =>
+            {
+                actual += item;
+            });
             actual.ShouldBe(expected);
         }
 
@@ -156,11 +139,10 @@ namespace CSharpHelperExtensions.Test
         {
             IEnumerable<int> source = new List<int>() { 1, 2, 3, 4 };
             Decimal expected = 11;
-            var actual =
-                source
-                    .Reduce<int, Decimal>((item, currentTotal) =>
-                        currentTotal + item,
-                    1);
+            var actual = source.Reduce<int, Decimal>(
+                (item, currentTotal) => currentTotal + item,
+                1
+            );
             actual.ShouldBe(expected);
             actual.GetType().ShouldBe(expected.GetType());
         }
@@ -170,14 +152,13 @@ namespace CSharpHelperExtensions.Test
         {
             IEnumerable<int> source = new List<int>() { 1, 2, 3, 4 };
             Decimal expected = 11.5m;
-            var actual =
-                source
-                    .Reduce<int, Decimal>((item, currentTotal) =>
-                        currentTotal + item,
-                    1.5m);
+            var actual = source.Reduce<int, Decimal>(
+                (item, currentTotal) => currentTotal + item,
+                1.5m
+            );
             actual.ShouldBe(expected);
             actual.GetType().ShouldBe(expected.GetType());
-            }
+        }
 
         [Fact]
         public void HasAny_ReturnsTrue_WhenSequenceHasElements()
@@ -306,8 +287,7 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void ToDictionarySafe_CreatesDictionaryFromSequence()
         {
-            var result = new[] { ("a", 1), ("b", 2) }
-                .ToDictionarySafe(x => x.Item1, x => x.Item2);
+            var result = new[] { ("a", 1), ("b", 2) }.ToDictionarySafe(x => x.Item1, x => x.Item2);
             result["a"].ShouldBe(1);
             result["b"].ShouldBe(2);
         }
@@ -315,16 +295,17 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void ToDictionarySafe_KeepsLastValue_OnDuplicateKey()
         {
-            var result = new[] { ("a", 1), ("a", 99) }
-                .ToDictionarySafe(x => x.Item1, x => x.Item2);
+            var result = new[] { ("a", 1), ("a", 99) }.ToDictionarySafe(x => x.Item1, x => x.Item2);
             result["a"].ShouldBe(99);
         }
 
         [Fact]
         public void ToDictionarySafe_OnNullSource_ReturnsEmptyDictionary()
         {
-            var result = ((IEnumerable<(string, int)>)null)
-                .ToDictionarySafe(x => x.Item1, x => x.Item2);
+            var result = ((IEnumerable<(string, int)>)null).ToDictionarySafe(
+                x => x.Item1,
+                x => x.Item2
+            );
             result.ShouldBeEmpty();
         }
 
@@ -579,16 +560,18 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public async Task SelectAsync_ProjectsEachElementConcurrently()
         {
-            var result = await new[] { 1, 2, 3 }
-                .SelectAsync(async x => { await Task.Yield(); return x * 2; });
+            var result = await new[] { 1, 2, 3 }.SelectAsync(async x =>
+            {
+                await Task.Yield();
+                return x * 2;
+            });
             result.ShouldBe(new[] { 2, 4, 6 });
         }
 
         [Fact]
         public async Task SelectAsync_OnNullSource_ReturnsEmpty()
         {
-            var result = await ((IEnumerable<int>)null)
-                .SelectAsync(async x => x * 2);
+            var result = await ((IEnumerable<int>)null).SelectAsync(async x => x * 2);
             result.ShouldBeEmpty();
         }
 
@@ -598,14 +581,20 @@ namespace CSharpHelperExtensions.Test
             int concurrent = 0;
             int maxSeen = 0;
 
-            await System.Linq.Enumerable.Range(1, 10).ToList().SelectAsync(async x =>
-            {
-                var c = Interlocked.Increment(ref concurrent);
-                Interlocked.Exchange(ref maxSeen, Math.Max(maxSeen, c));
-                await Task.Delay(20);
-                Interlocked.Decrement(ref concurrent);
-                return x;
-            }, maxParallel: 3);
+            await System
+                .Linq.Enumerable.Range(1, 10)
+                .ToList()
+                .SelectAsync(
+                    async x =>
+                    {
+                        var c = Interlocked.Increment(ref concurrent);
+                        Interlocked.Exchange(ref maxSeen, Math.Max(maxSeen, c));
+                        await Task.Delay(20);
+                        Interlocked.Decrement(ref concurrent);
+                        return x;
+                    },
+                    maxParallel: 3
+                );
 
             maxSeen.ShouldBeLessThanOrEqualTo(3);
         }
@@ -617,7 +606,7 @@ namespace CSharpHelperExtensions.Test
             {
                 Task.FromResult(1),
                 Task.FromResult(2),
-                Task.FromResult(3)
+                Task.FromResult(3),
             };
             IReadOnlyList<int> result = await tasks.WhenAllList();
             result.ShouldBe(new[] { 1, 2, 3 });

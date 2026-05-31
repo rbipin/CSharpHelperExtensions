@@ -1,5 +1,3 @@
-![logo](./assets/logo.png)
-
 # CSharpHelperExtensions
 
 A set of commonly used C# extension methods that reduce boilerplate across four focused namespaces: value checks, string manipulation, collection operations, and dictionary helpers.
@@ -25,22 +23,16 @@ Import the namespace for the extensions you need:
 
 ## Interactive Samples
 
-The `sample/` folder contains three [.NET Interactive](https://github.com/dotnet/interactive) notebooks you can run directly in VS Code (with the [Polyglot Notebooks](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode) extension) or Jupyter.
-
-**Before running any notebook**, build the library so the DLL is available:
-
-```bash
-dotnet build
-```
+The [`sample/`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample) folder contains three [.NET Interactive](https://github.com/dotnet/interactive) notebooks you can run directly in VS Code (with the [Polyglot Notebooks](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode) extension) or Jupyter.
 
 Each notebook loads the compiled DLL and imports the relevant namespace in its **Setup** cell — run that cell first, then run any section independently.
 
 | Notebook | Namespace | What it covers |
 |---|---|---|
-| [`sample/value-extensions.ipynb`](sample/value-extensions.ipynb) | `CSharpHelperExtensions.Values` | `In`, `IsBetween` (all four `BetweenComparison` modes), `ToJson`, and chaining examples |
-| [`sample/string-extensions.ipynb`](sample/string-extensions.ipynb) | `CSharpHelperExtensions.Strings` | All 50+ string methods grouped by category: null-safety, parsing, transformation, whitespace, comparisons, prefix/suffix, encoding, and chaining pipelines |
-| [`sample/enumerable-extension.ipynb`](sample/enumerable-extension.ipynb) | `CSharpHelperExtensions.Enumerable` | All collection methods: presence checks, materialization, async projection, partitioning, batching, conditional mutation, and chaining pipelines |
-| [`sample/dictionary-extensions.ipynb`](sample/dictionary-extensions.ipynb) | `CSharpHelperExtensions.Dictionaries` | All dictionary methods: safe lookup, add-if-missing, merging, bulk add, in-place filtering, read-only views, and chaining pipelines |
+| [`sample/value-extensions.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/value-extensions.ipynb) | `CSharpHelperExtensions.Values` | `In`, `IsBetween` (all four `BetweenComparison` modes), `ToJson`, and chaining examples |
+| [`sample/string-extensions.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/string-extensions.ipynb) | `CSharpHelperExtensions.Strings` | All 50+ string methods grouped by category: null-safety, parsing, transformation, whitespace, comparisons, prefix/suffix, encoding, and chaining pipelines |
+| [`sample/enumerable-extension.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/enumerable-extension.ipynb) | `CSharpHelperExtensions.Enumerable` | All collection methods: presence checks, materialization, async projection, partitioning, batching, conditional mutation, and chaining pipelines |
+| [`sample/dictionary-extensions.ipynb`](https://github.com/rbipin/CSharpHelperExtensions/tree/main/sample/dictionary-extensions.ipynb) | `CSharpHelperExtensions.Dictionaries` | All dictionary methods: safe lookup, add-if-missing, merging, bulk add, in-place filtering, read-only views, and chaining pipelines |
 
 ## Usage
 
@@ -149,20 +141,4 @@ config.RemoveWhere(k => k.StartsWith("internal."));     // returns same dict for
 
 // Expose as a live read-only view
 IReadOnlyDictionary<string, int> view = DictionaryExtensions.AsReadOnly(dict);
-```
-
-## Building and Testing
-
-```bash
-# Build
-dotnet build
-
-# Run all tests
-dotnet test
-
-# Run tests with output
-dotnet test --verbosity normal
-
-# Run a specific test
-dotnet test --filter "FullyQualifiedName~MethodName"
 ```

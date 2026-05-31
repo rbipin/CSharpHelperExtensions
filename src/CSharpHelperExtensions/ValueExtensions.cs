@@ -11,16 +11,19 @@ public enum BetweenComparison
 {
     /// <summary>Inclusive on both ends: lower ≤ value ≤ upper. This is the default.</summary>
     None,
+
     /// <summary>Exclusive on both ends: lower &lt; value &lt; upper.</summary>
     ExcludeBoth,
+
     /// <summary>Exclusive lower bound, inclusive upper: lower &lt; value ≤ upper.</summary>
     ExcludeLower,
+
     /// <summary>Inclusive lower bound, exclusive upper: lower ≤ value &lt; upper.</summary>
-    ExcludeUpper
+    ExcludeUpper,
 }
+
 public static class ValueExtensions
 {
-
     /// <summary>
     /// Determines whether a value falls within the range defined by <paramref name="lower"/> and <paramref name="upper"/>.
     /// </summary>
@@ -45,15 +48,23 @@ public static class ValueExtensions
     /// 10.IsBetween(1, 10, BetweenComparison.ExcludeBoth)    // false (both bounds excluded)
     /// </code>
     /// </example>
-    public static bool IsBetween<T>(this T value, T lower, T upper, BetweenComparison comparison = BetweenComparison.None)
+    public static bool IsBetween<T>(
+        this T value,
+        T lower,
+        T upper,
+        BetweenComparison comparison = BetweenComparison.None
+    )
         where T : IComparable<T>
     {
         return comparison switch
         {
-            BetweenComparison.ExcludeBoth => (value.CompareTo(lower) > 0) && (value.CompareTo(upper) < 0),
-            BetweenComparison.ExcludeLower => (value.CompareTo(lower) > 0) && (value.CompareTo(upper) <= 0),
-            BetweenComparison.ExcludeUpper => (value.CompareTo(lower) >= 0) && (value.CompareTo(upper) < 0),
-            _ => value.CompareTo(lower) >= 0 && value.CompareTo(upper) <= 0
+            BetweenComparison.ExcludeBoth => (value.CompareTo(lower) > 0)
+                && (value.CompareTo(upper) < 0),
+            BetweenComparison.ExcludeLower => (value.CompareTo(lower) > 0)
+                && (value.CompareTo(upper) <= 0),
+            BetweenComparison.ExcludeUpper => (value.CompareTo(lower) >= 0)
+                && (value.CompareTo(upper) < 0),
+            _ => value.CompareTo(lower) >= 0 && value.CompareTo(upper) <= 0,
         };
     }
 
@@ -115,4 +126,3 @@ public static class ValueExtensions
         return value is null ? null : JsonConvert.SerializeObject(value, formatting);
     }
 }
-

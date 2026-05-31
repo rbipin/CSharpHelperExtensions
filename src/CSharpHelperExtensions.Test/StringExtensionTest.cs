@@ -5,6 +5,7 @@ using System.Text;
 using CSharpHelperExtensions.Strings;
 using Shouldly;
 using Xunit;
+
 namespace CSharpHelperExtensions.Test
 {
     public class StringExtensionTest
@@ -307,9 +308,7 @@ namespace CSharpHelperExtensions.Test
         [Fact]
         public void Verify_ReplaceMany_AppliesInOrder()
         {
-            "aaa"
-                .ReplaceMany(new[] { ("aaa", "bbb"), ("bbb", "ccc") })
-                .ShouldBe("ccc");
+            "aaa".ReplaceMany(new[] { ("aaa", "bbb"), ("bbb", "ccc") }).ShouldBe("ccc");
         }
 
         [Fact]
