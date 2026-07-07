@@ -45,12 +45,12 @@ CSharpHelperExtensions exists to centralize these common patterns into one depen
 
 ## Tech Stack
 
-<!-- techStack -->
+<!-- techstack -->
 | Layer | Technology |
 |---|---|
 | Language / Runtime | C# on `net10.0` |
 | Testing | xUnit + Shouldly |
-<!-- /techStack -->
+<!-- /techstack -->
 
 ---
 
