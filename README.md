@@ -1,10 +1,58 @@
-![logo](./assets/logo.png)
+<h1 align="center">CSharpHelperExtensions</h1>
 
-# CSharpHelperExtensions
+<p align="center">
+  A set of commonly used C# extension methods that reduce boilerplate across four focused namespaces: value checks, string manipulation, collection operations, and dictionary helpers.
+</p>
 
-A set of commonly used C# extension methods that reduce boilerplate across four focused namespaces: value checks, string manipulation, collection operations, and dictionary helpers.
+<p align="center">
+  <img src="https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml/badge.svg" alt=".NET build status" />
+  <img src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white" />
+  <img src="https://img.shields.io/badge/NuGet-CSharpHelperExtensions-004880?logo=nuget&logoColor=white" />
+  <img src="https://img.shields.io/badge/JSON-Newtonsoft.Json-000000" />
+</p>
 
-[![.NET](https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml/badge.svg)](https://github.com/rbipin/dry-extensions-csharp/actions/workflows/dotnet.yml)
+<img src="assets/logo.png" alt="CSharpHelperExtensions logo">
+
+---
+
+## Overview
+
+<!-- description -->
+CSharpHelperExtensions is a lightweight NuGet package of extension methods for values, strings, enumerables, and dictionaries — designed to cut down boilerplate you'd otherwise hand-write on every project.
+<!-- /description -->
+
+<!-- purpose -->
+Most C# codebases end up with the same small helpers rewritten over and over: null-safe string checks, safe parsing, membership tests, batching, and dictionary lookups with fallbacks. Keeping these scattered across projects means copy-pasting and re-testing the same logic repeatedly.
+
+CSharpHelperExtensions exists to centralize these common patterns into one dependency-light, well-tested package, split across four focused namespaces so you only import what you need.
+<!-- /purpose -->
+
+---
+
+## Features
+
+<!-- outcome -->
+| | |
+|---|---|
+| **Values** | `In` (SQL-style membership), `IsBetween` (four inclusive/exclusive modes), `ToJson` |
+| **Strings** | 50+ null-safe, parsing, transformation, whitespace, comparison, prefix/suffix, and encoding helpers |
+| **Enumerable** | Presence checks, materialization, async projection, partitioning, batching, conditional mutation |
+| **Dictionaries** | Safe lookup, add-if-missing, merging, bulk add, in-place filtering, read-only views |
+| **Interactive samples** | Four `.NET Interactive` notebooks covering every namespace with runnable examples |
+<!-- /outcome -->
+
+---
+
+## Tech Stack
+
+<!-- techStack -->
+| Layer | Technology |
+|---|---|
+| Language / Runtime | C# on `net10.0` |
+| Testing | xUnit + Shouldly |
+<!-- /techStack -->
+
+---
 
 ## Installation
 
@@ -22,6 +70,8 @@ Import the namespace for the extensions you need:
 | `CSharpHelperExtensions.Strings` | All `string` extensions |
 | `CSharpHelperExtensions.Enumerable` | All `IEnumerable<T>` and collection extensions |
 | `CSharpHelperExtensions.Dictionaries` | All `IDictionary<TKey,TValue>` extensions |
+
+---
 
 ## Interactive Samples
 
@@ -41,6 +91,8 @@ Each notebook loads the compiled DLL and imports the relevant namespace in its *
 | [`sample/string-extensions.ipynb`](sample/string-extensions.ipynb) | `CSharpHelperExtensions.Strings` | All 50+ string methods grouped by category: null-safety, parsing, transformation, whitespace, comparisons, prefix/suffix, encoding, and chaining pipelines |
 | [`sample/enumerable-extension.ipynb`](sample/enumerable-extension.ipynb) | `CSharpHelperExtensions.Enumerable` | All collection methods: presence checks, materialization, async projection, partitioning, batching, conditional mutation, and chaining pipelines |
 | [`sample/dictionary-extensions.ipynb`](sample/dictionary-extensions.ipynb) | `CSharpHelperExtensions.Dictionaries` | All dictionary methods: safe lookup, add-if-missing, merging, bulk add, in-place filtering, read-only views, and chaining pipelines |
+
+---
 
 ## Usage
 
@@ -151,6 +203,8 @@ config.RemoveWhere(k => k.StartsWith("internal."));     // returns same dict for
 IReadOnlyDictionary<string, int> view = DictionaryExtensions.AsReadOnly(dict);
 ```
 
+---
+
 ## Building and Testing
 
 ```bash
@@ -166,3 +220,11 @@ dotnet test --verbosity normal
 # Run a specific test
 dotnet test --filter "FullyQualifiedName~MethodName"
 ```
+
+---
+
+## License
+
+Licensed under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Bipin Radhakrishnan (https://github.com/rbipin/CSharpHelperExtensions)
