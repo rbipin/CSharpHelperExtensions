@@ -29,9 +29,16 @@ CSharpHelperExtensions exists to centralize these common patterns into one depen
 
 ---
 
-## Features
+## Outcome
 
 <!-- outcome -->
+Simplifies common development tasks through a comprehensive set of utility extensions for values, strings, collections, and dictionaries, reducing boilerplate code and improving consistency
+<!-- /outcome -->
+
+---
+
+## Features
+
 | | |
 |---|---|
 | **Values** | `In` (SQL-style membership), `IsBetween` (four inclusive/exclusive modes), `ToJson` |
@@ -39,7 +46,6 @@ CSharpHelperExtensions exists to centralize these common patterns into one depen
 | **Enumerable** | Presence checks, materialization, async projection, partitioning, batching, conditional mutation |
 | **Dictionaries** | Safe lookup, add-if-missing, merging, bulk add, in-place filtering, read-only views |
 | **Interactive samples** | Four `.NET Interactive` notebooks covering every namespace with runnable examples |
-<!-- /outcome -->
 
 ---
 
